@@ -244,15 +244,25 @@
     }
   },
   "scena": {
+    "delka_auta": {
+      "v": 4709,
+      "stav": "odhad",
+      "popis": "Délka vozu (Octavia IV Combi podle katalogu); model se na ni škáluje"
+    },
     "sirka_auta": {
-      "v": 1850,
-      "stav": "koncept",
-      "popis": "Šířka vozu pro scénu na autě"
+      "v": 1829,
+      "stav": "odhad",
+      "popis": "Šířka vozu bez zrcátek (jen pro zjednodušený vůz)"
     },
     "vyska_montaze": {
       "v": 700,
       "stav": "koncept",
       "popis": "Výška středu senzoru nad zemí (montáž svisle)"
+    },
+    "poloha_x": {
+      "v": 350,
+      "stav": "koncept",
+      "popis": "Poloha senzoru podél vozu od středu (+ dopředu), na předních dveřích"
     }
   }
 }

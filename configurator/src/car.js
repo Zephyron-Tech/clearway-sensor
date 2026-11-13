@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 // Obecný osobní vůz (není to konkrétní model), jen jako měřítko a podklad pro montáž senzorů.
 // Přední část míří do +X, šířka vozu podél Z, karoserie končí přesně na z = ±W/2.
@@ -109,4 +111,47 @@ export function buildRoad() {
   // silnice se nepočítá do rámování kamery
   g.traverse((n) => { n.userData.noExport = true; });
   return g;
+}
+
+// ---------- skutečný vůz z GLB (public/models/car.glb) ----------
+// Model: 2025 Škoda Octavia RS Combi, autor tonielpro520 (Sketchfab), licence CC BY 4.0.
+
+export const CAR_CREDIT = '2025 Škoda Octavia RS Combi – tonielpro520 (Sketchfab), CC BY 4.0';
+// Natočení modelu, aby příď mířila do +X (doladit podle konkrétního souboru)
+const CAR_YAW = 0;
+
+let carPromise = null;
+/** Načte vůz jednou; vrací skupinu s přídí do +X, koly na y = 0, středem v počátku, délkou 1 (jednotka). */
+export function loadCar() {
+  if (!carPromise) {
+    const loader = new GLTFLoader();
+    loader.setMeshoptDecoder(MeshoptDecoder);
+    carPromise = loader.loadAsync(`${import.meta.env.BASE_URL}models/car.glb`).then((gltf) => {
+      const model = gltf.scene;
+      model.rotation.y = CAR_YAW;
+      model.updateMatrixWorld(true);
+      let box = new THREE.Box3().setFromObject(model);
+      let size = box.getSize(new THREE.Vector3());
+      // delší vodorovná osa = podélná osa vozu
+      if (size.z > size.x) { model.rotation.y += Math.PI / 2; model.updateMatrixWorld(true); box = new THREE.Box3().setFromObject(model); size = box.getSize(new THREE.Vector3()); }
+      const c = box.getCenter(new THREE.Vector3());
+      const norm = new THREE.Group();
+      model.position.sub(new THREE.Vector3(c.x, box.min.y, c.z));
+      const s = 1 / size.x;
+      const scaler = new THREE.Group();
+      scaler.scale.setScalar(s);
+      scaler.add(model);
+      norm.add(scaler);
+      model.traverse((n) => {
+        if (!n.isMesh) return;
+        n.castShadow = true; n.receiveShadow = true;
+        n.userData.carBody = true;
+        for (const m of [n.material].flat()) if (m && 'envMapIntensity' in m) m.envMapIntensity = 1;
+      });
+      norm.name = 'car';
+      norm.userData.unitLength = true;
+      return norm;
+    });
+  }
+  return carPromise;
 }

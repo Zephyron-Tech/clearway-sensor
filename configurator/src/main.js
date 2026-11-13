@@ -4,7 +4,8 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import defaults from './params.json';
 import { buildUnit, footHeight, layout, setBodyOpacity } from './model.js';
 import { cadBuild, cadStep, cadStl, cadToGroup, setCadOpacity, setHighlight } from './cad/client.js';
-import { buildCar, buildRoad } from './car.js';
+import { buildCar, buildRoad, loadCar, CAR_CREDIT } from './car.js';
+import { Sky } from 'three/addons/objects/Sky.js';
 import { makeLabel, makeDim, makeCable } from './overlay.js';
 import { PHOTOS } from './photos.js';
 import { WIN_NAMES } from './names.js';
@@ -72,8 +73,25 @@ view.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
 const pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const roomEnv = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environment = roomEnv;
 scene.environmentIntensity = 0.75;
+
+// Obloha pro scénu na autě: Preethamova obloha, slunce odpoledne nad Plzní
+const SUN_DIR = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - 36), THREE.MathUtils.degToRad(140));
+function makeSky(scale) {
+  const s = new Sky();
+  s.scale.setScalar(scale);
+  const u = s.material.uniforms;
+  u.turbidity.value = 3.5; u.rayleigh.value = 1.1; u.mieCoefficient.value = 0.004; u.mieDirectionalG.value = 0.82;
+  u.sunPosition.value.copy(SUN_DIR);
+  return s;
+}
+const sky = makeSky(2.5e6);
+sky.visible = false;
+scene.add(sky);
+const skyEnv = (() => { const s = new THREE.Scene(); s.add(makeSky(50)); return pmrem.fromScene(s).texture; })();
+const cityFog = new THREE.Fog(0xc9d6e3, 120000, 900000);
 
 const camera = new THREE.PerspectiveCamera(35, 1, 5, 80000);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -106,6 +124,78 @@ scene.add(grid);
 
 let content = new THREE.Group();
 scene.add(content);
+// Trvalá scéna na autě (načítá se jednou): Plzeň z OSM + model vozu
+const world = new THREE.Group();
+scene.add(world);
+const carScene = { city: null, car: null, started: false };
+function ensureCarScene() {
+  if (carScene.started) return; // načítá se jen jednou, i když selže
+  carScene.started = true;
+  setStatus('Načítám Plzeň a vůz…', 'busy');
+  Promise.allSettled([
+    import('./plzen.json').then(async (m) => { const { buildCity } = await import('./city.js'); return buildCity(m.default); }),
+    loadCar(),
+  ]).then(([city, car]) => {
+    if (city.status === 'fulfilled') { carScene.city = city.value; world.add(city.value); } else console.error(city.reason);
+    if (car.status === 'fulfilled') { carScene.car = car.value; world.add(car.value); }
+    else { console.warn('Model vozu nenačten', car.reason); toast('Model vozu chybí (public/models/car.glb), zobrazuji zjednodušený vůz', true); }
+    setStatus(cad.data ? 'CAD připraven' : 'Načítám CAD jádro…', cad.data ? 'ok' : 'busy');
+    if (state.scene === 'auto') rebuild(true, false);
+  });
+}
+
+// Přepíná prostředí podle scény (místnost + mřížka na stole, obloha + město na autě)
+function applyEnvironment() {
+  const auto = state.scene === 'auto';
+  const city = auto && !!carScene.city;
+  world.visible = auto;
+  if (carScene.car) carScene.car.visible = auto;
+  sky.visible = city;
+  scene.environment = city ? skyEnv : roomEnv;
+  scene.environmentIntensity = city ? 0.9 : 0.75;
+  scene.fog = city ? cityFog : null;
+  floor.visible = !city;
+  grid.visible = !auto;
+  camera.near = auto ? 20 : 5;
+  camera.far = city ? 3e6 : 80000;
+  camera.updateProjectionMatrix();
+  const credit = $('#credit');
+  if (credit) {
+    credit.hidden = !auto;
+    credit.textContent = `Mapová data © přispěvatelé OpenStreetMap (ODbL)${carScene.car ? ' · Model vozu: ' + CAR_CREDIT : ''}`;
+  }
+}
+
+/**
+ * Přisaje jednotku na bok skutečného vozu: paprsky zvenku k dveřím ve výšce obou noh najdou
+ * povrch, tělo se postaví tak, aby středy přísavek ležely na karoserii, a natočí se podle sklonu dveří.
+ * side +1 = pravý bok (+Z), -1 = levý.
+ */
+const carRay = new THREE.Raycaster();
+function mountOnCar(u, side, car) {
+  const total = layout(P).total;
+  const px = v('scena', 'poloha_x');
+  const yTop = v('scena', 'vyska_montaze') + total / 2; // čelo A (anténa) nahoře
+  const L = v('noha', 'drzak_vyska') + v('noha', 'prisavka_vyska');
+  const pts = [];
+  for (const f of feet(P)) {
+    const y = yTop - f.x;
+    carRay.set(new THREE.Vector3(px, y, side * 5000), new THREE.Vector3(0, 0, -side));
+    const hit = carRay.intersectObject(car, true)[0];
+    if (!hit) return false;
+    // vzdálenost spodku těla od karoserie v ose přísavky
+    const a = THREE.MathUtils.degToRad(f.tilt);
+    pts.push({ f, p: new THREE.Vector3(px, y, hit.point.z + side * (f.hc + L * Math.cos(a))) });
+  }
+  const [p0, p1] = pts;
+  const ex = p1.p.clone().sub(p0.p).normalize();                 // podél těla (čelo A -> B), míří dolů
+  let ey = new THREE.Vector3(0, -ex.z, ex.y);                    // kolmo ve svislé rovině
+  if (Math.sign(ey.z) !== side) ey.negate();                     // okna ven od vozu
+  const ez = new THREE.Vector3().crossVectors(ex, ey);
+  u.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ex, ey, ez));
+  u.position.copy(p0.p).addScaledVector(ex, -p0.f.x);
+  return true;
+}
 const pickables = [];
 
 function disposeTree(o) {
@@ -266,21 +356,28 @@ function rebuild(resetCamera = false, askCad = true) {
     slave.position.set(-total / 2, lift, -230);
     grid.visible = true;
   } else {
+    ensureCarScene();
     const Wc = v('scena', 'sirka_auta');
     const y = v('scena', 'vyska_montaze');
-    content.add(buildCar(Wc));
-    road = buildRoad();
-    content.add(road);
+    const car = carScene.car;
+    if (car) {
+      car.scale.setScalar(v('scena', 'delka_auta'));
+      car.updateMatrixWorld(true);
+    } else {
+      content.add(buildCar(Wc));
+    }
+    if (!carScene.city) { road = buildRoad(); content.add(road); }
     // Montáž svisle: čelo A (anténa) nahoře, konektory dole, okna ven, nohy na karoserii.
     // Master na pravém boku (+Z), slave na levém (-Z). Střed těla ve výšce vyska_montaze.
     const down = new THREE.Vector3(0, -1, 0);
     for (const [u, s] of [[master, 1], [slave, -1]]) {
+      if (car && mountOnCar(u, s, car)) continue;
       const out = new THREE.Vector3(0, 0, s);
       u.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(down, out, new THREE.Vector3().crossVectors(down, out)));
-      u.position.set(0, y + total / 2, s * (Wc / 2 + fh));
+      u.position.set(v('scena', 'poloha_x'), y + total / 2, s * (Wc / 2 + fh));
     }
-    grid.visible = false;
   }
+  applyEnvironment();
   content.add(master, slave);
   content.updateMatrixWorld(true);
 
@@ -317,6 +414,7 @@ function contentBox() {
   content.traverse((n) => {
     if ((n.isMesh && !n.userData.noExport) || n.userData.cable) box.expandByObject(n);
   });
+  if (state.scene === 'auto' && carScene.car) box.expandByObject(carScene.car);
   return box;
 }
 
@@ -325,7 +423,8 @@ function fitShadow() {
   if (box.isEmpty()) return;
   const c = box.getCenter(new THREE.Vector3());
   const r = box.getSize(new THREE.Vector3()).length() / 2 + 200;
-  sun.position.copy(c).add(new THREE.Vector3(0.5, 1.4, 0.7).setLength(r * 2));
+  const dir = state.scene === 'auto' && carScene.city ? SUN_DIR : new THREE.Vector3(0.5, 1.4, 0.7);
+  sun.position.copy(c).add(dir.clone().setLength(r * 2));
   sun.target.position.copy(c);
   const cam = sun.shadow.camera;
   cam.left = cam.bottom = -r; cam.right = cam.top = r;
