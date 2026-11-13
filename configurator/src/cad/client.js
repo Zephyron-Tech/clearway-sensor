@@ -17,9 +17,9 @@ function call(msg) {
   });
 }
 
-export const cadBuild = (params) => call({ type: 'build', params });
-export const cadStep = (params, role) => call({ type: 'step', params, role }).then(d => d.result);
-export const cadStl = (params, role) => call({ type: 'stl', params, role }).then(d => d.result);
+export const cadBuild = (params, variant = 'v1') => call({ type: 'build', params, variant });
+export const cadStep = (params, role, variant = 'v1') => call({ type: 'step', params, role, variant }).then(d => d.result);
+export const cadStl = (params, role, variant = 'v1') => call({ type: 'stl', params, role, variant }).then(d => d.result);
 
 // ---------- materiály ----------
 

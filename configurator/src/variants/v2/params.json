@@ -1,0 +1,209 @@
+{
+  "_info": "ClearWay v2 – koncept. Jedna jednotka pro master i slave, plastové tělo, bezdrátový spoj, baterie, LTE-M + GNSS. v1 je archiv ve variants/v1 a nemění se.",
+  "profil": {
+    "sirka": {
+      "v": 60,
+      "stav": "koncept",
+      "popis": "Šířka těla (v1: 80)"
+    },
+    "vyska": {
+      "v": 32,
+      "stav": "koncept",
+      "popis": "Výška těla bez nohou (v1: 40)"
+    },
+    "stena": {
+      "v": 2.5,
+      "stav": "koncept",
+      "popis": "Tloušťka stěny plastu (PA12 / ASA)"
+    },
+    "zaobleni": {
+      "v": 8,
+      "stav": "koncept",
+      "popis": "Zaoblení podélných hran"
+    }
+  },
+  "delky": {
+    "celkova": {
+      "v": 420,
+      "stav": "koncept",
+      "popis": "Celková délka čelo–čelo (v1: 506)"
+    },
+    "cep": {
+      "v": 10,
+      "stav": "koncept",
+      "popis": "Tloušťka čela"
+    },
+    "modul_okna": {
+      "v": 26,
+      "stav": "koncept",
+      "popis": "Délka okna podél těla vč. okolí"
+    },
+    "okno_1": {
+      "v": 24,
+      "stav": "koncept",
+      "popis": "Střed okna 1 od čela A (nahoře na voze)"
+    },
+    "okno_2": {
+      "v": 148,
+      "stav": "koncept",
+      "popis": "Střed okna 2 od čela A"
+    },
+    "okno_3": {
+      "v": 272,
+      "stav": "koncept",
+      "popis": "Střed okna 3 od čela A"
+    },
+    "okno_4": {
+      "v": 396,
+      "stav": "koncept",
+      "popis": "Střed okna 4 od čela A (rozteč 124 mm, v1 ~150)"
+    }
+  },
+  "okno": {
+    "delka": {
+      "v": 35.4,
+      "stav": "zmereno",
+      "popis": "Delší strana okna (napříč), stejný lidar jako v1"
+    },
+    "sirka": {
+      "v": 19.5,
+      "stav": "zmereno",
+      "popis": "Kratší strana okna (podél těla)"
+    }
+  },
+  "lidar": {
+    "sirka": {
+      "v": 35,
+      "stav": "odhad",
+      "popis": "TFmini Plus (katalog 35 × 18,5 × 21)"
+    },
+    "hloubka": {
+      "v": 18.5,
+      "stav": "odhad",
+      "popis": ""
+    },
+    "vyska": {
+      "v": 21,
+      "stav": "odhad",
+      "popis": ""
+    },
+    "dosah": {
+      "v": 2000,
+      "stav": "odhad",
+      "popis": "Délka zobrazeného paprsku"
+    }
+  },
+  "deska": {
+    "sirka": {
+      "v": 52,
+      "stav": "koncept",
+      "popis": "Hlavní deska napříč (ESP32-S3-MINI-1, nabíječka, fuel gauge)"
+    },
+    "delka": {
+      "v": 80,
+      "stav": "koncept",
+      "popis": "Hlavní deska podél těla"
+    },
+    "tloustka": {
+      "v": 1.6,
+      "stav": "koncept",
+      "popis": ""
+    }
+  },
+  "baterie": {
+    "pocet": {
+      "v": 2,
+      "stav": "koncept",
+      "popis": "Počet článků 18650 (paralelně)"
+    },
+    "prumer": {
+      "v": 18.6,
+      "stav": "koncept",
+      "popis": "Průměr článku"
+    },
+    "delka": {
+      "v": 65.2,
+      "stav": "koncept",
+      "popis": "Délka článku"
+    },
+    "kapacita": {
+      "v": 3400,
+      "stav": "koncept",
+      "popis": "Kapacita článku v mAh (3,6 V)"
+    },
+    "odber": {
+      "v": 3.0,
+      "stav": "koncept",
+      "popis": "Odběr jednotky ve W (4× TFmini Plus 5 V + MCU, master + modem)"
+    }
+  },
+  "noha": {
+    "odsazeni_predni": {
+      "v": 70,
+      "stav": "koncept",
+      "popis": "Střed přední nohy od čela B (dole)"
+    },
+    "odsazeni_zadni": {
+      "v": 70,
+      "stav": "koncept",
+      "popis": "Střed zadní nohy od čela A (nahoře)"
+    },
+    "valec_prumer": {
+      "v": 20,
+      "stav": "koncept",
+      "popis": "Dřík nohy"
+    },
+    "kloub_vyska": {
+      "v": 22,
+      "stav": "koncept",
+      "popis": "Od spodku těla ke středu koule"
+    },
+    "kloub_prumer": {
+      "v": 22,
+      "stav": "koncept",
+      "popis": "Průměr koule kloubu"
+    },
+    "drzak_vyska": {
+      "v": 14,
+      "stav": "koncept",
+      "popis": "Od středu koule k základně přísavky"
+    },
+    "prisavka_prumer": {
+      "v": 80,
+      "stav": "koncept",
+      "popis": "Páková přísavka (bez pumpičky)"
+    },
+    "prisavka_vyska": {
+      "v": 14,
+      "stav": "koncept",
+      "popis": "Výška přísavky"
+    },
+    "kloub_uhel": {
+      "v": 0,
+      "stav": "koncept",
+      "popis": "Natočení kloubu podél těla (na voze se dorovná ke dveřím)"
+    }
+  },
+  "scena": {
+    "delka_auta": {
+      "v": 4709,
+      "stav": "odhad",
+      "popis": "Délka vozu (Octavia IV Combi podle katalogu); model se na ni škáluje"
+    },
+    "sirka_auta": {
+      "v": 1829,
+      "stav": "odhad",
+      "popis": "Šířka vozu bez zrcátek (jen pro zjednodušený vůz)"
+    },
+    "vyska_montaze": {
+      "v": 700,
+      "stav": "koncept",
+      "popis": "Výška středu senzoru nad zemí (montáž svisle)"
+    },
+    "poloha_x": {
+      "v": 350,
+      "stav": "koncept",
+      "popis": "Poloha senzoru podél vozu od středu (+ dopředu), na předních dveřích"
+    }
+  }
+}

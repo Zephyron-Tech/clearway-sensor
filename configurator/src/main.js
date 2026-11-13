@@ -1,17 +1,23 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import defaults from './params.json';
+import paramsV1 from './variants/v1/params.json';
+import paramsV2 from './variants/v2/params.json';
 import { buildUnit, footHeight, layout, setBodyOpacity } from './model.js';
 import { cadBuild, cadStep, cadStl, cadToGroup, setCadOpacity, setHighlight } from './cad/client.js';
 import { buildCar, buildRoad, loadCar, CAR_CREDIT } from './car.js';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { makeLabel, makeDim, makeCable } from './overlay.js';
 import { PHOTOS } from './photos.js';
-import { WIN_NAMES } from './names.js';
+import { winNames } from './names.js';
 import { feet } from './geometry.js';
 
-const STORE = 'clearway-params-v1';
+// v1 = stávající zařízení (archiv, jen pro čtení, neukládá se), v2 = koncept (úpravy v localStorage)
+const VARIANTS = {
+  v1: { label: 'v1', defaults: paramsV1, readonly: true },
+  v2: { label: 'v2', defaults: paramsV2, readonly: false, store: 'clearway-params-v2' },
+};
+const other = (vr) => (vr === 'v1' ? 'v2' : 'v1');
 const UI_STORE = 'clearway-ui-v1';
 const STAVY = ['odhad', 'zmereno', 'koncept'];
 const STAV_LABEL = { odhad: 'odhad', zmereno: 'změřeno', koncept: 'koncept' };
@@ -21,26 +27,39 @@ const clone = (o) => JSON.parse(JSON.stringify(o));
 const fmt = (n) => (Math.round(n * 10) / 10).toLocaleString('cs-CZ');
 
 // ---------- stav ----------
-let P = loadParams();
 const state = Object.assign(
-  { scene: 'stul', beams: true, labels: true, dims: false, edges: true, xray: false, cable: true, explode: 0, tab: 'params',
+  { scene: 'stul', variant: 'v1', compare: false, beams: true, labels: true, dims: false, edges: true, xray: false, cable: true, explode: 0, tab: 'params',
     hidden: {} },
   loadUi(),
 );
+if (!VARIANTS[state.variant]) state.variant = 'v1';
+const PV = { v1: loadParams('v1'), v2: loadParams('v2') };
+let P = PV[state.variant];
+const defaults = () => VARIANTS[state.variant].defaults;
+const readonly = () => VARIANTS[state.variant].readonly;
+// dočasně přepnout aktivní parametry (overlaye, montáž a kabely druhé verze při porovnání)
+function withParams(Q, fn) { const old = P; P = Q; try { return fn(); } finally { P = old; } }
 
-function loadParams() {
-  try {
-    const raw = localStorage.getItem(STORE);
-    if (raw) return mergeParams(clone(defaults), JSON.parse(raw));
-  } catch { /* úložiště nedostupné */ }
-  return clone(defaults);
+function loadParams(vr) {
+  const V = VARIANTS[vr];
+  if (V.store) {
+    try {
+      const raw = localStorage.getItem(V.store);
+      if (raw) return mergeParams(clone(V.defaults), JSON.parse(raw));
+    } catch { /* úložiště nedostupné */ }
+  }
+  return clone(V.defaults);
 }
-function saveParams() { try { localStorage.setItem(STORE, JSON.stringify(P)); } catch { /* ignorovat */ } }
+function saveParams() {
+  const V = VARIANTS[state.variant];
+  if (V.readonly || !V.store) return;
+  try { localStorage.setItem(V.store, JSON.stringify(P)); } catch { /* ignorovat */ }
+}
 function loadUi() { try { return JSON.parse(localStorage.getItem(UI_STORE)) || {}; } catch { return {}; } }
 function saveUi() {
   try {
-    const { scene, beams, labels, dims, edges, xray, cable, explode, tab, hidden } = state;
-    localStorage.setItem(UI_STORE, JSON.stringify({ scene, beams, labels, dims, edges, xray, cable, explode, tab, hidden }));
+    const { scene, variant, compare, beams, labels, dims, edges, xray, cable, explode, tab, hidden } = state;
+    localStorage.setItem(UI_STORE, JSON.stringify({ scene, variant, compare, beams, labels, dims, edges, xray, cable, explode, tab, hidden }));
   } catch { /* ignorovat */ }
 }
 // Přebírá jen známé klíče, aby starý JSON nerozbil novou verzi parametrů
@@ -172,9 +191,8 @@ function applyEnvironment() {
  * side +1 = pravý bok (+Z), -1 = levý.
  */
 const carRay = new THREE.Raycaster();
-function mountOnCar(u, side, car) {
+function mountOnCar(u, side, car, px = v('scena', 'poloha_x')) {
   const total = layout(P).total;
-  const px = v('scena', 'poloha_x');
   const yTop = v('scena', 'vyska_montaze') + total / 2; // čelo A (anténa) nahoře
   const L = v('noha', 'drzak_vyska') + v('noha', 'prisavka_vyska');
   const pts = [];
@@ -208,6 +226,23 @@ function disposeTree(o) {
 // ---------- CAD (OpenCascade ve workeru) ----------
 // Poslední hotový CAD výsledek se ukazuje, dokud nedorazí nový.
 const cad = { data: null, key: null, busy: false, queued: false, timer: 0 };
+// výsledky CAD pro obě verze; cad.data/key = aktuální verze
+const cadStore = { v1: { data: null, key: null }, v2: { data: null, key: null } };
+const cadKey = (vr) => JSON.stringify(PV[vr]);
+function syncCad() { const c = cadStore[state.variant]; cad.data = c.data; cad.key = c.key; }
+let otherBusy = false;
+async function ensureOtherCad() {
+  const vr = other(state.variant);
+  if (otherBusy || cadStore[vr].key === cadKey(vr)) return;
+  otherBusy = true;
+  try {
+    const key = cadKey(vr);
+    const res = await cadBuild(JSON.parse(key), vr);
+    cadStore[vr] = { data: res.result, key };
+    $('#loading').classList.add('gone');
+    rebuild(false, false);
+  } catch (err) { console.error(err); } finally { otherBusy = false; }
+}
 const statusEl = $('#cadStatus');
 const setStatus = (text, kind = '') => { statusEl.querySelector('span').textContent = text; statusEl.className = kind; };
 setStatus('Načítám CAD jádro…', 'busy');
@@ -216,28 +251,31 @@ function requestCad() { clearTimeout(cad.timer); cad.timer = setTimeout(runCad, 
 async function runCad() {
   if (cad.busy) { cad.queued = true; return; }
   cad.busy = true;
+  const vr = state.variant;
   const key = JSON.stringify(P);
   if (cad.data) setStatus('Přepočítávám model…', 'busy');
   try {
-    const res = await cadBuild(JSON.parse(key));
-    const first = !cad.data;
-    cad.data = res.result; cad.key = key;
+    const res = await cadBuild(JSON.parse(key), vr);
+    const first = !cadStore.v1.data && !cadStore.v2.data;
+    cadStore[vr] = { data: res.result, key };
+    syncCad();
     const n = res.result.master.parts.length + res.result.slave.parts.length;
     setStatus(`CAD · ${n} dílů · ${res.ms} ms`, 'ok');
     rebuild(false, false);
-    if (first) { renderPartsTab(); $('#loading').classList.add('gone'); }
+    $('#loading').classList.add('gone');
+    if (first || !$('#partsList [data-cat]')) renderPartsTab();
   } catch (err) {
     setStatus('Chyba CAD: ' + err.message, 'err');
     console.error(err);
   } finally {
     cad.busy = false;
-    if (cad.queued || JSON.stringify(P) !== key) { cad.queued = false; runCad(); }
+    if (cad.queued || JSON.stringify(P) !== key || state.variant !== vr) { cad.queued = false; runCad(); }
   }
 }
 
 // ---------- stavba scény ----------
 const CATS = {
-  telo: 'Tělo a kryty', lidar: 'Lidary', elektronika: 'Elektronika', konektory: 'Konektory, anténa, libela', noha: 'Nohy s přísavkami',
+  telo: 'Tělo a kryty', lidar: 'Lidary', elektronika: 'Elektronika', baterie: 'Baterie', konektory: 'Konektory, anténa, libela', noha: 'Nohy s přísavkami',
 };
 
 function explodeOffset(ud, e) {
@@ -246,16 +284,18 @@ function explodeOffset(ud, e) {
   if (/^(kryt_|okno_)/.test(n)) return [0, 95 * e, 0];
   if (ud.cat === 'lidar') return [0, 50 * e, 0];
   if (ud.cat === 'elektronika') return [0, 18 * e, 0];
+  if (ud.cat === 'baterie') return [0, 34 * e, 0];
   if (ud.cat === 'noha') return [0, -80 * e, 0];
   if (n.startsWith('cep_') || ud.cat === 'konektory') return [(ud.end ? 1 : -1) * 70 * e, 0, 0];
   return [0, 0, 0];
 }
 
-function buildUnitGroup(role) {
+function buildUnitGroup(role, vr = state.variant) {
   const u = new THREE.Group();
-  u.name = role;
-  if (cad.data) {
-    const g = cadToGroup(cad.data[role], { edges: state.edges, role });
+  u.name = vr === state.variant ? role : `${role}_${vr}`;
+  const data = cadStore[vr].data;
+  if (data) {
+    const g = cadToGroup(data[role], { edges: state.edges, role });
     for (const m of g.children) {
       if (!m.isMesh) continue;
       const o = explodeOffset(m.userData, state.explode);
@@ -267,24 +307,31 @@ function buildUnitGroup(role) {
       pickables.push(m);
     }
     u.add(g);
-  } else {
+  } else if (vr === 'v1') {
     // zjednodušený náhled, dokud se nenačte CAD jádro
-    u.add(buildUnit(P, role, { beams: false, labels: false }));
+    u.add(buildUnit(PV.v1, role, { beams: false, labels: false }));
+  } else {
+    // v2 bez CAD: jen obrys těla
+    const { total } = layout(PV.v2);
+    const H = PV.v2.profil.vyska.v, W = PV.v2.profil.sirka.v;
+    const b = new THREE.Mesh(new THREE.BoxGeometry(total, H, W), new THREE.MeshStandardMaterial({ color: '#9da2a8', roughness: 0.6 }));
+    b.position.set(total / 2, H / 2, 0);
+    u.add(b);
   }
-  addOverlays(u, role);
+  withParams(PV[vr], () => addOverlays(u, role, vr));
   return u;
 }
 
 const beamMat = new THREE.MeshBasicMaterial({ color: 0xff3b30, transparent: true, opacity: 0.16, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
 const beamCoreMat = new THREE.LineBasicMaterial({ color: 0xff453a, transparent: true, opacity: 0.85 });
 
-function addOverlays(u, role) {
+function addOverlays(u, role, vr = state.variant) {
   const { parts, total } = layout(P);
   const H = v('profil', 'vyska');
   const W = v('profil', 'sirka');
   // na stole jen naznačit směr, na autě celý dosah
   const reach = state.scene === 'stul' ? Math.min(v('lidar', 'dosah'), 450) : v('lidar', 'dosah');
-  const names = WIN_NAMES[role];
+  const names = winNames(vr, role);
   const lift = 95 * state.explode;
   for (const p of parts) {
     const cx = p.x0 + p.len / 2;
@@ -313,11 +360,12 @@ function addOverlays(u, role) {
     }
   }
   if (state.labels) {
-    const l = makeLabel(role === 'master' ? 'MASTER' : 'SLAVE', { size: 1.05, tone: 'dark', strong: true });
+    const tag = state.compare ? ` · ${vr}` : '';
+    const l = makeLabel((role === 'master' ? 'MASTER' : 'SLAVE') + tag, { size: 1.05, tone: vr === 'v2' ? 'light' : 'dark', strong: true });
     l.position.set(total / 2, H + 75 + lift, 0);
     u.add(l);
   }
-  if (state.dims && role === 'master') {
+  if (state.dims && role === 'master' && vr === state.variant) {
     const fh = footHeight(P);
     u.add(makeDim([0, H, W / 2], [total, H, W / 2], [0, 0, 60], `${fmt(total)} mm`));
     u.add(makeDim([total, 0, -W / 2], [total, 0, W / 2], [70, 0, 0], `${fmt(W)} mm`));
@@ -342,46 +390,37 @@ function rebuild(resetCamera = false, askCad = true) {
   pickables.length = 0;
   selected = hovered = null;
 
-  const master = buildUnitGroup('master');
-  const slave = buildUnitGroup('slave');
+  const vr = state.variant;
+  const pairs = [[vr, buildUnitGroup('master', vr), buildUnitGroup('slave', vr)]];
+  if (state.compare) {
+    const ov = other(vr);
+    pairs.push([ov, buildUnitGroup('master', ov), buildUnitGroup('slave', ov)]);
+    ensureOtherCad();
+  }
+  const [, master, slave] = pairs[0];
   const total = layout(P).total;
   const fh = footHeight(P);
   const H = v('profil', 'vyska');
-  let road = null;
 
-  if (state.scene === 'stul') {
-    // při rozložení zvednout, aby nohy nezajely pod stůl
-    const lift = fh + 80 * state.explode;
-    master.position.set(-total / 2, lift, 230);
-    slave.position.set(-total / 2, lift, -230);
-    grid.visible = true;
-  } else {
+  if (state.scene === 'auto') {
     ensureCarScene();
-    const Wc = v('scena', 'sirka_auta');
-    const y = v('scena', 'vyska_montaze');
     const car = carScene.car;
     if (car) {
       car.scale.setScalar(v('scena', 'delka_auta'));
       car.updateMatrixWorld(true);
     } else {
-      content.add(buildCar(Wc));
+      content.add(buildCar(v('scena', 'sirka_auta')));
     }
-    if (!carScene.city) { road = buildRoad(); content.add(road); }
-    // Montáž svisle: čelo A (anténa) nahoře, konektory dole, okna ven, nohy na karoserii.
-    // Master na pravém boku (+Z), slave na levém (-Z). Střed těla ve výšce vyska_montaze.
-    const down = new THREE.Vector3(0, -1, 0);
-    for (const [u, s] of [[master, 1], [slave, -1]]) {
-      if (car && mountOnCar(u, s, car)) continue;
-      const out = new THREE.Vector3(0, 0, s);
-      u.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(down, out, new THREE.Vector3().crossVectors(down, out)));
-      u.position.set(v('scena', 'poloha_x'), y + total / 2, s * (Wc / 2 + fh));
-    }
+    if (!carScene.city) content.add(buildRoad());
   }
+  pairs.forEach(([pv, m, sl], slot) => placePair(pv, m, sl, slot));
   applyEnvironment();
-  content.add(master, slave);
-  content.updateMatrixWorld(true);
-
-  if (state.cable) addCables(master, slave);
+  for (const [pv, m, sl] of pairs) {
+    content.add(m, sl);
+    content.updateMatrixWorld(true);
+    // kabely má jen v1, v2 je bezdrátová
+    if (state.cable && pv === 'v1') withParams(PV.v1, () => addCables(m, sl));
+  }
 
   setBodyOpacity(state.xray ? 0.22 : 1);
   setCadOpacity(state.xray ? 0.22 : 1);
@@ -398,6 +437,35 @@ function rebuild(resetCamera = false, askCad = true) {
   if (resetCamera) frame();
   hideCard();
   requestRender();
+}
+
+/** Rozmístí pár jednotek. slot 0 = zvolená verze, slot 1 = druhá verze při porovnání. */
+function placePair(vr, master, slave, slot) {
+  withParams(PV[vr], () => {
+    const total = layout(P).total;
+    const fh = footHeight(P);
+    if (state.scene === 'stul') {
+      // při rozložení zvednout, aby nohy nezajely pod stůl; druhý pár stojí za prvním
+      const lift = fh + 80 * state.explode;
+      const dz = slot ? -1000 : 0;
+      master.position.set(-total / 2, lift, 230 + dz);
+      slave.position.set(-total / 2, lift, -230 + dz);
+      return;
+    }
+    // Montáž svisle: čelo A nahoře, čelo B dole, okna ven, nohy na karoserii. Master vpravo (+Z), slave vlevo.
+    // Zvolená verze na předních dveřích, porovnávaná na zadních.
+    const car = carScene.car;
+    const Wc = v('scena', 'sirka_auta');
+    const y = v('scena', 'vyska_montaze');
+    const px = v('scena', 'poloha_x') - (slot ? 1150 : 0);
+    const down = new THREE.Vector3(0, -1, 0);
+    for (const [u, s] of [[master, 1], [slave, -1]]) {
+      if (car && mountOnCar(u, s, car, px)) continue;
+      const out = new THREE.Vector3(0, 0, s);
+      u.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(down, out, new THREE.Vector3().crossVectors(down, out)));
+      u.position.set(px, y + total / 2, s * (Wc / 2 + fh));
+    }
+  });
 }
 
 function addCables(master, slave) {
@@ -527,6 +595,10 @@ const PRETTY = [
   [/^konektor_(\d)pin_(\w+)$/, 'Kruhový konektor $1pin · $2'],
   [/^noha(\d)_(\w+)$/, 'Noha $1 · $2'],
   [/^vyvodka(_matice)?$/, 'Kabelová vývodka'],
+  [/^kryt_horni_skorepina$/, 'Horní skořepina s okny'],
+  [/^vana_spodni$/, 'Spodní vana'],
+  [/^clanek_18650(_plus)?$/, 'Článek 18650'],
+  [/^noha_(predni|zadni)_(\w+)$/, 'Noha $1 · $2'],
 ];
 const prettyName = (n) => {
   for (const [re, s] of PRETTY) if (re.test(n)) return n.replace(re, s).replace(/_/g, ' ');
@@ -580,21 +652,50 @@ renderer.domElement.addEventListener('dblclick', (e) => {
 });
 
 // ---------- panel ----------
-function renderStats(total, fh, H, carW) {
+// souhrn verze pro porovnání (rozměry z parametrů, hmotnost z objemů CAD)
+function summary(vr) {
+  const Q = PV[vr];
+  const mass = cadStore[vr].data?.master.mass;
+  const b = Q.baterie;
+  const wh = b ? b.pocet.v * b.kapacita.v * 3.6 / 1000 : 0;
+  return {
+    total: layout(Q).total,
+    height: Q.profil.vyska.v + footHeight(Q),
+    section: `${fmt(Q.profil.sirka.v)} × ${fmt(Q.profil.vyska.v)}`,
+    mass,
+    wh,
+    hours: b ? wh * 0.85 / b.odber.v : 0,
+  };
+}
+
+function renderStats(total, fh, H, carW = lastCarW) {
+  lastCarW = carW;
   const counts = { odhad: 0, zmereno: 0, koncept: 0 };
   for (const g of Object.keys(P)) if (!g.startsWith('_')) for (const k of Object.keys(P[g])) counts[P[g][k].stav]++;
   const meas = counts.zmereno + counts.odhad;
+  const ov = other(state.variant);
+  const cur = summary(state.variant), ref = summary(ov);
+  // pod hodnotou ukázat druhou verzi (zeleně, když je zvolená verze menší / lehčí)
+  const cmp = (a, b, unit = 'mm') => (b ? `<small class="${a < b ? 'better' : ''}">${ov}: ${fmt(b)} ${unit}</small>` : '');
+  const power = cur.wh
+    ? `<div class="stat"><b>${fmt(cur.wh)} Wh</b><span>baterie, ~${fmt(cur.hours)} h provozu</span>${ref.wh ? '' : `<small>${ov}: napájení z vozu</small>`}</div>`
+    : `<div class="stat"><b>12 V</b><span>napájení ze zapalovače</span>${ref.wh ? `<small>${ov}: ${fmt(ref.wh)} Wh baterie</small>` : ''}</div>`;
   $('#stats').innerHTML = `
-    <div class="stat"><b>${fmt(total)}</b><span>délka jednotky, mm</span></div>
-    <div class="stat"><b>${fmt(H + fh)}</b><span>výška s nohou, mm</span></div>
-    <div class="stat"><b>${fmt(carW)}</b><span>šířka vozu se senzory, mm</span></div>`;
+    <div class="stat"><b>${fmt(total)}</b><span>délka jednotky, mm</span>${cmp(total, ref.total)}</div>
+    <div class="stat"><b>${fmt(H + fh)}</b><span>výška s nohou, mm</span>${cmp(H + fh, ref.height)}</div>
+    <div class="stat"><b>${fmt(carW)}</b><span>šířka vozu se senzory, mm</span></div>
+    <div class="stat"><b>${cur.section}</b><span>průřez těla, mm</span><small>${ov}: ${ref.section}</small></div>
+    <div class="stat"><b>${cur.mass ? fmt(Math.round(cur.mass)) + ' g' : '…'}</b><span>hmotnost masteru (odhad z objemu)</span>${ref.mass && cur.mass ? cmp(cur.mass, Math.round(ref.mass), 'g') : ''}</div>
+    ${power}`;
   $('#progress').innerHTML = `
     <div class="pg-top"><span>Změřeno</span><b>${counts.zmereno} z ${meas}</b></div>
     <div class="pg-bar"><i style="width:${meas ? (counts.zmereno / meas) * 100 : 0}%"></i></div>
     <div class="pg-legend"><span class="tag odhad">${counts.odhad} odhad</span><span class="tag zmereno">${counts.zmereno} změřeno</span><span class="tag koncept">${counts.koncept} koncept</span></div>`;
 }
 
+let lastCarW = 0;
 const GROUP_LABEL = {
+  baterie: 'Baterie',
   profil: 'Hliníkový profil', delky: 'Délky a okna', okno: 'Okno lidaru', lidar: 'Lidar',
   deska: 'Deska RICE', noha: 'Noha a přísavka', konektor: 'Konektor', libela: 'Libela', antena: 'Anténa', scena: 'Scéna na autě',
 };
@@ -612,7 +713,8 @@ function renderParams() {
     det.open = q ? true : openGroups.has(g);
     det.addEventListener('toggle', () => { if (!q) det.open ? openGroups.add(g) : openGroups.delete(g); });
     const done = keys.filter(k => P[g][k].stav === 'zmereno').length;
-    det.innerHTML = `<summary><span>${GROUP_LABEL[g] ?? g}</span><em>${done}/${keys.length}</em></summary>`;
+    const label = state.variant === 'v2' ? ({ profil: 'Tělo (plast)', deska: 'Hlavní deska', noha: 'Kloubová noha a přísavka' }[g] ?? GROUP_LABEL[g]) : GROUP_LABEL[g];
+    det.innerHTML = `<summary><span>${label ?? g}</span><em>${done}/${keys.length}</em></summary>`;
     for (const k of keys) det.appendChild(paramRow(g, k));
     root.appendChild(det);
   }
@@ -621,14 +723,15 @@ function renderParams() {
 
 function paramRow(g, k) {
   const p = P[g][k];
-  const def = defaults[g][k].v;
+  const def = defaults()[g][k].v;
+  const ro = readonly();
   const row = document.createElement('div');
-  const unit = k.includes('uhel') ? '°' : 'mm';
+  const unit = k.includes('uhel') ? '°' : k === 'kapacita' ? 'mAh' : k === 'odber' ? 'W' : k === 'pocet' ? 'ks' : 'mm';
   const changed = () => row.classList.toggle('changed', p.v !== def);
-  row.className = `row ${p.stav}`;
+  row.className = `row ${p.stav}${ro ? ' locked' : ''}`;
   row.innerHTML = `
     <label for="p-${g}-${k}" title="${g}.${k}">${p.popis || k}</label>
-    <div class="inp"><input id="p-${g}-${k}" type="number" inputmode="decimal" step="${unit === '°' ? 1 : 0.5}" value="${p.v}" /><span>${unit}</span></div>
+    <div class="inp"><input id="p-${g}-${k}" type="number" inputmode="decimal" step="${unit === '°' ? 1 : 0.5}" value="${p.v}" ${ro ? 'disabled' : ''} /><span>${unit}</span></div>
     <button class="undo" title="Vrátit výchozí ${def} ${unit}" aria-label="Vrátit výchozí hodnotu">↺</button>
     <div class="stav" role="group" aria-label="Stav hodnoty">${STAVY.map(s => `<button data-s="${s}" class="${s === p.stav ? 'on' : ''}" title="${STAV_LABEL[s]}">${STAV_LABEL[s]}</button>`).join('')}</div>`;
   const inp = row.querySelector('input');
@@ -643,6 +746,7 @@ function paramRow(g, k) {
   });
   for (const b of row.querySelectorAll('.stav button')) {
     b.addEventListener('click', () => {
+      if (ro) return;
       p.stav = b.dataset.s;
       row.className = `row ${p.stav}`; changed();
       row.querySelectorAll('.stav button').forEach(x => x.classList.toggle('on', x === b));
@@ -657,7 +761,7 @@ function renderPartsTab() {
   if (!cad.data) { root.innerHTML = '<p class="empty">Čekám na CAD model…</p>'; return; }
   const counts = {};
   for (const r of ['master', 'slave']) for (const p of cad.data[r].parts) counts[p.cat] = (counts[p.cat] || 0) + 1;
-  root.innerHTML = Object.entries(CATS).map(([c, label]) => `
+  root.innerHTML = Object.entries(CATS).filter(([c]) => counts[c]).map(([c, label]) => `
     <label class="cat">
       <input type="checkbox" data-cat="${c}" ${state.hidden[c] ? '' : 'checked'} />
       <span class="sw sw-${c}"></span><span class="cl">${label}</span><em>${counts[c] || 0}</em>
@@ -735,6 +839,11 @@ $('#pinned button').addEventListener('click', () => $('#pinned').classList.remov
 // ---------- ovládání ----------
 function syncControls() {
   $$('[data-scene]').forEach(x => x.classList.toggle('on', x.dataset.scene === state.scene));
+  $$('[data-variant]').forEach(x => x.classList.toggle('on', x.dataset.variant === state.variant));
+  $('#archiveNote').hidden = !readonly();
+  $('#reset').disabled = readonly();
+  $('#importJson').disabled = readonly();
+  $('#importJson').closest('label').classList.toggle('disabled', readonly());
   $$('[data-toggle]').forEach(b => b.setAttribute('aria-pressed', String(!!state[b.dataset.toggle])));
   $('#explode').value = state.explode;
   $$('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === state.tab));
@@ -743,6 +852,13 @@ function syncControls() {
 
 $$('[data-scene]').forEach((b) => b.addEventListener('click', () => {
   state.scene = b.dataset.scene; saveUi(); syncControls(); rebuild(true);
+}));
+$$('[data-variant]').forEach((b) => b.addEventListener('click', () => {
+  if (state.variant === b.dataset.variant) return;
+  state.variant = b.dataset.variant;
+  P = PV[state.variant];
+  syncCad();
+  saveUi(); syncControls(); renderParams(); renderPartsTab(); rebuild(true);
 }));
 $$('[data-toggle]').forEach((b) => b.addEventListener('click', () => {
   const k = b.dataset.toggle; state[k] = !state[k]; saveUi(); syncControls(); rebuild();
@@ -758,12 +874,13 @@ function download(name, data, type) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-$('#exportJson').addEventListener('click', () => download('params.json', JSON.stringify(P, null, 2), 'application/json'));
+$('#exportJson').addEventListener('click', () => download(`params-${state.variant}.json`, JSON.stringify(P, null, 2), 'application/json'));
 $('#importJson').addEventListener('change', async (e) => {
   const f = e.target.files[0];
   if (!f) return;
   try {
-    P = mergeParams(clone(defaults), JSON.parse(await f.text()));
+    if (readonly()) return;
+    P = PV[state.variant] = mergeParams(clone(defaults()), JSON.parse(await f.text()));
     saveParams(); renderParams(); rebuild(true);
     toast('Parametry nahrány');
   } catch (err) { toast('Neplatný JSON: ' + err.message, true); }
@@ -773,8 +890,9 @@ async function cadExport(btn, fn, role, ext, type) {
   const label = btn.innerHTML;
   btn.disabled = true; btn.textContent = 'Exportuji…';
   try {
-    download(`clearway-${role}.${ext}`, await fn(clone(P), role), type);
-    toast(`Staženo clearway-${role}.${ext}`);
+    const name = `clearway-${state.variant}-${role}.${ext}`;
+    download(name, await fn(clone(P), role, state.variant), type);
+    toast(`Staženo ${name}`);
   } catch (err) { toast('Export selhal: ' + err.message, true); }
   finally { btn.disabled = false; btn.innerHTML = label; }
 }
@@ -789,8 +907,8 @@ $('#shot').addEventListener('click', () => {
   renderer.domElement.toBlob((b) => { download(`clearway-${state.scene}.png`, b, 'image/png'); toast('Snímek uložen'); });
 });
 $('#reset').addEventListener('click', () => {
-  if (!confirm('Vrátit všechny parametry na výchozí hodnoty z params.json?')) return;
-  P = clone(defaults); saveParams(); renderParams(); rebuild(true);
+  if (readonly() || !confirm(`Vrátit všechny parametry ${state.variant} na výchozí hodnoty?`)) return;
+  P = PV[state.variant] = clone(defaults()); saveParams(); renderParams(); rebuild(true);
   toast('Parametry vráceny na výchozí');
 });
 

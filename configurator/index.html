@@ -30,6 +30,7 @@
     </nav>
 
     <div class="tabpane" id="tab-params">
+      <div id="archiveNote" class="note" hidden><b>v1 je archiv.</b> Míry stávajícího zařízení jsou zamčené. Návrh úprav dělej ve verzi v2 (přepínač nahoře ve scéně).</div>
       <input id="paramSearch" class="search" type="search" placeholder="Hledat parametr…" autocomplete="off" />
       <div id="params"></div>
     </div>
@@ -69,9 +70,15 @@
 
   <main id="view">
     <div class="topbar">
-      <div class="seg" role="group" aria-label="Scéna">
-        <button data-scene="stul">Na stole</button>
-        <button data-scene="auto">Na autě</button>
+      <div class="tb-left">
+        <div class="seg" role="group" aria-label="Scéna">
+          <button data-scene="stul">Na stole</button>
+          <button data-scene="auto">Na autě</button>
+        </div>
+        <div class="seg seg-variant" role="group" aria-label="Verze zařízení">
+          <button data-variant="v1" title="Stávající zařízení, změřené (archiv, jen pro čtení)">v1 · archiv</button>
+          <button data-variant="v2" title="Návrh nové verze (koncept)">v2 · koncept</button>
+        </div>
       </div>
       <div id="cadStatus"><i></i><span></span></div>
     </div>
@@ -82,7 +89,8 @@
       <button data-toggle="dims" aria-pressed="false" title="Kóty">Kóty</button>
       <button data-toggle="edges" aria-pressed="true" title="Hrany dílů">Hrany</button>
       <button data-toggle="xray" aria-pressed="false" title="Průhledné tělo">Rentgen</button>
-      <button data-toggle="cable" aria-pressed="true" title="Kabely">Kabely</button>
+      <button data-toggle="cable" aria-pressed="true" title="Kabely (jen v1, v2 je bezdrátová)">Kabely</button>
+      <button data-toggle="compare" aria-pressed="false" title="Ukázat i druhou verzi vedle">Porovnat</button>
       <label class="explode" title="Rozložený pohled">Rozložit<input id="explode" type="range" min="0" max="1" step="0.01" value="0" /></label>
     </div>
 

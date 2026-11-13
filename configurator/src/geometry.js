@@ -30,6 +30,14 @@ export function layout(P) {
  */
 export function feet(P) {
   const { total } = layout(P);
+  // v2: kloubové nohy (koule), úhel je nastavitelný, žádné klíny
+  if (P.noha.kloub_vyska) {
+    const kv = v(P, 'noha', 'kloub_vyska'), tilt = v(P, 'noha', 'kloub_uhel');
+    return [
+      { name: 'zadni', x: v(P, 'noha', 'odsazeni_zadni'), near: kv, far: kv, hc: kv, tilt },
+      { name: 'predni', x: total - v(P, 'noha', 'odsazeni_predni'), near: kv, far: kv, hc: kv, tilt },
+    ];
+  }
   const D = v(P, 'noha', 'valec_prumer');
   const mk = (name, x, near, far) => ({
     name, x, near, far,
