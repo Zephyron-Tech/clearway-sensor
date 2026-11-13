@@ -14,9 +14,10 @@ npm run dev      # http://localhost:5174
   `odhad` (z fotek), `zmereno` (posuvkou), `koncept` (navržená úprava).
 - `src/cad/parts.js`: CAD díly (U profil s drážkami, kryty A/B/C, rámečky oken se stadionovým
   průzorem a sklem, lidary s čočkami, čepy s otvory pro konektory, anténa, libela, deska RICE se
-  sloupky, ESP modulem, JST a svorkovnicí, nohy s přísavkou, pumpičkou a konceptem kloubu).
+  sloupky, ESP modulem, JST a svorkovnicí, nohy s přísavkou a pumpičkou, pevně nakloněné podél těla: přední u konektorů jinak než zadní).
 - `src/cad/worker.js`: OpenCascade ve workeru; síť pro náhled, export STEP (AP242, pojmenované
   a obarvené díly) a STL. Export otáčí model do konvence CAD: **Z nahoru**, osa X podél těla.
+- `src/names.js`: značení lidarů J1–J4 podle pořadí oken (master od antény, slave od konektoru).
 - `src/model.js`: rychlý zjednodušený náhled, dokud se nenačte WASM, a popisky / paprsky.
 - `src/main.js`: scéna (na stole / na autě), panel parametrů, exporty.
 

@@ -4,7 +4,8 @@
 // Export do STEP/STL otáčí model tak, aby Z mířilo nahoru (konvence CAD).
 //
 // Každý díl má: name (do STEP), cat (kategorie pro UI), mat (vzhled v náhledu), color (barva ve STEP).
-import { makeBox, makeCylinder, makeSphere, Sketcher } from 'replicad';
+import { makeBox, makeCylinder, Sketcher } from 'replicad';
+import { WIN_NAMES } from '../names.js';
 
 const v = (P, g, k) => P[g][k].v;
 
@@ -26,14 +27,14 @@ function tryFillet(shape, r, filter) {
   try { return shape.fillet(r, filter); } catch { return shape; }
 }
 
-// Stadion (zaoblené okno) jako těleso podél Y
-function stadium(cx, cz, len, wid, y0, h) {
+// Stadion (zaoblené okno) jako těleso podél Y; across = delší strana napříč profilem (Z)
+function stadium(cx, cz, len, wid, y0, h, across = false) {
   const r = wid / 2;
   const straight = Math.max(len - wid, 0.01);
   let s = box(cx - straight / 2, y0, cz - r, cx + straight / 2, y0 + h, cz + r);
   s = s.fuse(makeCylinder(r, h, [cx - straight / 2, y0, cz], [0, 1, 0]));
   s = s.fuse(makeCylinder(r, h, [cx + straight / 2, y0, cz], [0, 1, 0]));
-  return s;
+  return across ? s.rotate(90, [cx, y0, cz], [0, 1, 0]) : s;
 }
 
 // Rotační těleso: profil [r, y] kolem osy Y
@@ -93,7 +94,7 @@ export function buildUnitCad(P, role) {
   const winL = v(P, 'okno', 'delka');
   const winW = v(P, 'okno', 'sirka');
   const lw = v(P, 'lidar', 'sirka'), ld = v(P, 'lidar', 'hloubka'), lh = v(P, 'lidar', 'vyska');
-  const winNames = role === 'master' ? ['J1', 'J4', 'J2', 'J3'] : ['J1', 'J2', 'J4', 'J3'];
+  const winNames = WIN_NAMES[role];
   const gap = 0.3;
   const edgeR = Math.min(1.2, kh * 0.25);
 
@@ -107,10 +108,11 @@ export function buildUnitCad(P, role) {
       const name = winNames[p.index];
       let frame = box(p.x0 + gap, aluH, -W / 2, p.x0 + p.len - gap, H, W / 2);
       frame = tryFillet(frame, edgeR, (e) => e.inDirection('X').inPlane('XZ', H));
-      frame = frame.cut(stadium(cx, 0, winL, winW, aluH - 1, kh + 2));
-      frame = frame.cut(stadium(cx, 0, winL + 3, winW + 3, H - 1.5, 2)); // osazení skla
+      // okno i sklo delší stranou napříč profilem (obě čočky lidaru vedle sebe)
+      frame = frame.cut(stadium(cx, 0, winL, winW, aluH - 1, kh + 2, true));
+      frame = frame.cut(stadium(cx, 0, winL + 3, winW + 3, H - 1.5, 2, true)); // osazení skla
       add(`okno_${name}`, 'telo', 'print', frame);
-      add(`sklo_${name}`, 'telo', 'glass', stadium(cx, 0, winL + 2.6, winW + 2.6, H - 1.5, 1));
+      add(`sklo_${name}`, 'telo', 'glass', stadium(cx, 0, winL + 2.6, winW + 2.6, H - 1.5, 1, true));
 
       // lidar (TFmini Plus): tělo se zaoblením, dvě čočky v rámečku, konektor vzadu
       const ly1 = aluH;
@@ -132,15 +134,11 @@ export function buildUnitCad(P, role) {
 
   addBoard(add, P, role, parts, t);
 
-  // --- nohy ---
+  // --- nohy: pevné, náklon podél těla; přední = u konektorů (čelo B) ---
   const off = v(P, 'noha', 'odsazeni');
-  const tilt = v(P, 'noha', 'kloub_uhel');
-  for (const [i, fx] of [off, total - off].entries()) {
-    for (const f of buildFoot(P, tilt)) {
-      let s = f.shape;
-      if (tilt) s = s.rotate(tilt, [0, 0, 0], [1, 0, 0]);
-      add(`noha${i + 1}_${f.name}`, 'noha', f.mat, s.translate([fx, 0, 0]));
-    }
+  const feet = [['zadni', off, v(P, 'noha', 'uhel_zadni')], ['predni', total - off, v(P, 'noha', 'uhel_predni')]];
+  for (const [nm, fx, tilt] of feet) {
+    for (const f of buildFoot(P, tilt)) add(`noha_${nm}_${f.name}`, 'noha', f.mat, f.shape.translate([fx, 0, 0]));
   }
   return { parts: out, total };
 }
@@ -205,50 +203,53 @@ function buildFoot(P, tilt) {
   const out = [];
   const add = (name, mat, shape) => out.push({ name, mat, shape });
 
+  // Náklon `tilt` (°) kolem osy Z: válec je dole seříznutý do klínu, držák s přísavkou
+  // je kolmý na seříznutou plochu. + = spodek nohy se posune do +X (ke konektorům).
   let y = 0;
-  if (tilt) {
-    // koncept kloubu: kulový čep mezi tělem a válcem
-    const jr = Math.min(vr * 0.45, 14);
-    add('kloub', 'joint', makeSphere(jr).translate([0, -jr, 0]));
-    y = -jr * 1.6;
-  }
-  // tištěný válec (tmavý) s pruhem pásky jako na fotkách
   const h1 = vh * 0.5, h2 = vh * 0.3, h3 = vh - h1 - h2;
+  const ext = vr * Math.tan(Math.abs(tilt) * Math.PI / 180) + 1;
   add('valec', 'printDark', revolveY([[0, y], [vr, y], [vr, y - h1], [0, y - h1]]));
   add('valec_paska', 'tape', makeCylinder(vr + 0.3, h2, [0, y - h1 - h2, 0], [0, 1, 0]));
-  add('valec_spodek', 'printDark', makeCylinder(vr, h3, [0, y - vh, 0], [0, 1, 0]));
+  let wedge = makeCylinder(vr, h3 + ext, [0, y - vh - ext, 0], [0, 1, 0]);
+  if (tilt) wedge = wedge.cut(cbox(0, -vh - 100, 0, 400, 200, 400).rotate(tilt, [0, -vh, 0], [0, 0, 1]));
+  add('valec_spodek', 'printDark', wedge);
   y -= vh;
+  const lower = [];
+  const addRaw = add;
+  const addL = (name, mat, shape) => lower.push({ name, mat, shape });
   // držák přísavky: kužel + příruba se šrouby
-  add('drzak', 'plasticBlack', revolveY([[0, y], [vr * 0.55, y], [vr * 0.62, y - dh * 0.6], [vr * 0.8, y - dh], [0, y - dh]]));
+  addL('drzak', 'plasticBlack', revolveY([[0, y], [vr * 0.55, y], [vr * 0.62, y - dh * 0.6], [vr * 0.8, y - dh], [0, y - dh]]));
   let flange = box(-vr * 1.05, y - dh + 1, -vr * 0.55, vr * 1.05, y - dh + 7, vr * 0.55);
   flange = tryFillet(flange, 3, (e) => e.inDirection('Y'));
-  add('priruba', 'plasticBlack', flange);
+  addL('priruba', 'plasticBlack', flange);
   for (const sx of [-1, 1]) {
-    add('priruba_sroub', 'nickel', makeCylinder(4, 2.5, [sx * vr * 0.85, y - dh + 7, 0], [0, 1, 0]));
+    addL('priruba_sroub', 'nickel', makeCylinder(4, 2.5, [sx * vr * 0.85, y - dh + 7, 0], [0, 1, 0]));
   }
   // pumpička: tělo, červený indikační kroužek, píst
   const pyc = y - dh * 0.55;
-  add('pumpa', 'blue', revolveX([[0, 0], [0, 9], [26, 9], [28, 8], [28, 0]]).translate([vr * 0.5, pyc, 0]));
-  add('pumpa_krouzek', 'red', makeCylinder(9.3, 2.5, [vr * 0.5 + 18, pyc, 0], [1, 0, 0]));
-  add('pumpa_pist', 'blue', revolveX([[0, 0], [0, 7], [9, 7], [12, 4], [12, 0]]).translate([vr * 0.5 + 28, pyc, 0]));
+  addL('pumpa', 'blue', revolveX([[0, 0], [0, 9], [26, 9], [28, 8], [28, 0]]).translate([vr * 0.5, pyc, 0]));
+  addL('pumpa_krouzek', 'red', makeCylinder(9.3, 2.5, [vr * 0.5 + 18, pyc, 0], [1, 0, 0]));
+  addL('pumpa_pist', 'blue', revolveX([[0, 0], [0, 7], [9, 7], [12, 4], [12, 0]]).translate([vr * 0.5 + 28, pyc, 0]));
   y -= dh;
   // přísavka: zvon se zesíleným okrajem a žlutým lemem
   const neck = vr * 0.75;
-  add('prisavka', 'rubber', revolveY([[0, y], [neck, y], [neck, y - 4], [pr * 0.86, y - ph + 5], [pr, y - ph + 1.5], [pr, y - ph], [0, y - ph]]));
-  add('prisavka_okraj', 'yellow', revolveY([[pr - 3, y - ph], [pr + 3, y - ph], [pr + 3, y - ph + 4.5], [pr - 1, y - ph + 4.5]]));
+  addL('prisavka', 'rubber', revolveY([[0, y], [neck, y], [neck, y - 4], [pr * 0.86, y - ph + 5], [pr, y - ph + 1.5], [pr, y - ph], [0, y - ph]]));
+  addL('prisavka_okraj', 'yellow', revolveY([[pr - 3, y - ph], [pr + 3, y - ph], [pr + 3, y - ph + 4.5], [pr - 1, y - ph + 4.5]]));
+  for (const l of lower) addRaw(l.name, l.mat, tilt ? l.shape.rotate(tilt, [0, -vh, 0], [0, 0, 1]) : l.shape);
   return out;
 }
 
 function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
   const kr = v(P, 'konektor', 'prumer') / 2;
   const kl = v(P, 'konektor', 'delka');
-  const cy = H * 0.5;
+  let cy = H * 0.5;
   const holes = [];
   // díl postavený podél +X od čela -> otočit na správnou stranu
   const place = (shape, z) => {
     const s = shape.translate([outX, cy, z]);
     return dir > 0 ? s : s.rotate(180, [outX, cy, z], [0, 1, 0]);
   };
+  // Pohled zvenku na čelo B (nohy dole): vlevo = +Z, vpravo = -Z
 
   // kruhový konektor do panelu (GX16): matice, závitové tělo, izolant s piny
   const conn = (z, pins, name) => {
@@ -285,12 +286,15 @@ function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
     add('antena', 'konektory', 'rubber', ant);
     level(W * 0.14);
   } else if (role === 'master' && end === 1) {
-    conn(-W * 0.22, 4, 'konektor_4pin');
-    conn(W * 0.22, 3, 'konektor_3pin');
+    cy = v(P, 'konektor', 'master_vyska');
+    const dz = v(P, 'konektor', 'master_odsazeni');
+    conn(dz, 4, 'konektor_4pin_slave');
+    conn(-dz, 2, 'konektor_2pin_napajeni');
   } else if (role === 'slave' && end === 0) {
     level(0);
   } else {
-    conn(-W * 0.22, 4, 'konektor_4pin');
+    cy = v(P, 'konektor', 'slave_vyska');
+    conn(v(P, 'konektor', 'slave_odsazeni'), 4, 'konektor_4pin');
   }
   for (const h of holes) cap = cap.cut(h);
   add(`cep_${end === 0 ? 'A' : 'B'}`, 'telo', 'cap', cap);

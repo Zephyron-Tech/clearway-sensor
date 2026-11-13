@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { WIN_NAMES } from './names.js';
 
 // Lokální souřadnice jednotky:
 //   X podél těla (0 = konec s anténou u masteru),
@@ -81,13 +82,15 @@ export function layout(P) {
   return { parts, total: x };
 }
 
+// Nejnižší bod nohy pod spodkem těla (u nakloněné nohy rozhoduje okraj přísavky)
 export function footHeight(P) {
-  // s kloubem (koncept) přibude kulový čep, stejně jako v CAD (src/cad/parts.js)
-  const joint = v(P, 'noha', 'kloub_uhel') ? Math.min(v(P, 'noha', 'valec_prumer') / 2 * 0.45, 14) * 1.6 : 0;
-  return joint + v(P, 'noha', 'valec_vyska') + v(P, 'noha', 'drzak_vyska') + v(P, 'noha', 'prisavka_vyska');
+  const L = v(P, 'noha', 'drzak_vyska') + v(P, 'noha', 'prisavka_vyska');
+  const pr = v(P, 'noha', 'prisavka_prumer') / 2;
+  const drop = (deg) => { const a = Math.abs(deg) * Math.PI / 180; return L * Math.cos(a) + pr * Math.sin(a); };
+  return v(P, 'noha', 'valec_vyska') + Math.max(drop(v(P, 'noha', 'uhel_predni')), drop(v(P, 'noha', 'uhel_zadni')));
 }
 
-function buildFoot(P) {
+function buildFoot(P, tiltDeg = 0) {
   const g = new THREE.Group();
   const vh = v(P, 'noha', 'valec_vyska');
   const vr = v(P, 'noha', 'valec_prumer') / 2;
@@ -104,7 +107,12 @@ function buildFoot(P) {
   const cup = cyl(vr * 0.7, pr, ph, MAT.black); cup.position.y = -vh - dh - ph / 2;
   const ring = new THREE.Mesh(new THREE.TorusGeometry(pr, 3, 10, 60), MAT.yellow);
   ring.rotation.x = Math.PI / 2; ring.position.y = -vh - dh - ph + 3;
-  g.add(c1, c2, holder, plate, pump, cup, ring);
+  // spodní část (držák, přísavka) nakloněná kolem spodku válce, + = do +X
+  const lower = new THREE.Group();
+  lower.position.y = -vh;
+  for (const m of [holder, plate, pump, cup, ring]) { m.position.y += vh; lower.add(m); }
+  lower.rotation.z = THREE.MathUtils.degToRad(tiltDeg);
+  g.add(c1, c2, lower);
   return g;
 }
 
@@ -140,8 +148,7 @@ export function buildUnit(P, role, opts = {}) {
   const lw = v(P, 'lidar', 'sirka'), ld = v(P, 'lidar', 'hloubka'), lh = v(P, 'lidar', 'vyska');
   const reach = v(P, 'lidar', 'dosah');
 
-  // Popisky oken podle fotek: master od antény J1, J4, J2, (J3 vadný); slave J1, J2, J4, J3
-  const winNames = role === 'master' ? ['J1', 'J4', 'J2', 'J3'] : ['J1', 'J2', 'J4', 'J3'];
+  const winNames = WIN_NAMES[role];
 
   for (const p of parts) {
     const cx = p.x0 + p.len / 2;
@@ -155,7 +162,7 @@ export function buildUnit(P, role, opts = {}) {
       const frame = box(p.len - 0.6, kh, W, MAT.printDark);
       frame.position.set(cx, H - kh / 2, 0);
       unit.add(frame);
-      const glass = box(winL, 1.2, winW, MAT.glass);
+      const glass = box(winW, 1.2, winL, MAT.glass); // delší strana napříč
       glass.position.set(cx, H + 0.4, 0);
       unit.add(glass);
       // lidar pod oknem, dívá se do +Y
@@ -193,13 +200,10 @@ export function buildUnit(P, role, opts = {}) {
 
   // Nohy s přísavkami
   const off = v(P, 'noha', 'odsazeni');
-  const tilt = THREE.MathUtils.degToRad(v(P, 'noha', 'kloub_uhel'));
-  for (const fx of [off, total - off]) {
-    const joint = new THREE.Group();
-    joint.position.set(fx, 0, 0);
-    joint.rotation.x = tilt; // kloub kolem podélné osy (zakřivení boku auta)
-    joint.add(buildFoot(P));
-    unit.add(joint);
+  for (const [fx, deg] of [[off, v(P, 'noha', 'uhel_zadni')], [total - off, v(P, 'noha', 'uhel_predni')]]) {
+    const f = buildFoot(P, deg);
+    f.position.x = fx;
+    unit.add(f);
   }
 
   if (opts.labels) {
@@ -214,14 +218,14 @@ export function buildUnit(P, role, opts = {}) {
 function addCapFittings(unit, P, role, end, outX, dir, H, W) {
   const kr = v(P, 'konektor', 'prumer') / 2;
   const kl = v(P, 'konektor', 'delka');
-  const addConn = (z) => {
+  const addConn = (z, cy = H * 0.5) => {
     const c = cyl(kr, kr, kl, MAT.metal, 24);
     c.rotation.z = Math.PI / 2;
-    c.position.set(outX + dir * kl / 2, H * 0.5, z);
+    c.position.set(outX + dir * kl / 2, cy, z);
     unit.add(c);
     const face = cyl(kr * 0.7, kr * 0.7, 1, MAT.black, 24);
     face.rotation.z = Math.PI / 2;
-    face.position.set(outX + dir * (kl + 0.5), H * 0.5, z);
+    face.position.set(outX + dir * (kl + 0.5), cy, z);
     unit.add(face);
   };
   const addLevel = (z) => {
@@ -248,11 +252,12 @@ function addCapFittings(unit, P, role, end, outX, dir, H, W) {
     unit.add(pivot);
     addLevel(W * 0.12);
   } else if (role === 'master' && end === 1) {
-    addConn(-W * 0.22); // napájení
-    addConn(W * 0.22);  // slave
+    const cy = v(P, 'konektor', 'master_vyska'), dz = v(P, 'konektor', 'master_odsazeni');
+    addConn(dz, cy);  // 4pin, slave (vlevo při pohledu na čelo)
+    addConn(-dz, cy); // 2pin, napájení (vpravo)
   } else if (role === 'slave' && end === 0) {
     addLevel(0);
   } else {
-    addConn(-W * 0.22);
+    addConn(v(P, 'konektor', 'slave_odsazeni'), v(P, 'konektor', 'slave_vyska'));
   }
 }

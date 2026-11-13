@@ -7,6 +7,7 @@ import { cadBuild, cadStep, cadStl, cadToGroup, setCadOpacity, setHighlight } fr
 import { buildCar, buildRoad } from './car.js';
 import { makeLabel, makeDim, makeCable } from './overlay.js';
 import { PHOTOS } from './photos.js';
+import { WIN_NAMES } from './names.js';
 
 const STORE = 'clearway-params-v1';
 const UI_STORE = 'clearway-ui-v1';
@@ -192,7 +193,7 @@ function addOverlays(u, role) {
   const W = v('profil', 'sirka');
   // na stole jen naznačit směr, na autě celý dosah
   const reach = state.scene === 'stul' ? Math.min(v('lidar', 'dosah'), 450) : v('lidar', 'dosah');
-  const names = role === 'master' ? ['J1', 'J4', 'J2', 'J3'] : ['J1', 'J2', 'J4', 'J3'];
+  const names = WIN_NAMES[role];
   const lift = 95 * state.explode;
   for (const p of parts) {
     const cx = p.x0 + p.len / 2;
@@ -235,8 +236,12 @@ function addOverlays(u, role) {
   }
 }
 
-// bod u konektoru na čepu B (lokální souřadnice jednotky)
-const connPoint = (z) => [layout(P).total + v('konektor', 'delka') + 4 + 70 * state.explode, v('profil', 'vyska') * 0.5, z * v('profil', 'sirka')];
+// bod u konektoru na čepu B (lokální souřadnice jednotky); side +1 = vlevo (4pin), -1 = vpravo (2pin)
+const connPoint = (role, side = 1) => [
+  layout(P).total + v('konektor', 'delka') + 4 + 70 * state.explode,
+  v('konektor', `${role}_vyska`),
+  side * v('konektor', `${role}_odsazeni`),
+];
 
 function rebuild(resetCamera = false, askCad = true) {
   scene.remove(content);
@@ -265,11 +270,14 @@ function rebuild(resetCamera = false, askCad = true) {
     content.add(buildCar(Wc));
     road = buildRoad();
     content.add(road);
-    // pravý bok (+Z): okna ven, nohy do auta; slave na levém boku
-    master.rotation.x = Math.PI / 2;
-    master.position.set(-total / 2, y, Wc / 2 + fh);
-    slave.rotation.x = -Math.PI / 2;
-    slave.position.set(-total / 2, y, -(Wc / 2 + fh));
+    // Montáž svisle: čelo A (anténa) nahoře, konektory dole, okna ven, nohy na karoserii.
+    // Master na pravém boku (+Z), slave na levém (-Z). Střed těla ve výšce vyska_montaze.
+    const down = new THREE.Vector3(0, -1, 0);
+    for (const [u, s] of [[master, 1], [slave, -1]]) {
+      const out = new THREE.Vector3(0, 0, s);
+      u.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(down, out, new THREE.Vector3().crossVectors(down, out)));
+      u.position.set(0, y + total / 2, s * (Wc / 2 + fh));
+    }
     grid.visible = false;
   }
   content.add(master, slave);
@@ -289,17 +297,17 @@ function rebuild(resetCamera = false, askCad = true) {
 
 function addCables(master, slave) {
   const w = (u, p) => u.localToWorld(new THREE.Vector3(...p)).toArray();
-  const m1 = w(master, connPoint(-0.22)), s1 = w(slave, connPoint(-0.22));
-  const m2 = w(master, connPoint(0.22));
+  const m1 = w(master, connPoint('master', 1)), s1 = w(slave, connPoint('slave', 1));
+  const m2 = w(master, connPoint('master', -1));
   if (state.scene === 'stul') {
     // kabel master ↔ slave volně po stole, napájecí kabel pryč ze scény
     content.add(makeCable([m1, [m1[0] + 60, m1[1] - 10, m1[2]], [m1[0] + 140, 4, m1[2] - 40], [m1[0] + 170, 4, 0], [s1[0] + 140, 4, s1[2] + 40], [s1[0] + 60, s1[1] - 10, s1[2]], s1]));
     content.add(makeCable([m2, [m2[0] + 60, m2[1] - 10, m2[2]], [m2[0] + 150, 4, m2[2] + 70], [m2[0] + 320, 4, m2[2] + 150]]));
   } else {
-    // přes střechu na druhý bok, napájení dveřmi dovnitř k zapalovači
-    const roofY = 1500, x = m1[0] + 30;
-    content.add(makeCable([m1, [x, m1[1] + 40, m1[2]], [x, roofY - 80, m1[2] - 140], [x, roofY + 6, m1[2] - 520], [x, roofY + 6, s1[2] + 520], [x, roofY - 80, s1[2] + 140], [x, s1[1] - 40, s1[2]], s1]));
-    content.add(makeCable([m2, [m2[0] + 40, m2[1] - 40, m2[2]], [m2[0] + 60, m2[1] - 150, m2[2] - 60], [m2[0] + 40, 980, m2[2] - 260]]));
+    // konektory míří dolů: kabel ke slave pod prahem pod autem, napájení do dveří k zapalovači
+    const lowY = 150;
+    content.add(makeCable([m1, [m1[0], m1[1] - 90, m1[2]], [m1[0] - 20, lowY + 60, m1[2] - 50], [m1[0] - 30, lowY, m1[2] - 260], [s1[0] - 30, lowY, s1[2] + 260], [s1[0] - 20, lowY + 60, s1[2] + 50], [s1[0], s1[1] - 90, s1[2]], s1]));
+    content.add(makeCable([m2, [m2[0], m2[1] - 90, m2[2]], [m2[0] + 120, m2[1] - 150, m2[2] - 20], [m2[0] + 420, m2[1] - 120, m2[2] - 60], [m2[0] + 520, m2[1] - 60, m2[2] - 260]]));
   }
 }
 

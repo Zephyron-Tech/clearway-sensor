@@ -14,8 +14,8 @@
     "segment_C":    { "v": 150, "stav": "odhad", "popis": "Segment C (mezi okny 3 a 4)" }
   },
   "okno": {
-    "delka":        { "v": 26,  "stav": "odhad", "popis": "Okno lidaru podél profilu" },
-    "sirka":        { "v": 14,  "stav": "odhad", "popis": "Okno lidaru napříč" }
+    "delka":        { "v": 26,  "stav": "odhad", "popis": "Delší strana okna (napříč profilem)" },
+    "sirka":        { "v": 14,  "stav": "odhad", "popis": "Kratší strana okna (podél profilu)" }
   },
   "lidar": {
     "sirka":        { "v": 35,  "stav": "odhad", "popis": "TFmini Plus (katalog 35 × 18,5 × 21)" },
@@ -35,11 +35,16 @@
     "drzak_vyska":  { "v": 35,  "stav": "odhad", "popis": "Kovový držák přísavky" },
     "prisavka_prumer": { "v": 120, "stav": "odhad", "popis": "Průměr přísavky" },
     "prisavka_vyska":  { "v": 25,  "stav": "odhad", "popis": "" },
-    "kloub_uhel":   { "v": 0,   "stav": "koncept", "popis": "Náklon kloubu nohy (dnes pevné = 0)" }
+    "uhel_predni":  { "v": 4,   "stav": "odhad", "popis": "Pevný náklon přední nohy (u konektorů) podél těla; + = přísavka ke konektorům" },
+    "uhel_zadni":   { "v": 12,  "stav": "odhad", "popis": "Pevný náklon zadní nohy podél těla; + = přísavka ke konektorům" }
   },
   "konektor": {
     "prumer":       { "v": 16,  "stav": "odhad", "popis": "Kruhový konektor (GX12/GX16)" },
-    "delka":        { "v": 12,  "stav": "odhad", "popis": "" }
+    "delka":        { "v": 12,  "stav": "odhad", "popis": "Přesah konektoru před čelo" },
+    "master_vyska":    { "v": 21, "stav": "odhad", "popis": "Master: střed konektorů od spodku těla" },
+    "master_odsazeni": { "v": 21, "stav": "odhad", "popis": "Master: střed konektoru od osy (vlevo 4pin, vpravo 2pin)" },
+    "slave_vyska":     { "v": 26, "stav": "odhad", "popis": "Slave: střed konektoru od spodku těla" },
+    "slave_odsazeni":  { "v": 22, "stav": "odhad", "popis": "Slave: střed konektoru vlevo od osy (pohled na čelo)" }
   },
   "antena": {
     "delka":        { "v": 110, "stav": "odhad", "popis": "Prutová anténa" },
@@ -47,6 +52,6 @@
   },
   "scena": {
     "sirka_auta":   { "v": 1850,"stav": "koncept", "popis": "Šířka vozu pro scénu na autě" },
-    "vyska_montaze":{ "v": 700,"stav": "koncept", "popis": "Výška senzoru nad zemí" }
+    "vyska_montaze":{ "v": 700,"stav": "koncept", "popis": "Výška středu senzoru nad zemí (montáž svisle)" }
   }
 }
