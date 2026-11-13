@@ -386,7 +386,14 @@ function rebuild(resetCamera = false, askCad = true) {
   setBodyOpacity(state.xray ? 0.22 : 1);
   setCadOpacity(state.xray ? 0.22 : 1);
   if (askCad && cad.key !== JSON.stringify(P)) requestCad();
-  renderStats(total, fh, H);
+  // šířka přes senzory: na skutečném voze z polohy jednotek, jinak z parametru
+  let carW = v('scena', 'sirka_auta') + 2 * (fh + H);
+  if (state.scene === 'auto' && carScene.car) {
+    const partsBox = (u) => { const b = new THREE.Box3(); u.traverse((n) => { if (n.isMesh && n.userData.part) b.expandByObject(n); }); return b; };
+    const bm = partsBox(master), bs = partsBox(slave);
+    if (!bm.isEmpty() && !bs.isEmpty()) carW = bm.max.z - bs.min.z;
+  }
+  renderStats(total, fh, H, carW);
   fitShadow();
   if (resetCamera) frame();
   hideCard();
@@ -573,11 +580,10 @@ renderer.domElement.addEventListener('dblclick', (e) => {
 });
 
 // ---------- panel ----------
-function renderStats(total, fh, H) {
+function renderStats(total, fh, H, carW) {
   const counts = { odhad: 0, zmereno: 0, koncept: 0 };
   for (const g of Object.keys(P)) if (!g.startsWith('_')) for (const k of Object.keys(P[g])) counts[P[g][k].stav]++;
   const meas = counts.zmereno + counts.odhad;
-  const carW = v('scena', 'sirka_auta') + 2 * (fh + H);
   $('#stats').innerHTML = `
     <div class="stat"><b>${fmt(total)}</b><span>délka jednotky, mm</span></div>
     <div class="stat"><b>${fmt(H + fh)}</b><span>výška s nohou, mm</span></div>

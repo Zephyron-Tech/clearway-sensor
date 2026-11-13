@@ -38,3 +38,14 @@ npm run dev      # http://localhost:5174
 
 V panelu přepiš hodnotu, přepni stav na `změřeno`, pak „Stáhnout parametry (JSON)“
 a staženým souborem nahraď `src/params.json`. Úpravy v panelu se jinak drží jen v prohlížeči (localStorage).
+
+## Scéna na autě
+
+- Vůz: „2025 Skoda Octavia RS Combi“ od tonielpro520
+  (https://sketchfab.com/3d-models/2025-skoda-octavia-rs-combi-e584bb09fa6547a0a3ca7c1ec7c2053a), licence CC BY 4.0.
+  Zmenšeno z 53 MB na 3 MB: `npx @gltf-transform/cli optimize scene.gltf public/models/car.glb --compress meshopt --simplify-ratio 0.35`.
+  Licence je v `public/models/car-LICENSE.txt`.
+- Okolí: centrum Plzně (nám. Republiky) z OpenStreetMap, © přispěvatelé OpenStreetMap, licence ODbL.
+  Data obnoví `node scripts/fetch-plzen.mjs` (zapíše `src/plzen.json`), stavbu dělá `src/city.js`.
+- Senzory se přisají na skutečný bok vozu (raycast v místě přísavek). Poloha podél vozu je `scena.poloha_x`,
+  výška `scena.vyska_montaze`.
