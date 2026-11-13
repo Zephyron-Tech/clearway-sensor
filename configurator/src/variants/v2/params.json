@@ -1,5 +1,5 @@
 {
-  "_info": "ClearWay v2 – koncept. Jedna jednotka pro master i slave, plastové tělo, bezdrátový spoj, baterie, LTE-M + GNSS. v1 je archiv ve variants/v1 a nemění se.",
+  "_info": "ClearWay v2 – detailní koncept. Jedna jednotka pro master i slave, tělo IP67 (skořepina + vana, šrouby do insertů, O-kroužky), 3× 21700 na ≥ 12 h, modem jako vyměnitelná karta, jeden vodotěsný USB-C, kloubové nohy s vakuovou přísavkou. Lidary a jejich rozteč jako v1.",
   "profil": {
     "sirka": {
       "v": 60,
@@ -24,14 +24,14 @@
   },
   "delky": {
     "celkova": {
-      "v": 420,
+      "v": 508,
       "stav": "koncept",
-      "popis": "Celková délka čelo–čelo (v1: 506)"
+      "popis": "Celková délka čelo–čelo (v1: 506; určuje ji rozteč lidarů z v1)"
     },
     "cep": {
       "v": 10,
       "stav": "koncept",
-      "popis": "Tloušťka čela"
+      "popis": "Tloušťka čela (duté, s límcem 6 mm do těla)"
     },
     "modul_okna": {
       "v": 26,
@@ -39,24 +39,24 @@
       "popis": "Délka okna podél těla vč. okolí"
     },
     "okno_1": {
-      "v": 24,
+      "v": 29,
       "stav": "koncept",
       "popis": "Střed okna 1 od čela A (nahoře na voze)"
     },
     "okno_2": {
-      "v": 148,
+      "v": 181,
       "stav": "koncept",
-      "popis": "Střed okna 2 od čela A"
+      "popis": "Střed okna 2 od čela A (rozteč jako v1: 152)"
     },
     "okno_3": {
-      "v": 272,
+      "v": 339,
       "stav": "koncept",
-      "popis": "Střed okna 3 od čela A"
+      "popis": "Střed okna 3 od čela A (rozteč jako v1: 158)"
     },
     "okno_4": {
-      "v": 396,
+      "v": 479,
       "stav": "koncept",
-      "popis": "Střed okna 4 od čela A (rozteč 124 mm, v1 ~150)"
+      "popis": "Střed okna 4 od čela A (rozteč jako v1: 140)"
     }
   },
   "okno": {
@@ -95,9 +95,9 @@
   },
   "deska": {
     "sirka": {
-      "v": 52,
+      "v": 44,
       "stav": "koncept",
-      "popis": "Hlavní deska napříč (ESP32-S3-MINI-1, nabíječka, fuel gauge)"
+      "popis": "Hlavní deska napříč (mezi sloupky šroubů)"
     },
     "delka": {
       "v": 80,
@@ -112,29 +112,39 @@
   },
   "baterie": {
     "pocet": {
-      "v": 2,
+      "v": 3,
       "stav": "koncept",
-      "popis": "Počet článků 18650 (paralelně)"
+      "popis": "Počet článků 21700 (1S3P: 2 v segmentu A, 1 v segmentu C)"
     },
     "prumer": {
-      "v": 18.6,
+      "v": 21.7,
       "stav": "koncept",
       "popis": "Průměr článku"
     },
     "delka": {
-      "v": 65.2,
+      "v": 70.8,
       "stav": "koncept",
       "popis": "Délka článku"
     },
     "kapacita": {
-      "v": 3400,
+      "v": 5000,
       "stav": "koncept",
       "popis": "Kapacita článku v mAh (3,6 V)"
     },
-    "odber": {
-      "v": 3.0,
+    "odber_master": {
+      "v": 3.2,
       "stav": "koncept",
-      "popis": "Odběr jednotky ve W (4× TFmini Plus 5 V + MCU, master + modem)"
+      "popis": "Odběr masteru ve W (4× TFmini Plus 5 V, ESP32-S3, modem LTE-M, GNSS)"
+    },
+    "odber_slave": {
+      "v": 2.8,
+      "stav": "koncept",
+      "popis": "Odběr slave ve W (4× TFmini Plus 5 V, ESP32-S3, ESP-NOW)"
+    },
+    "pozadovana_vydrz": {
+      "v": 12,
+      "stav": "koncept",
+      "popis": "Požadovaná výdrž v hodinách"
     }
   },
   "noha": {
@@ -149,14 +159,14 @@
       "popis": "Střed zadní nohy od čela A (nahoře)"
     },
     "valec_prumer": {
-      "v": 20,
+      "v": 18,
       "stav": "koncept",
       "popis": "Dřík nohy"
     },
     "kloub_vyska": {
-      "v": 22,
+      "v": 34,
       "stav": "koncept",
-      "popis": "Od spodku těla ke středu koule"
+      "popis": "Od spodku těla ke středu koule (vč. rychloupínáku)"
     },
     "kloub_prumer": {
       "v": 22,
@@ -164,17 +174,17 @@
       "popis": "Průměr koule kloubu"
     },
     "drzak_vyska": {
-      "v": 14,
+      "v": 16,
       "stav": "koncept",
       "popis": "Od středu koule k základně přísavky"
     },
     "prisavka_prumer": {
-      "v": 80,
+      "v": 100,
       "stav": "koncept",
-      "popis": "Páková přísavka (bez pumpičky)"
+      "popis": "Vakuová přísavka s pumpičkou a indikátorem"
     },
     "prisavka_vyska": {
-      "v": 14,
+      "v": 18,
       "stav": "koncept",
       "popis": "Výška přísavky"
     },

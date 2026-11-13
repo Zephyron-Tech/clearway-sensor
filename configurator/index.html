@@ -75,10 +75,8 @@
           <button data-scene="stul">Na stole</button>
           <button data-scene="auto">Na autě</button>
         </div>
-        <div class="seg seg-variant" role="group" aria-label="Verze zařízení">
-          <button data-variant="v1" title="Stávající zařízení, změřené (archiv, jen pro čtení)">v1 · archiv</button>
-          <button data-variant="v2" title="Návrh nové verze (koncept)">v2 · koncept</button>
-        </div>
+        <div class="seg seg-variant" id="variantSwitch" role="group" aria-label="Verze zařízení"></div>
+        <div class="seg seg-compare" id="compareBar" role="group" aria-label="Porovnání verzí" hidden></div>
       </div>
       <div id="cadStatus"><i></i><span></span></div>
     </div>

@@ -2,7 +2,7 @@
 // na vyžádání STEP/STL. Běží mimo hlavní vlákno, aby se UI nezasekávalo.
 import opencascade from 'replicad-opencascadejs';
 import wasmUrl from 'replicad-opencascadejs/wasm?url';
-import { setOC, exportSTEP, makeCompound, measureVolume } from 'replicad';
+import { setOC, exportSTEP, makeCompound } from 'replicad';
 import { buildUnitCad as buildV1 } from './parts.js';
 import { buildUnitCad as buildV2 } from './parts-v2.js';
 
@@ -28,9 +28,7 @@ function getParts(P, role, variant = 'v1') {
   const hit = cache.get(ck);
   if (hit && hit.key === key) return hit.parts;
   const { parts, total } = BUILDERS[variant](P, role);
-  let mass = 0;
-  for (const p of parts) { try { mass += measureVolume(p.shape) / 1000 * (DENSITY[p.mat] ?? 1.2); } catch { /* složitý tvar */ } }
-  const entry = { parts, total, mass };
+  const entry = { parts, total };
   cache.set(ck, { key, parts: entry });
   return entry;
 }
@@ -38,10 +36,23 @@ function getParts(P, role, variant = 'v1') {
 // Y nahoru (náhled) -> Z nahoru (CAD): otočit o +90° kolem X
 const toZUp = (s) => s.clone().rotate(90, [0, 0, 0], [1, 0, 0]);
 
+// objem uzavřené sítě (součet orientovaných čtyřstěnů), mm³
+function meshVolume(v, t) {
+  let vol = 0;
+  for (let i = 0; i < t.length; i += 3) {
+    const a = t[i] * 3, b = t[i + 1] * 3, c = t[i + 2] * 3;
+    vol += v[a] * (v[b + 1] * v[c + 2] - v[b + 2] * v[c + 1])
+      - v[a + 1] * (v[b] * v[c + 2] - v[b + 2] * v[c])
+      + v[a + 2] * (v[b] * v[c + 1] - v[b + 1] * v[c]);
+  }
+  return Math.abs(vol / 6);
+}
+
 function meshParts(parts, fine) {
   const tol = fine ? { tolerance: 0.05, angularTolerance: 0.2 } : { tolerance: 0.2, angularTolerance: 0.4 };
   const out = [];
   const transfer = [];
+  let mass = 0;
   for (const p of parts) {
     const m = p.shape.mesh(tol);
     const e = p.shape.meshEdges(tol);
@@ -50,15 +61,17 @@ function meshParts(parts, fine) {
       cat: p.cat,
       mat: p.mat,
       color: p.color,
+      ex: p.ex,
       vertices: new Float32Array(m.vertices),
       normals: new Float32Array(m.normals),
       triangles: new Uint32Array(m.triangles),
       lines: new Float32Array(e.lines),
     };
+    mass += meshVolume(item.vertices, item.triangles) / 1000 * (DENSITY[p.mat] ?? 1.2);
     transfer.push(item.vertices.buffer, item.normals.buffer, item.triangles.buffer, item.lines.buffer);
     out.push(item);
   }
-  return { out, transfer };
+  return { out, transfer, mass };
 }
 
 self.onmessage = async ({ data }) => {
@@ -70,9 +83,9 @@ self.onmessage = async ({ data }) => {
       const result = {};
       const transfer = [];
       for (const r of ['master', 'slave']) {
-        const { parts, total, mass } = getParts(params, r, variant);
+        const { parts, total } = getParts(params, r, variant);
         const m = meshParts(parts, false);
-        result[r] = { parts: m.out, total, mass };
+        result[r] = { parts: m.out, total, mass: m.mass };
         transfer.push(...m.transfer);
       }
       self.postMessage({ id, ok: true, result, ms: Math.round(performance.now() - t0) }, transfer);

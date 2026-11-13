@@ -13,11 +13,13 @@ import { winNames } from './names.js';
 import { feet } from './geometry.js';
 
 // v1 = stávající zařízení (archiv, jen pro čtení, neukládá se), v2 = koncept (úpravy v localStorage)
+// Další verze = nová složka variants/vN, builder v cad/worker.js a řádek sem.
 const VARIANTS = {
-  v1: { label: 'v1', defaults: paramsV1, readonly: true },
-  v2: { label: 'v2', defaults: paramsV2, readonly: false, store: 'clearway-params-v2' },
+  v1: { label: 'v1 · archiv', defaults: paramsV1, readonly: true, color: '#e8590c' },
+  v2: { label: 'v2 · koncept', defaults: paramsV2, readonly: false, store: 'clearway-params-v2', color: '#2f7cf6' },
 };
-const other = (vr) => (vr === 'v1' ? 'v2' : 'v1');
+const VARIANT_IDS = Object.keys(VARIANTS);
+const others = (vr) => VARIANT_IDS.filter(x => x !== vr);
 const UI_STORE = 'clearway-ui-v1';
 const STAVY = ['odhad', 'zmereno', 'koncept'];
 const STAV_LABEL = { odhad: 'odhad', zmereno: 'změřeno', koncept: 'koncept' };
@@ -28,7 +30,7 @@ const fmt = (n) => (Math.round(n * 10) / 10).toLocaleString('cs-CZ');
 
 // ---------- stav ----------
 const state = Object.assign(
-  { scene: 'stul', variant: 'v1', compare: false, beams: true, labels: true, dims: false, edges: true, xray: false, cable: true, explode: 0, tab: 'params',
+  { scene: 'stul', variant: 'v1', compare: false, compareMode: 'side', shown: {}, beams: true, labels: true, dims: false, edges: true, xray: false, cable: true, explode: 0, tab: 'params',
     hidden: {} },
   loadUi(),
 );
@@ -58,8 +60,8 @@ function saveParams() {
 function loadUi() { try { return JSON.parse(localStorage.getItem(UI_STORE)) || {}; } catch { return {}; } }
 function saveUi() {
   try {
-    const { scene, variant, compare, beams, labels, dims, edges, xray, cable, explode, tab, hidden } = state;
-    localStorage.setItem(UI_STORE, JSON.stringify({ scene, variant, compare, beams, labels, dims, edges, xray, cable, explode, tab, hidden }));
+    const { scene, variant, compare, compareMode, shown, beams, labels, dims, edges, xray, cable, explode, tab, hidden } = state;
+    localStorage.setItem(UI_STORE, JSON.stringify({ scene, variant, compare, compareMode, shown, beams, labels, dims, edges, xray, cable, explode, tab, hidden }));
   } catch { /* ignorovat */ }
 }
 // Přebírá jen známé klíče, aby starý JSON nerozbil novou verzi parametrů
@@ -227,21 +229,27 @@ function disposeTree(o) {
 // Poslední hotový CAD výsledek se ukazuje, dokud nedorazí nový.
 const cad = { data: null, key: null, busy: false, queued: false, timer: 0 };
 // výsledky CAD pro obě verze; cad.data/key = aktuální verze
-const cadStore = { v1: { data: null, key: null }, v2: { data: null, key: null } };
+const cadStore = Object.fromEntries(VARIANT_IDS.map(id => [id, { data: null, key: null }]));
+// verze zobrazené k porovnání (kromě aktivní)
+const compared = () => (state.compare ? others(state.variant).filter(id => state.shown[id] !== false) : []);
 const cadKey = (vr) => JSON.stringify(PV[vr]);
 function syncCad() { const c = cadStore[state.variant]; cad.data = c.data; cad.key = c.key; }
-let otherBusy = false;
-async function ensureOtherCad() {
-  const vr = other(state.variant);
-  if (otherBusy || cadStore[vr].key === cadKey(vr)) return;
-  otherBusy = true;
+let compareBusy = false;
+// postaví CAD pro porovnávané verze (postupně, aby se neprala o worker s aktivní verzí)
+async function ensureCompareCad() {
+  if (compareBusy) return;
+  const todo = compared().filter(id => cadStore[id].key !== cadKey(id));
+  if (!todo.length) return;
+  compareBusy = true;
   try {
-    const key = cadKey(vr);
-    const res = await cadBuild(JSON.parse(key), vr);
-    cadStore[vr] = { data: res.result, key };
+    for (const id of todo) {
+      const key = cadKey(id);
+      const res = await cadBuild(JSON.parse(key), id);
+      cadStore[id] = { data: res.result, key };
+    }
     $('#loading').classList.add('gone');
     rebuild(false, false);
-  } catch (err) { console.error(err); } finally { otherBusy = false; }
+  } catch (err) { console.error(err); } finally { compareBusy = false; }
 }
 const statusEl = $('#cadStatus');
 const setStatus = (text, kind = '') => { statusEl.querySelector('span').textContent = text; statusEl.className = kind; };
@@ -256,7 +264,7 @@ async function runCad() {
   if (cad.data) setStatus('Přepočítávám model…', 'busy');
   try {
     const res = await cadBuild(JSON.parse(key), vr);
-    const first = !cadStore.v1.data && !cadStore.v2.data;
+    const first = !Object.values(cadStore).some(c => c.data);
     cadStore[vr] = { data: res.result, key };
     syncCad();
     const n = res.result.master.parts.length + res.result.slave.parts.length;
@@ -278,9 +286,16 @@ const CATS = {
   telo: 'Tělo a kryty', lidar: 'Lidary', elektronika: 'Elektronika', baterie: 'Baterie', konektory: 'Konektory, anténa, libela', noha: 'Nohy s přísavkami',
 };
 
+// v1: díly nohy postupně od těla dolů (úroveň × krok)
+const V1_FOOT_LEVEL = { valec: 1, valec_paska: 1.4, drzak: 2.6, priruba: 3.2, priruba_sroub: 3.4, pumpa: 3.8, pumpa_krouzek: 3.8, pumpa_pist: 4.2, prisavka: 5.2, prisavka_okraj: 5.4 };
+
 function explodeOffset(ud, e) {
   if (!e) return [0, 0, 0];
+  if (ud.ex) return ud.ex.map(x => x * e); // v2: posun daný přímo v CAD
   const n = ud.name;
+  const foot = /^noha_(?:predni|zadni)_(\w+)$/.exec(n);
+  if (foot && V1_FOOT_LEVEL[foot[1]] != null) return [0, -V1_FOOT_LEVEL[foot[1]] * 28 * e, 0];
+  if (n.startsWith('cep_')) return [(ud.end ? 1 : -1) * 115 * e, 0, 0];
   if (/^(kryt_|okno_)/.test(n)) return [0, 95 * e, 0];
   if (ud.cat === 'lidar') return [0, 50 * e, 0];
   if (ud.cat === 'elektronika') return [0, 18 * e, 0];
@@ -290,12 +305,32 @@ function explodeOffset(ud, e) {
   return [0, 0, 0];
 }
 
-function buildUnitGroup(role, vr = state.variant) {
+// průhledný obrys verze při porovnání „přes sebe“
+const ghostMats = new Map();
+function ghostMat(vr) {
+  if (!ghostMats.has(vr)) {
+    const c = VARIANTS[vr].color;
+    ghostMats.set(vr, {
+      mesh: new THREE.MeshStandardMaterial({ color: c, transparent: true, opacity: 0.16, depthWrite: false, roughness: 0.6 }),
+      edge: new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0.7 }),
+    });
+  }
+  return ghostMats.get(vr);
+}
+function makeGhost(u, vr) {
+  const gm = ghostMat(vr);
+  u.traverse((n) => {
+    if (n.isMesh && !n.userData.noExport) { n.material = gm.mesh; n.castShadow = false; n.receiveShadow = false; n.renderOrder = 5; }
+    else if (n.isLineSegments && n.userData.edgeOf) n.material = gm.edge;
+  });
+}
+
+function buildUnitGroup(role, vr = state.variant, ghost = false) {
   const u = new THREE.Group();
   u.name = vr === state.variant ? role : `${role}_${vr}`;
   const data = cadStore[vr].data;
   if (data) {
-    const g = cadToGroup(data[role], { edges: state.edges, role });
+    const g = cadToGroup(data[role], { edges: state.edges || ghost, role });
     for (const m of g.children) {
       if (!m.isMesh) continue;
       const o = explodeOffset(m.userData, state.explode);
@@ -304,7 +339,7 @@ function buildUnitGroup(role, vr = state.variant) {
       const vis = !state.hidden[m.userData.cat];
       m.visible = vis;
       if (m.userData.edges) m.userData.edges.visible = vis;
-      pickables.push(m);
+      if (!ghost) pickables.push(m);
     }
     u.add(g);
   } else if (vr === 'v1') {
@@ -318,14 +353,24 @@ function buildUnitGroup(role, vr = state.variant) {
     b.position.set(total / 2, H / 2, 0);
     u.add(b);
   }
-  withParams(PV[vr], () => addOverlays(u, role, vr));
+  if (ghost) makeGhost(u, vr);
+  withParams(PV[vr], () => addOverlays(u, role, vr, ghost));
   return u;
 }
 
 const beamMat = new THREE.MeshBasicMaterial({ color: 0xff3b30, transparent: true, opacity: 0.16, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
 const beamCoreMat = new THREE.LineBasicMaterial({ color: 0xff453a, transparent: true, opacity: 0.85 });
 
-function addOverlays(u, role, vr = state.variant) {
+function addOverlays(u, role, vr = state.variant, ghost = false) {
+  if (ghost) {
+    // obrys jiné verze: jen štítek v barvě verze
+    if (!state.labels) return;
+    const { total } = layout(P);
+    const l = makeLabel(`${role === 'master' ? 'MASTER' : 'SLAVE'} · ${vr}`, { size: 0.9, tone: 'light', strong: true, color: VARIANTS[vr].color });
+    l.position.set(total / 2, v('profil', 'vyska') + 115, 0);
+    u.add(l);
+    return;
+  }
   const { parts, total } = layout(P);
   const H = v('profil', 'vyska');
   const W = v('profil', 'sirka');
@@ -361,7 +406,7 @@ function addOverlays(u, role, vr = state.variant) {
   }
   if (state.labels) {
     const tag = state.compare ? ` · ${vr}` : '';
-    const l = makeLabel((role === 'master' ? 'MASTER' : 'SLAVE') + tag, { size: 1.05, tone: vr === 'v2' ? 'light' : 'dark', strong: true });
+    const l = makeLabel((role === 'master' ? 'MASTER' : 'SLAVE') + tag, { size: 1.05, tone: 'dark', strong: true, color: state.compare ? VARIANTS[vr].color : null });
     l.position.set(total / 2, H + 75 + lift, 0);
     u.add(l);
   }
@@ -391,12 +436,10 @@ function rebuild(resetCamera = false, askCad = true) {
   selected = hovered = null;
 
   const vr = state.variant;
+  const overlay = state.compareMode === 'overlay';
   const pairs = [[vr, buildUnitGroup('master', vr), buildUnitGroup('slave', vr)]];
-  if (state.compare) {
-    const ov = other(vr);
-    pairs.push([ov, buildUnitGroup('master', ov), buildUnitGroup('slave', ov)]);
-    ensureOtherCad();
-  }
+  for (const id of compared()) pairs.push([id, buildUnitGroup('master', id, overlay), buildUnitGroup('slave', id, overlay)]);
+  if (compared().length) ensureCompareCad();
   const [, master, slave] = pairs[0];
   const total = layout(P).total;
   const fh = footHeight(P);
@@ -413,13 +456,13 @@ function rebuild(resetCamera = false, askCad = true) {
     }
     if (!carScene.city) content.add(buildRoad());
   }
-  pairs.forEach(([pv, m, sl], slot) => placePair(pv, m, sl, slot));
+  pairs.forEach(([pv, m, sl], i) => placePair(pv, m, sl, overlay ? 0 : i));
   applyEnvironment();
   for (const [pv, m, sl] of pairs) {
     content.add(m, sl);
     content.updateMatrixWorld(true);
     // kabely má jen v1, v2 je bezdrátová
-    if (state.cable && pv === 'v1') withParams(PV.v1, () => addCables(m, sl));
+    if (state.cable && pv === 'v1' && !(overlay && pv !== vr)) withParams(PV.v1, () => addCables(m, sl));
   }
 
   setBodyOpacity(state.xray ? 0.22 : 1);
@@ -446,7 +489,7 @@ function placePair(vr, master, slave, slot) {
     const fh = footHeight(P);
     if (state.scene === 'stul') {
       // při rozložení zvednout, aby nohy nezajely pod stůl; druhý pár stojí za prvním
-      const lift = fh + 80 * state.explode;
+      const lift = fh + 240 * state.explode;
       const dz = slot ? -1000 : 0;
       master.position.set(-total / 2, lift, 230 + dz);
       slave.position.set(-total / 2, lift, -230 + dz);
@@ -658,13 +701,17 @@ function summary(vr) {
   const mass = cadStore[vr].data?.master.mass;
   const b = Q.baterie;
   const wh = b ? b.pocet.v * b.kapacita.v * 3.6 / 1000 : 0;
+  // 85 % využitelné energie (měnič 5 V, rezerva na stárnutí a zimu)
+  const hours = (w) => (b && w ? wh * 0.85 / w : 0);
   return {
     total: layout(Q).total,
     height: Q.profil.vyska.v + footHeight(Q),
     section: `${fmt(Q.profil.sirka.v)} × ${fmt(Q.profil.vyska.v)}`,
     mass,
     wh,
-    hours: b ? wh * 0.85 / b.odber.v : 0,
+    hMaster: hours(b?.odber_master?.v ?? b?.odber?.v),
+    hSlave: hours(b?.odber_slave?.v ?? b?.odber?.v),
+    need: b?.pozadovana_vydrz?.v ?? 0,
   };
 }
 
@@ -673,19 +720,21 @@ function renderStats(total, fh, H, carW = lastCarW) {
   const counts = { odhad: 0, zmereno: 0, koncept: 0 };
   for (const g of Object.keys(P)) if (!g.startsWith('_')) for (const k of Object.keys(P[g])) counts[P[g][k].stav]++;
   const meas = counts.zmereno + counts.odhad;
-  const ov = other(state.variant);
-  const cur = summary(state.variant), ref = summary(ov);
-  // pod hodnotou ukázat druhou verzi (zeleně, když je zvolená verze menší / lehčí)
-  const cmp = (a, b, unit = 'mm') => (b ? `<small class="${a < b ? 'better' : ''}">${ov}: ${fmt(b)} ${unit}</small>` : '');
+  const refs = (compared().length ? compared() : others(state.variant)).map(id => [id, summary(id)]);
+  const cur = summary(state.variant);
+  // pod hodnotou ostatní verze (zeleně, když je zvolená verze menší / lehčí)
+  const cmp = (a, key, unit = 'mm', round = false) => refs.map(([id, r]) => (r[key]
+    ? `<small class="${a < r[key] ? 'better' : ''}">${id}: ${fmt(round ? Math.round(r[key]) : r[key])} ${unit}</small>` : '')).join('');
+  const h = (x, need) => `<i class="${need && x < need ? 'bad' : ''}">${fmt(x)} h</i>`;
   const power = cur.wh
-    ? `<div class="stat"><b>${fmt(cur.wh)} Wh</b><span>baterie, ~${fmt(cur.hours)} h provozu</span>${ref.wh ? '' : `<small>${ov}: napájení z vozu</small>`}</div>`
-    : `<div class="stat"><b>12 V</b><span>napájení ze zapalovače</span>${ref.wh ? `<small>${ov}: ${fmt(ref.wh)} Wh baterie</small>` : ''}</div>`;
+    ? `<div class="stat"><b>${fmt(cur.wh)} Wh</b><span>výdrž ${h(cur.hMaster, cur.need)} / ${h(cur.hSlave, cur.need)} (master / slave)</span>${refs.map(([id, r]) => `<small>${id}: ${r.wh ? fmt(r.wh) + ' Wh' : 'napájení z vozu'}</small>`).join('')}</div>`
+    : `<div class="stat"><b>12 V</b><span>napájení ze zapalovače</span>${refs.map(([id, r]) => `<small>${id}: ${r.wh ? `${fmt(r.wh)} Wh, ${fmt(r.hMaster)} h` : 'z vozu'}</small>`).join('')}</div>`;
   $('#stats').innerHTML = `
-    <div class="stat"><b>${fmt(total)}</b><span>délka jednotky, mm</span>${cmp(total, ref.total)}</div>
-    <div class="stat"><b>${fmt(H + fh)}</b><span>výška s nohou, mm</span>${cmp(H + fh, ref.height)}</div>
+    <div class="stat"><b>${fmt(total)}</b><span>délka jednotky, mm</span>${cmp(total, 'total')}</div>
+    <div class="stat"><b>${fmt(H + fh)}</b><span>výška s nohou, mm</span>${cmp(H + fh, 'height')}</div>
     <div class="stat"><b>${fmt(carW)}</b><span>šířka vozu se senzory, mm</span></div>
-    <div class="stat"><b>${cur.section}</b><span>průřez těla, mm</span><small>${ov}: ${ref.section}</small></div>
-    <div class="stat"><b>${cur.mass ? fmt(Math.round(cur.mass)) + ' g' : '…'}</b><span>hmotnost masteru (odhad z objemu)</span>${ref.mass && cur.mass ? cmp(cur.mass, Math.round(ref.mass), 'g') : ''}</div>
+    <div class="stat"><b>${cur.section}</b><span>průřez těla, mm</span>${refs.map(([id, r]) => `<small>${id}: ${r.section}</small>`).join('')}</div>
+    <div class="stat"><b>${cur.mass ? fmt(Math.round(cur.mass)) + ' g' : '…'}</b><span>hmotnost masteru (odhad z objemu)</span>${cur.mass ? cmp(cur.mass, 'mass', 'g', true) : ''}</div>
     ${power}`;
   $('#progress').innerHTML = `
     <div class="pg-top"><span>Změřeno</span><b>${counts.zmereno} z ${meas}</b></div>
@@ -837,7 +886,35 @@ lb.querySelector('.lb-pin').addEventListener('click', () => {
 $('#pinned button').addEventListener('click', () => $('#pinned').classList.remove('on'));
 
 // ---------- ovládání ----------
+function renderVariantUi() {
+  const vs = $('#variantSwitch');
+  vs.innerHTML = VARIANT_IDS.map(id => `<button data-variant="${id}" style="--vc:${VARIANTS[id].color}" title="${VARIANTS[id].readonly ? 'Stávající zařízení (archiv, jen pro čtení)' : 'Návrh (koncept)'}">${VARIANTS[id].label}</button>`).join('');
+  vs.querySelectorAll('[data-variant]').forEach((b) => b.addEventListener('click', () => {
+    if (state.variant === b.dataset.variant) return;
+    state.variant = b.dataset.variant;
+    P = PV[state.variant];
+    syncCad();
+    saveUi(); syncControls(); renderParams(); renderPartsTab(); rebuild(true);
+  }));
+  const cb = $('#compareBar');
+  cb.hidden = !state.compare;
+  if (!state.compare) return;
+  cb.innerHTML = `<span class="lbl">Porovnat s</span>${others(state.variant).map(id =>
+    `<button class="chip ${state.shown[id] !== false ? 'on' : ''}" data-show="${id}" style="--vc:${VARIANTS[id].color}"><i></i>${id}</button>`).join('')}
+    <span class="sep"></span>
+    <button data-cmode="side" class="${state.compareMode !== 'overlay' ? 'on' : ''}">Vedle sebe</button>
+    <button data-cmode="overlay" class="${state.compareMode === 'overlay' ? 'on' : ''}">Přes sebe</button>`;
+  cb.querySelectorAll('[data-show]').forEach((b) => b.addEventListener('click', () => {
+    state.shown[b.dataset.show] = state.shown[b.dataset.show] === false;
+    saveUi(); renderVariantUi(); rebuild();
+  }));
+  cb.querySelectorAll('[data-cmode]').forEach((b) => b.addEventListener('click', () => {
+    state.compareMode = b.dataset.cmode; saveUi(); renderVariantUi(); rebuild(true);
+  }));
+}
+
 function syncControls() {
+  renderVariantUi();
   $$('[data-scene]').forEach(x => x.classList.toggle('on', x.dataset.scene === state.scene));
   $$('[data-variant]').forEach(x => x.classList.toggle('on', x.dataset.variant === state.variant));
   $('#archiveNote').hidden = !readonly();
@@ -852,13 +929,6 @@ function syncControls() {
 
 $$('[data-scene]').forEach((b) => b.addEventListener('click', () => {
   state.scene = b.dataset.scene; saveUi(); syncControls(); rebuild(true);
-}));
-$$('[data-variant]').forEach((b) => b.addEventListener('click', () => {
-  if (state.variant === b.dataset.variant) return;
-  state.variant = b.dataset.variant;
-  P = PV[state.variant];
-  syncCad();
-  saveUi(); syncControls(); renderParams(); renderPartsTab(); rebuild(true);
 }));
 $$('[data-toggle]').forEach((b) => b.addEventListener('click', () => {
   const k = b.dataset.toggle; state[k] = !state[k]; saveUi(); syncControls(); rebuild();

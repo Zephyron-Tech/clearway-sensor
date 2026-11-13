@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 // Popisek s konstantní velikostí na obrazovce (nezávisí na zoomu)
-export function makeLabel(text, { size = 1, tone = 'light', strong = false } = {}) {
+export function makeLabel(text, { size = 1, tone = 'light', strong = false, color = null } = {}) {
   const px = 44;
   const font = `${strong ? 650 : 560} ${px}px Inter, system-ui, -apple-system, sans-serif`;
   const c = document.createElement('canvas');
@@ -12,11 +12,11 @@ export function makeLabel(text, { size = 1, tone = 'light', strong = false } = {
   c.width = w; c.height = h;
   ctx.font = font;
   const dark = tone === 'dark';
-  ctx.fillStyle = dark ? 'rgba(18,20,24,0.88)' : 'rgba(255,255,255,0.94)';
+  ctx.fillStyle = color || (dark ? 'rgba(18,20,24,0.88)' : 'rgba(255,255,255,0.94)');
   ctx.beginPath(); ctx.roundRect(1, 1, w - 2, h - 2, h / 2 - 1); ctx.fill();
   ctx.strokeStyle = dark ? 'rgba(255,255,255,0.12)' : 'rgba(20,24,30,0.14)';
   ctx.lineWidth = 2; ctx.stroke();
-  ctx.fillStyle = dark ? '#fff' : '#1a1d23';
+  ctx.fillStyle = dark || color ? '#fff' : '#1a1d23';
   ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
   ctx.fillText(text, w / 2, h / 2 + 2);
   const tex = new THREE.CanvasTexture(c);

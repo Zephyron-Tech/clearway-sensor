@@ -133,7 +133,7 @@ export function cadToGroup(unitResult, { edges = true, role } = {}) {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     const cx = (geo.boundingBox.min.x + geo.boundingBox.max.x) / 2;
-    mesh.userData = { part: true, name: p.name, cat: p.cat, role, end: cx < total / 2 ? 0 : 1 };
+    mesh.userData = { part: true, name: p.name, cat: p.cat, role, end: cx < total / 2 ? 0 : 1, ex: p.ex };
     g.add(mesh);
     if (edges && p.lines.length) {
       const eg = new THREE.BufferGeometry();
