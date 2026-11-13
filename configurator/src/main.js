@@ -153,7 +153,7 @@ const CATS = {
 function explodeOffset(ud, e) {
   if (!e) return [0, 0, 0];
   const n = ud.name;
-  if (/^(kryt_|okno_|sklo_)/.test(n)) return [0, 95 * e, 0];
+  if (/^(kryt_|okno_)/.test(n)) return [0, 95 * e, 0];
   if (ud.cat === 'lidar') return [0, 50 * e, 0];
   if (ud.cat === 'elektronika') return [0, 18 * e, 0];
   if (ud.cat === 'noha') return [0, -80 * e, 0];
@@ -412,10 +412,8 @@ const PRETTY = [
   [/^profil_hlinik$/, 'Hliníkový U profil'],
   [/^kryt_(\w)$/, 'Tištěný kryt $1'],
   [/^okno_(J\d)$/, 'Rámeček okna $1'],
-  [/^sklo_(J\d)$/, 'Krycí sklo $1'],
   [/^lidar_(J\d)$/, 'Lidar $1 · TFmini Plus'],
   [/^lidar_(J\d)_cocka$/, 'Čočka lidaru $1'],
-  [/^lidar_(J\d)_objimka$/, 'Objímka čočky $1'],
   [/^lidar_(J\d)_konektor$/, 'Konektor lidaru $1'],
   [/^cep_A$/, 'Koncový čep A'],
   [/^cep_B$/, 'Koncový čep B'],

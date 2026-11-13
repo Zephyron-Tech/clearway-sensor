@@ -143,13 +143,13 @@ export function buildUnit(P, role, opts = {}) {
       const frame = box(p.len - 0.6, kh, W, MAT.printDark);
       frame.position.set(cx, H - kh / 2, 0);
       unit.add(frame);
-      const glass = box(winW, 1.2, winL, MAT.glass); // delší strana napříč
-      glass.position.set(cx, H + 0.4, 0);
-      unit.add(glass);
-      // lidar pod oknem, dívá se do +Y
+      // lidar = jeden díl, čelo vyplní průzor až do roviny krytu, dívá se do +Y
       const lid = box(ld, lh, lw, MAT.lidar);
-      lid.position.set(cx, H - kh - lh / 2, 0);
+      lid.position.set(cx, H - lh / 2, 0);
       unit.add(lid);
+      const nose = box(winW - 0.6, 0.4, winL - 0.6, MAT.glass); // průzor, delší strana napříč
+      nose.position.set(cx, H + 0.2, 0);
+      unit.add(nose);
       if (opts.beams) {
         const b = cyl(4, 4, reach, MAT.beam, 12);
         b.position.set(cx, H + reach / 2, 0);

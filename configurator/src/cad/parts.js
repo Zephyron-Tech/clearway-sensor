@@ -96,22 +96,20 @@ export function buildUnitCad(P, role) {
       const name = winNames[p.index];
       let frame = box(p.x0 + gap, aluH, -W / 2, p.x0 + p.len - gap, H, W / 2);
       frame = tryFillet(frame, edgeR, (e) => e.inDirection('X').inPlane('XZ', H));
-      // okno i sklo delší stranou napříč profilem (obě čočky lidaru vedle sebe)
+      // průzor delší stranou napříč profilem; žádné samostatné sklo, prochází jím čelo lidaru
       frame = frame.cut(stadium(cx, 0, winL, winW, aluH - 1, kh + 2, true));
-      frame = frame.cut(stadium(cx, 0, winL + 3, winW + 3, H - 1.5, 2, true)); // osazení skla
       add(`okno_${name}`, 'telo', 'print', frame);
-      add(`sklo_${name}`, 'telo', 'glass', stadium(cx, 0, winL + 2.6, winW + 2.6, H - 1.5, 1, true));
 
-      // lidar (TFmini Plus): tělo se zaoblením, dvě čočky v rámečku, konektor vzadu
+      // lidar = jeden díl: tělo pod krytem + vystouplé čelo, které vyplní průzor až do roviny krytu
       const ly1 = aluH;
-      let lid = box(cx - ld / 2, ly1 - lh, -lw / 2, cx + ld / 2, ly1, lw / 2);
+      let lid = box(cx - ld / 2, H - lh, -lw / 2, cx + ld / 2, ly1, lw / 2);
       lid = tryFillet(lid, 1.5, (e) => e.inDirection('Y'));
+      lid = lid.fuse(stadium(cx, 0, winL - 0.6, winW - 0.6, ly1 - 0.5, H - ly1 + 0.5, true));
+      const lenses = [-lw * 0.22, lw * 0.22];
+      for (const z of lenses) lid = lid.cut(makeCylinder(lw * 0.12 + 0.4, 1, [cx, H - 0.8, z], [0, 1, 0]));
       add(`lidar_${name}`, 'lidar', 'lidar', lid);
-      for (const z of [-lw * 0.22, lw * 0.22]) {
-        add(`lidar_${name}_objimka`, 'lidar', 'plasticBlack', makeCylinder(lw * 0.16, 0.8, [cx, ly1, z], [0, 1, 0]));
-        add(`lidar_${name}_cocka`, 'lidar', 'lens', makeCylinder(lw * 0.12, 1.4, [cx, ly1, z], [0, 1, 0]));
-      }
-      add(`lidar_${name}_konektor`, 'lidar', 'jst', cbox(cx, ly1 - lh - 2, lw * 0.25, 6, 4, 9));
+      for (const z of lenses) add(`lidar_${name}_cocka`, 'lidar', 'lens', makeCylinder(lw * 0.12, 0.6, [cx, H - 0.8, z], [0, 1, 0]));
+      add(`lidar_${name}_konektor`, 'lidar', 'jst', cbox(cx, H - lh - 2, lw * 0.25, 6, 4, 9));
     } else if (p.kind === 'cap') {
       let cap = box(p.x0, 0, -W / 2, p.x0 + p.len, H, W / 2);
       const outX = p.end === 0 ? p.x0 : p.x0 + p.len;
