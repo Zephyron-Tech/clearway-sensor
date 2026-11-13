@@ -1,0 +1,7 @@
+node_modules
+dist
+.DS_Store
+.claude
+
+# The full-size reference photos (about 80 MB). The configurator keeps resized copies in configurator/public/foto.
+/*.jpeg

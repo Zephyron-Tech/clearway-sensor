@@ -1,0 +1,52 @@
+{
+  "_info": "Jediný zdroj rozměrů. Délky v mm, úhly ve stupních. stav: odhad = odhadnuto z fotek, zmereno = ověřeno posuvkou, koncept = návrh úpravy (realita to nemá).",
+  "profil": {
+    "sirka":        { "v": 110, "stav": "odhad", "popis": "Šířka průřezu (přes boky)" },
+    "vyska":        { "v": 50,  "stav": "odhad", "popis": "Výška průřezu (od nohou k oknům)" },
+    "stena":        { "v": 2,   "stav": "odhad", "popis": "Tloušťka stěny hliníku" },
+    "kryt_vyska":   { "v": 6,   "stav": "odhad", "popis": "Tištěný kryt s okny (horní strana)" }
+  },
+  "delky": {
+    "cep":          { "v": 22,  "stav": "odhad", "popis": "Přesah koncového čepu" },
+    "modul_okna":   { "v": 38,  "stav": "odhad", "popis": "Délka segmentu s oknem lidaru" },
+    "segment_A":    { "v": 150, "stav": "odhad", "popis": "Segment A (mezi okny 1 a 2)" },
+    "segment_B":    { "v": 150, "stav": "odhad", "popis": "Segment B (mezi okny 2 a 3)" },
+    "segment_C":    { "v": 150, "stav": "odhad", "popis": "Segment C (mezi okny 3 a 4)" }
+  },
+  "okno": {
+    "delka":        { "v": 26,  "stav": "odhad", "popis": "Okno lidaru podél profilu" },
+    "sirka":        { "v": 14,  "stav": "odhad", "popis": "Okno lidaru napříč" }
+  },
+  "lidar": {
+    "sirka":        { "v": 35,  "stav": "odhad", "popis": "TFmini Plus (katalog 35 × 18,5 × 21)" },
+    "hloubka":      { "v": 18.5,"stav": "odhad", "popis": "" },
+    "vyska":        { "v": 21,  "stav": "odhad", "popis": "" },
+    "dosah":        { "v": 2000,"stav": "odhad", "popis": "Délka zobrazeného paprsku" }
+  },
+  "deska": {
+    "sirka":        { "v": 88,  "stav": "odhad", "popis": "Deska RICE napříč profilem" },
+    "delka":        { "v": 76,  "stav": "odhad", "popis": "Deska RICE podél profilu" },
+    "tloustka":     { "v": 1.6, "stav": "odhad", "popis": "" }
+  },
+  "noha": {
+    "odsazeni":     { "v": 140, "stav": "odhad", "popis": "Střed nohy od konce těla" },
+    "valec_prumer": { "v": 70,  "stav": "odhad", "popis": "Tištěný válec" },
+    "valec_vyska":  { "v": 45,  "stav": "odhad", "popis": "" },
+    "drzak_vyska":  { "v": 35,  "stav": "odhad", "popis": "Kovový držák přísavky" },
+    "prisavka_prumer": { "v": 120, "stav": "odhad", "popis": "Průměr přísavky" },
+    "prisavka_vyska":  { "v": 25,  "stav": "odhad", "popis": "" },
+    "kloub_uhel":   { "v": 0,   "stav": "koncept", "popis": "Náklon kloubu nohy (dnes pevné = 0)" }
+  },
+  "konektor": {
+    "prumer":       { "v": 16,  "stav": "odhad", "popis": "Kruhový konektor (GX12/GX16)" },
+    "delka":        { "v": 12,  "stav": "odhad", "popis": "" }
+  },
+  "antena": {
+    "delka":        { "v": 110, "stav": "odhad", "popis": "Prutová anténa" },
+    "uhel":         { "v": 35,  "stav": "odhad", "popis": "Sklon od osy profilu" }
+  },
+  "scena": {
+    "sirka_auta":   { "v": 1850,"stav": "koncept", "popis": "Šířka vozu pro scénu na autě" },
+    "vyska_montaze":{ "v": 700,"stav": "koncept", "popis": "Výška senzoru nad zemí" }
+  }
+}

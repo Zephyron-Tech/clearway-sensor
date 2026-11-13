@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ClearWay konfigurátor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <aside id="panel">
+    <header class="brand">
+      <div class="logo" aria-hidden="true"><i></i><i></i></div>
+      <div>
+        <h1>ClearWay</h1>
+        <p>Konfigurátor senzoru · master + slave</p>
+      </div>
+    </header>
+
+    <section id="stats" class="stats"></section>
+    <section id="progress" class="progress"></section>
+
+    <nav class="tabs" role="tablist">
+      <button data-tab="params" role="tab">Parametry</button>
+      <button data-tab="parts" role="tab">Díly</button>
+      <button data-tab="photos" role="tab">Fotky</button>
+      <button data-tab="export" role="tab">Export</button>
+    </nav>
+
+    <div class="tabpane" id="tab-params">
+      <input id="paramSearch" class="search" type="search" placeholder="Hledat parametr…" autocomplete="off" />
+      <div id="params"></div>
+    </div>
+
+    <div class="tabpane" id="tab-parts" hidden>
+      <p class="hint">Najetím zvýrazníš díl v modelu, kliknutím na něj přiblížíš. Kategorie lze skrýt.</p>
+      <div id="partsList" class="cats"></div>
+      <h3>Díly masteru</h3>
+      <ul id="partsNames" class="pnames"></ul>
+    </div>
+
+    <div class="tabpane" id="tab-photos" hidden>
+      <p class="hint">Referenční fotky hardwaru. Fotku lze připnout vedle modelu a porovnávat.</p>
+      <div id="photos" class="photos"></div>
+    </div>
+
+    <div class="tabpane" id="tab-export" hidden>
+      <h3>CAD</h3>
+      <p class="hint">STEP (AP242) s pojmenovanými a obarvenými díly, osa Z nahoru, jednotky mm. Otevře Fusion, SolidWorks, Onshape i FreeCAD.</p>
+      <div class="exp">
+        <button class="btn" data-export="master:step">STEP master</button>
+        <button class="btn" data-export="slave:step">STEP slave</button>
+        <button class="btn ghost" data-export="master:stl">STL master</button>
+        <button class="btn ghost" data-export="slave:stl">STL slave</button>
+      </div>
+      <h3>Parametry</h3>
+      <p class="hint">Změřené hodnoty ulož jako JSON a nahraď jím <code>src/params.json</code>.</p>
+      <div class="exp">
+        <button class="btn" id="exportJson">Stáhnout JSON</button>
+        <label class="btn ghost file">Nahrát JSON<input type="file" id="importJson" accept="application/json" /></label>
+      </div>
+      <h3>Obrázek</h3>
+      <div class="exp"><button class="btn ghost" id="shot">Snímek scény (PNG)</button></div>
+      <button class="btn danger" id="reset">Vrátit všechny parametry na výchozí</button>
+    </div>
+  </aside>
+
+  <main id="view">
+    <div class="topbar">
+      <div class="seg" role="group" aria-label="Scéna">
+        <button data-scene="stul">Na stole</button>
+        <button data-scene="auto">Na autě</button>
+      </div>
+      <div id="cadStatus"><i></i><span></span></div>
+    </div>
+
+    <div class="toolbar" role="toolbar" aria-label="Zobrazení">
+      <button data-toggle="beams" aria-pressed="true" title="Paprsky lidarů">Paprsky</button>
+      <button data-toggle="labels" aria-pressed="true" title="Popisky">Popisky</button>
+      <button data-toggle="dims" aria-pressed="false" title="Kóty">Kóty</button>
+      <button data-toggle="edges" aria-pressed="true" title="Hrany dílů">Hrany</button>
+      <button data-toggle="xray" aria-pressed="false" title="Průhledné tělo">Rentgen</button>
+      <button data-toggle="cable" aria-pressed="true" title="Kabely">Kabely</button>
+      <label class="explode" title="Rozložený pohled">Rozložit<input id="explode" type="range" min="0" max="1" step="0.01" value="0" /></label>
+    </div>
+
+    <div class="views" role="group" aria-label="Pohled kamery">
+      <button data-view="iso" title="Izometrie (1, F)">Izo</button>
+      <button data-view="top" title="Shora (2)">Shora</button>
+      <button data-view="side" title="Z boku (3)">Bok</button>
+      <button data-view="end" title="Od antény (4)">Čelo</button>
+    </div>
+
+    <div id="partCard" class="card" aria-live="polite"></div>
+
+    <figure id="pinned">
+      <img alt="" />
+      <figcaption><span></span><button aria-label="Zavřít připnutou fotku">×</button></figcaption>
+    </figure>
+
+    <div id="loading"><div class="spin"></div><b>Načítám CAD jádro</b><span>OpenCascade, cca 20 MB, jen poprvé</span></div>
+    <div id="toast" role="status"></div>
+  </main>
+
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Fotka">
+    <img alt="" />
+    <div class="lb-bar">
+      <div class="lb-cap"></div>
+      <div class="lb-btns">
+        <button class="lb-prev" aria-label="Předchozí">‹</button>
+        <button class="lb-next" aria-label="Další">›</button>
+        <button class="lb-pin">Připnout k modelu</button>
+        <button class="lb-close" aria-label="Zavřít">×</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
