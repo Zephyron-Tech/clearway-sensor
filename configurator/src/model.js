@@ -196,7 +196,8 @@ export function buildUnit(P, role, opts = {}) {
 }
 
 function addCapFittings(unit, P, role, end, outX, dir, H, W) {
-  const kr = v(P, 'konektor', 'prumer') / 2;
+  const kr = v(P, 'konektor', 'zavit') / 2;
+  const fromLeft = (d) => -W / 2 + d; // pohled zvenku na čelo A
   const kl = v(P, 'konektor', 'delka');
   const addConn = (z, cy = H * 0.5) => {
     const c = cyl(kr, kr, kl, MAT.metal, 24);
@@ -208,35 +209,37 @@ function addCapFittings(unit, P, role, end, outX, dir, H, W) {
     face.position.set(outX + dir * (kl + 0.5), cy, z);
     unit.add(face);
   };
-  const addLevel = (z) => {
-    const l = cyl(8, 8, 2, MAT.level, 24);
+  const addLevel = () => {
+    const lr = v(P, 'libela', 'prumer') / 2;
+    const l = cyl(lr, lr, 2, MAT.level, 24);
     l.rotation.z = Math.PI / 2;
-    l.position.set(outX + dir * 1, H * 0.55, z);
+    l.position.set(outX + dir * 1, v(P, 'libela', 'vyska'), fromLeft(v(P, 'libela', 'od_leve')));
     unit.add(l);
   };
 
   if (role === 'master' && end === 0) {
     // anténa s průchodkou + libela
-    const gland = cyl(9, 9, 18, MAT.white, 24);
+    const pl = v(P, 'antena', 'patka'), py = v(P, 'antena', 'patka_vyska'), pz = fromLeft(v(P, 'antena', 'patka_od_leve'));
+    const gland = cyl(9, 9, pl, MAT.white, 24);
     gland.rotation.z = Math.PI / 2;
-    gland.position.set(outX - 9, H * 0.55, -W * 0.22);
+    gland.position.set(outX - pl / 2, py, pz);
     unit.add(gland);
     const ang = THREE.MathUtils.degToRad(v(P, 'antena', 'uhel'));
     const al = v(P, 'antena', 'delka');
     const ant = cyl(3.5, 5, al, MAT.black, 16);
     const pivot = new THREE.Group();
-    pivot.position.set(outX - 18, H * 0.55, -W * 0.22);
+    pivot.position.set(outX - pl, py, pz);
     ant.position.y = al / 2;
     pivot.add(ant);
     pivot.rotation.z = Math.PI / 2 - ang; // míří ven z čela (-X), skloněná nahoru o `uhel`
     unit.add(pivot);
-    addLevel(W * 0.12);
+    addLevel();
   } else if (role === 'master' && end === 1) {
     const cy = v(P, 'konektor', 'master_vyska'), dz = v(P, 'konektor', 'master_odsazeni');
     addConn(dz, cy);  // 4pin, slave (vlevo při pohledu na čelo)
     addConn(-dz, cy); // 2pin, napájení (vpravo)
   } else if (role === 'slave' && end === 0) {
-    addLevel(0);
+    addLevel();
   } else {
     addConn(v(P, 'konektor', 'slave_odsazeni'), v(P, 'konektor', 'slave_vyska'));
   }

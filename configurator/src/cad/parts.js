@@ -227,8 +227,11 @@ function buildFoot(P, ft) {
 }
 
 function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
-  const kr = v(P, 'konektor', 'prumer') / 2;
+  const kr = v(P, 'konektor', 'zavit') / 2;   // závit
+  const kb = v(P, 'konektor', 'zaklad') / 2;  // základna / matice
   const kl = v(P, 'konektor', 'delka');
+  // Pohled zvenku na čelo A (nohy dole): levý okraj je z = -W/2
+  const fromLeft = (d) => -W / 2 + d;
   let cy = H * 0.5;
   const holes = [];
   // díl postavený podél +X od čela -> otočit na správnou stranu
@@ -240,8 +243,8 @@ function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
 
   // kruhový konektor do panelu (GX16): matice, závitové tělo, izolant s piny
   const conn = (z, pins, name) => {
-    holes.push(makeCylinder(kr * 0.8, 60, [outX - dir * 30, cy, z], [dir, 0, 0]));
-    add(`${name}_matice`, 'konektory', 'nickel', place(revolveX([[0, 0], [0, kr * 1.3], [2.5, kr * 1.3], [2.5, 0]]), z));
+    holes.push(makeCylinder(kr, 60, [outX - dir * 30, cy, z], [dir, 0, 0]));
+    add(`${name}_matice`, 'konektory', 'nickel', place(revolveX([[0, 0], [0, kb], [2.5, kb], [2.5, 0]]), z));
     add(`${name}_telo`, 'konektory', 'brass', place(revolveX([[2.5, 0], [2.5, kr], [kl - 0.6, kr], [kl, kr - 0.6], [kl, kr * 0.8], [kl - 3, kr * 0.8], [kl - 3, 0]]), z));
     add(`${name}_izolant`, 'konektory', 'plasticBlack', place(makeCylinder(kr * 0.8, 1, [kl - 3.5, 0, 0], [1, 0, 0]), z));
     for (let i = 0; i < pins; i++) {
@@ -250,16 +253,20 @@ function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
       add(`${name}_pin`, 'konektory', 'brass', place(makeCylinder(0.8, 2.2, [kl - 3, Math.cos(a) * r, Math.sin(a) * r], [1, 0, 0]), z));
     }
   };
-  const level = (z) => {
-    const ly = cy + 6;
-    holes.push(makeCylinder(9, 3, [dir > 0 ? outX - 3 : outX, ly, z], [1, 0, 0]));
-    add('libela', 'konektory', 'level', makeCylinder(8.5, 2.4, [dir > 0 ? outX - 2.8 : outX + 0.4, ly, z], [1, 0, 0]));
-    add('libela_krouzek', 'konektory', 'plasticBlack', makeCylinder(4, 0.4, [dir > 0 ? outX : outX - 0.4, ly, z], [1, 0, 0])
-      .cut(makeCylinder(3.4, 2, [outX - 1, ly, z], [1, 0, 0])));
+  // libela na čele A (master i slave)
+  const level = () => {
+    const ly = v(P, 'libela', 'vyska');
+    const z = fromLeft(v(P, 'libela', 'od_leve'));
+    const lr = v(P, 'libela', 'prumer') / 2;
+    holes.push(makeCylinder(lr + 0.3, 3, [outX, ly, z], [1, 0, 0]));
+    add('libela', 'konektory', 'level', makeCylinder(lr, 2.4, [outX + 0.4, ly, z], [1, 0, 0]));
+    add('libela_krouzek', 'konektory', 'plasticBlack', makeCylinder(lr * 0.47, 0.4, [outX - 0.4, ly, z], [1, 0, 0])
+      .cut(makeCylinder(lr * 0.4, 2, [outX - 1, ly, z], [1, 0, 0])));
   };
 
   if (role === 'master' && end === 0) {
-    const gz = -W * 0.22;
+    cy = v(P, 'antena', 'patka_vyska');
+    const gz = fromLeft(v(P, 'antena', 'patka_od_leve'));
     holes.push(makeCylinder(6, 60, [outX + 30, cy, gz], [-1, 0, 0]));
     // bílá patka antény se závitem (pevná): šestihran, tělo, kopule
     const pl = Math.max(v(P, 'antena', 'patka'), 8);
@@ -272,14 +279,14 @@ function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
       .rotate(90 - a, [0, 0, 0], [0, 0, 1])
       .translate([outX - pl, cy, gz]);
     add('antena', 'konektory', 'rubber', ant);
-    level(W * 0.14);
+    level();
   } else if (role === 'master' && end === 1) {
     cy = v(P, 'konektor', 'master_vyska');
     const dz = v(P, 'konektor', 'master_odsazeni');
     conn(dz, 4, 'konektor_4pin_slave');
     conn(-dz, 2, 'konektor_2pin_napajeni');
   } else if (role === 'slave' && end === 0) {
-    level(0);
+    level();
   } else {
     cy = v(P, 'konektor', 'slave_vyska');
     conn(v(P, 'konektor', 'slave_odsazeni'), 4, 'konektor_4pin');

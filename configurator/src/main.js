@@ -493,7 +493,7 @@ function renderStats(total, fh, H) {
 
 const GROUP_LABEL = {
   profil: 'Hliníkový profil', delky: 'Délky a okna', okno: 'Okno lidaru', lidar: 'Lidar',
-  deska: 'Deska RICE', noha: 'Noha a přísavka', konektor: 'Konektor', antena: 'Anténa', scena: 'Scéna na autě',
+  deska: 'Deska RICE', noha: 'Noha a přísavka', konektor: 'Konektor', libela: 'Libela', antena: 'Anténa', scena: 'Scéna na autě',
 };
 const openGroups = new Set(['profil', 'delky', 'noha']);
 

@@ -24,7 +24,7 @@
   },
   "delky": {
     "celkova": {
-      "v": 560,
+      "v": 506,
       "stav": "zmereno",
       "popis": "Celková délka čelo–čelo"
     },
@@ -35,7 +35,7 @@
     },
     "modul_okna": {
       "v": 28,
-      "stav": "odhad",
+      "stav": "zmereno",
       "popis": "Délka tištěného rámečku okna podél těla"
     },
     "okno_1": {
@@ -163,14 +163,19 @@
     }
   },
   "konektor": {
-    "prumer": {
-      "v": 16,
-      "stav": "odhad",
-      "popis": "Kruhový konektor (GX12/GX16)"
+    "zavit": {
+      "v": 12.4,
+      "stav": "zmereno",
+      "popis": "Průměr závitu konektoru"
+    },
+    "zaklad": {
+      "v": 14.8,
+      "stav": "zmereno",
+      "popis": "Průměr základny (matice) konektoru"
     },
     "delka": {
-      "v": 12,
-      "stav": "odhad",
+      "v": 8,
+      "stav": "zmereno",
       "popis": "Přesah konektoru před čelo"
     },
     "master_vyska": {
@@ -194,6 +199,23 @@
       "popis": "Slave: střed konektoru vlevo od osy (26 mm od levého okraje)"
     }
   },
+  "libela": {
+    "prumer": {
+      "v": 14.7,
+      "stav": "zmereno",
+      "popis": "Průměr libely"
+    },
+    "vyska": {
+      "v": 20,
+      "stav": "zmereno",
+      "popis": "Střed libely od spodku těla (master i slave)"
+    },
+    "od_leve": {
+      "v": 39,
+      "stav": "zmereno",
+      "popis": "Střed libely od levého okraje čela (pohled na libelu)"
+    }
+  },
   "antena": {
     "delka": {
       "v": 87.7,
@@ -209,6 +231,16 @@
       "v": 35,
       "stav": "koncept",
       "popis": "Sklon prutu od osy profilu (nastavitelný)"
+    },
+    "patka_vyska": {
+      "v": 25,
+      "stav": "zmereno",
+      "popis": "Střed patky antény od spodku těla"
+    },
+    "patka_od_leve": {
+      "v": 19,
+      "stav": "zmereno",
+      "popis": "Střed patky antény od levého okraje čela (pohled na čelo)"
     }
   },
   "scena": {
