@@ -203,3 +203,4 @@ details[open] summary { border-bottom: 1px solid var(--line); }
 .stat small { display: block; font-size: 11px; color: var(--mute); margin-top: 2px; }
 .stat small.better { color: #1f7a45; }
 .btn:disabled, .btn.file.disabled { opacity: .45; pointer-events: none; }
+@media (max-width: 860px) { #credit { top: 98px; } }

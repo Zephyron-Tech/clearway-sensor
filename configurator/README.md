@@ -10,7 +10,9 @@ npm run dev      # http://localhost:5174
 
 ## Soubory
 
-- `src/params.json`: jediný zdroj rozměrů. Každý parametr má `v` (mm / °) a `stav`:
+- `src/variants/v1/params.json`: rozměry stávajícího zařízení (archiv, tag `v1-archiv`, v UI jen pro čtení).
+- `src/variants/v2/params.json` + `src/cad/parts-v2.js`: návrh v2 (koncept), popsaný v `docs/navrh-v2.md`.
+- Každý parametr má `v` (mm / °) a `stav`:
   `odhad` (z fotek), `zmereno` (posuvkou), `koncept` (navržená úprava).
 - `src/cad/parts.js`: CAD díly (U profil s drážkami, kryty A/B/C, rámečky oken se stadionovým
   průzorem a sklem, lidary s čočkami, čepy s otvory pro konektory, anténa, libela, deska RICE se
@@ -37,7 +39,7 @@ npm run dev      # http://localhost:5174
 ## Workflow měření
 
 V panelu přepiš hodnotu, přepni stav na `změřeno`, pak „Stáhnout parametry (JSON)“
-a staženým souborem nahraď `src/params.json`. Úpravy v panelu se jinak drží jen v prohlížeči (localStorage).
+a staženým souborem nahraď `src/variants/v2/params.json` (v1 je archiv a nemění se). Úpravy v panelu se jinak drží jen v prohlížeči (localStorage).
 
 ## Scéna na autě
 
