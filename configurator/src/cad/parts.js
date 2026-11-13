@@ -105,10 +105,11 @@ export function buildUnitCad(P, role) {
       let lid = box(cx - ld / 2, H - lh, -lw / 2, cx + ld / 2, ly1, lw / 2);
       lid = tryFillet(lid, 1.5, (e) => e.inDirection('Y'));
       lid = lid.fuse(stadium(cx, 0, winL - 0.6, winW - 0.6, ly1 - 0.5, H - ly1 + 0.5, true));
-      const lenses = [-lw * 0.22, lw * 0.22];
-      for (const z of lenses) lid = lid.cut(makeCylinder(lw * 0.12 + 0.4, 1, [cx, H - 0.8, z], [0, 1, 0]));
+      // jedno průhledné čelo přes obě optiky (podle fotky modulu), delší stranou napříč
+      const lensL = (winL - 0.6) * 0.84, lensW = (winW - 0.6) * 0.7;
+      lid = lid.cut(stadium(cx, 0, lensL + 0.8, lensW + 0.8, H - 0.8, 1, true));
       add(`lidar_${name}`, 'lidar', 'lidar', lid);
-      for (const z of lenses) add(`lidar_${name}_cocka`, 'lidar', 'lens', makeCylinder(lw * 0.12, 0.6, [cx, H - 0.8, z], [0, 1, 0]));
+      add(`lidar_${name}_cocka`, 'lidar', 'lens', stadium(cx, 0, lensL, lensW, H - 0.8, 0.6, true));
       add(`lidar_${name}_konektor`, 'lidar', 'jst', cbox(cx, H - lh - 2, lw * 0.25, 6, 4, 9));
     } else if (p.kind === 'cap') {
       let cap = box(p.x0, 0, -W / 2, p.x0 + p.len, H, W / 2);
@@ -250,6 +251,17 @@ function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
       const r = kr * 0.42;
       add(`${name}_pin`, 'konektory', 'brass', place(makeCylinder(0.8, 2.2, [kl - 3, Math.cos(a) * r, Math.sin(a) * r], [1, 0, 0]), z));
     }
+    // zevnitř čela: kontramatice, zadní izolant, pájecí očka a vodiče (do dutiny čepu)
+    const wall = 3;
+    add(`${name}_matice_vnitrni`, 'konektory', 'nickel', place(revolveX([[-wall, 0], [-wall, kb], [-wall - 2.5, kb], [-wall - 2.5, 0]]), z));
+    add(`${name}_izolant_zadni`, 'konektory', 'plasticBlack', place(makeCylinder(kr * 0.8, 6, [-wall - 8.5, 0, 0], [1, 0, 0]), z));
+    const wires = ['red', 'rubber', 'blue', 'yellow'];
+    for (let i = 0; i < pins; i++) {
+      const a = (i / pins) * Math.PI * 2 + Math.PI / 4;
+      const r = kr * 0.42, py = Math.cos(a) * r, pz = Math.sin(a) * r;
+      add(`${name}_pajeci_ocko`, 'konektory', 'brass', place(makeCylinder(0.9, 3, [-wall - 11.5, py, pz], [1, 0, 0]), z));
+      add(`${name}_vodic`, 'konektory', wires[i % wires.length], place(makeCylinder(0.75, 16, [-wall - 27.5, py, pz], [1, 0, 0]), z));
+    }
   };
   // libela na čele A (master i slave)
   const level = () => {
@@ -289,6 +301,8 @@ function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
     cy = v(P, 'konektor', 'slave_vyska');
     conn(v(P, 'konektor', 'slave_odsazeni'), 4, 'konektor_4pin');
   }
+  // čep B je dutý (stěna 3 mm), zevnitř jsou vidět zadní strany konektorů
+  if (end === 1) cap = cap.cut(box(outX - v(P, 'delky', 'cep') - 1, 3, -W / 2 + 3, outX - 3, H - 3, W / 2 - 3));
   for (const h of holes) cap = cap.cut(h);
   add(`cep_${end === 0 ? 'A' : 'B'}`, 'telo', 'cap', cap);
 }
