@@ -190,7 +190,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
   #pinned { width: 46%; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
-#credit { position: absolute; left: 14px; top: 58px; max-width: calc(100% - 110px); font-size: 10.5px; color: rgba(20, 24, 30, 0.72); background: rgba(255, 255, 255, 0.6); padding: 2px 7px; border-radius: 6px; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#credit { position: absolute; left: 14px; bottom: 68px; max-width: calc(100% - 110px); font-size: 10.5px; color: rgba(20, 24, 30, 0.72); background: rgba(255, 255, 255, 0.6); padding: 2px 7px; border-radius: 6px; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #credit[hidden] { display: none; }
 
 .tb-left { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; pointer-events: none; }
@@ -211,5 +211,5 @@ details[open] summary { border-bottom: 1px solid var(--line); }
 .stat small { display: block; font-size: 11px; color: var(--mute); margin-top: 2px; }
 .stat small.better { color: #1f7a45; }
 .btn:disabled, .btn.file.disabled { opacity: .45; pointer-events: none; }
-@media (max-width: 860px) { #credit { top: 98px; } }
+@media (max-width: 860px) { #credit { bottom: 112px; } }
 .stat i { font-style: normal; }
