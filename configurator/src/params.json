@@ -1,57 +1,226 @@
 {
   "_info": "Jediný zdroj rozměrů. Délky v mm, úhly ve stupních. stav: odhad = odhadnuto z fotek, zmereno = ověřeno posuvkou, koncept = návrh úpravy (realita to nemá).",
   "profil": {
-    "sirka":        { "v": 110, "stav": "odhad", "popis": "Šířka průřezu (přes boky)" },
-    "vyska":        { "v": 50,  "stav": "odhad", "popis": "Výška průřezu (od nohou k oknům)" },
-    "stena":        { "v": 2,   "stav": "odhad", "popis": "Tloušťka stěny hliníku" },
-    "kryt_vyska":   { "v": 6,   "stav": "odhad", "popis": "Tištěný kryt s okny (horní strana)" }
+    "sirka": {
+      "v": 80,
+      "stav": "zmereno",
+      "popis": "Šířka průřezu (přes boky)"
+    },
+    "vyska": {
+      "v": 40,
+      "stav": "zmereno",
+      "popis": "Výška těla bez nohou"
+    },
+    "stena": {
+      "v": 2,
+      "stav": "odhad",
+      "popis": "Tloušťka stěny hliníku"
+    },
+    "kryt_vyska": {
+      "v": 6,
+      "stav": "odhad",
+      "popis": "Tištěný kryt s okny (horní strana)"
+    }
   },
   "delky": {
-    "cep":          { "v": 22,  "stav": "odhad", "popis": "Přesah koncového čepu" },
-    "modul_okna":   { "v": 38,  "stav": "odhad", "popis": "Délka segmentu s oknem lidaru" },
-    "segment_A":    { "v": 150, "stav": "odhad", "popis": "Segment A (mezi okny 1 a 2)" },
-    "segment_B":    { "v": 150, "stav": "odhad", "popis": "Segment B (mezi okny 2 a 3)" },
-    "segment_C":    { "v": 150, "stav": "odhad", "popis": "Segment C (mezi okny 3 a 4)" }
+    "celkova": {
+      "v": 560,
+      "stav": "zmereno",
+      "popis": "Celková délka čelo–čelo"
+    },
+    "cep": {
+      "v": 13,
+      "stav": "odhad",
+      "popis": "Tloušťka koncového čela (z fotky)"
+    },
+    "modul_okna": {
+      "v": 28,
+      "stav": "odhad",
+      "popis": "Délka tištěného rámečku okna podél těla"
+    },
+    "okno_1": {
+      "v": 27,
+      "stav": "zmereno",
+      "popis": "Střed okna 1 od čela A (anténa / libela)"
+    },
+    "okno_2": {
+      "v": 179,
+      "stav": "zmereno",
+      "popis": "Střed okna 2 od čela A"
+    },
+    "okno_3": {
+      "v": 337,
+      "stav": "zmereno",
+      "popis": "Střed okna 3 od čela A"
+    },
+    "okno_4": {
+      "v": 477,
+      "stav": "zmereno",
+      "popis": "Střed okna 4 od čela A"
+    }
   },
   "okno": {
-    "delka":        { "v": 26,  "stav": "odhad", "popis": "Delší strana okna (napříč profilem)" },
-    "sirka":        { "v": 14,  "stav": "odhad", "popis": "Kratší strana okna (podél profilu)" }
+    "delka": {
+      "v": 35.4,
+      "stav": "zmereno",
+      "popis": "Delší strana okna (napříč profilem)"
+    },
+    "sirka": {
+      "v": 19.5,
+      "stav": "zmereno",
+      "popis": "Kratší strana okna (podél profilu)"
+    }
   },
   "lidar": {
-    "sirka":        { "v": 35,  "stav": "odhad", "popis": "TFmini Plus (katalog 35 × 18,5 × 21)" },
-    "hloubka":      { "v": 18.5,"stav": "odhad", "popis": "" },
-    "vyska":        { "v": 21,  "stav": "odhad", "popis": "" },
-    "dosah":        { "v": 2000,"stav": "odhad", "popis": "Délka zobrazeného paprsku" }
+    "sirka": {
+      "v": 35,
+      "stav": "odhad",
+      "popis": "TFmini Plus (katalog 35 × 18,5 × 21)"
+    },
+    "hloubka": {
+      "v": 18.5,
+      "stav": "odhad",
+      "popis": ""
+    },
+    "vyska": {
+      "v": 21,
+      "stav": "odhad",
+      "popis": ""
+    },
+    "dosah": {
+      "v": 2000,
+      "stav": "odhad",
+      "popis": "Délka zobrazeného paprsku"
+    }
   },
   "deska": {
-    "sirka":        { "v": 88,  "stav": "odhad", "popis": "Deska RICE napříč profilem" },
-    "delka":        { "v": 76,  "stav": "odhad", "popis": "Deska RICE podél profilu" },
-    "tloustka":     { "v": 1.6, "stav": "odhad", "popis": "" }
+    "sirka": {
+      "v": 70,
+      "stav": "odhad",
+      "popis": "Deska RICE napříč profilem (musí se vejít do 76 mm)"
+    },
+    "delka": {
+      "v": 76,
+      "stav": "odhad",
+      "popis": "Deska RICE podél profilu"
+    },
+    "tloustka": {
+      "v": 1.6,
+      "stav": "odhad",
+      "popis": ""
+    }
   },
   "noha": {
-    "odsazeni":     { "v": 140, "stav": "odhad", "popis": "Střed nohy od konce těla" },
-    "valec_prumer": { "v": 70,  "stav": "odhad", "popis": "Tištěný válec" },
-    "valec_vyska":  { "v": 45,  "stav": "odhad", "popis": "" },
-    "drzak_vyska":  { "v": 35,  "stav": "odhad", "popis": "Kovový držák přísavky" },
-    "prisavka_prumer": { "v": 120, "stav": "odhad", "popis": "Průměr přísavky" },
-    "prisavka_vyska":  { "v": 25,  "stav": "odhad", "popis": "" },
-    "uhel_predni":  { "v": 4,   "stav": "odhad", "popis": "Pevný náklon přední nohy (u konektorů) podél těla; + = přísavka ke konektorům" },
-    "uhel_zadni":   { "v": 12,  "stav": "odhad", "popis": "Pevný náklon zadní nohy podél těla; + = přísavka ke konektorům" }
+    "odsazeni_predni": {
+      "v": 165,
+      "stav": "zmereno",
+      "popis": "Střed přední nohy od čela s konektory"
+    },
+    "odsazeni_zadni": {
+      "v": 45,
+      "stav": "zmereno",
+      "popis": "Střed zadní nohy od čela A (anténa / libela)"
+    },
+    "valec_prumer": {
+      "v": 70,
+      "stav": "zmereno",
+      "popis": "Tištěný válec"
+    },
+    "predni_valec_blizko": {
+      "v": 45,
+      "stav": "zmereno",
+      "popis": "Přední válec: výška na straně ke konektorům"
+    },
+    "predni_valec_daleko": {
+      "v": 33,
+      "stav": "zmereno",
+      "popis": "Přední válec: výška na straně od konektorů"
+    },
+    "zadni_valec_blizko": {
+      "v": 23,
+      "stav": "zmereno",
+      "popis": "Zadní válec: výška na straně ke konektorům"
+    },
+    "zadni_valec_daleko": {
+      "v": 35,
+      "stav": "zmereno",
+      "popis": "Zadní válec: výška na straně od konektorů"
+    },
+    "drzak_vyska": {
+      "v": 26.5,
+      "stav": "zmereno",
+      "popis": "Podstava s pumpou"
+    },
+    "prisavka_prumer": {
+      "v": 116.6,
+      "stav": "zmereno",
+      "popis": "Průměr přísavky"
+    },
+    "prisavka_vyska": {
+      "v": 22,
+      "stav": "zmereno",
+      "popis": "Přísavka s krytem"
+    }
   },
   "konektor": {
-    "prumer":       { "v": 16,  "stav": "odhad", "popis": "Kruhový konektor (GX12/GX16)" },
-    "delka":        { "v": 12,  "stav": "odhad", "popis": "Přesah konektoru před čelo" },
-    "master_vyska":    { "v": 21, "stav": "odhad", "popis": "Master: střed konektorů od spodku těla" },
-    "master_odsazeni": { "v": 21, "stav": "odhad", "popis": "Master: střed konektoru od osy (vlevo 4pin, vpravo 2pin)" },
-    "slave_vyska":     { "v": 26, "stav": "odhad", "popis": "Slave: střed konektoru od spodku těla" },
-    "slave_odsazeni":  { "v": 22, "stav": "odhad", "popis": "Slave: střed konektoru vlevo od osy (pohled na čelo)" }
+    "prumer": {
+      "v": 16,
+      "stav": "odhad",
+      "popis": "Kruhový konektor (GX12/GX16)"
+    },
+    "delka": {
+      "v": 12,
+      "stav": "odhad",
+      "popis": "Přesah konektoru před čelo"
+    },
+    "master_vyska": {
+      "v": 11.4,
+      "stav": "zmereno",
+      "popis": "Master: střed konektorů od spodku těla"
+    },
+    "master_odsazeni": {
+      "v": 15,
+      "stav": "zmereno",
+      "popis": "Master: střed konektoru od osy (rozteč 30; vlevo 4pin, vpravo 2pin)"
+    },
+    "slave_vyska": {
+      "v": 12,
+      "stav": "zmereno",
+      "popis": "Slave: střed konektoru od spodku těla"
+    },
+    "slave_odsazeni": {
+      "v": 14,
+      "stav": "zmereno",
+      "popis": "Slave: střed konektoru vlevo od osy (26 mm od levého okraje)"
+    }
   },
   "antena": {
-    "delka":        { "v": 110, "stav": "odhad", "popis": "Prutová anténa" },
-    "uhel":         { "v": 35,  "stav": "odhad", "popis": "Sklon od osy profilu" }
+    "delka": {
+      "v": 87.7,
+      "stav": "zmereno",
+      "popis": "Černý prut antény"
+    },
+    "patka": {
+      "v": 23,
+      "stav": "zmereno",
+      "popis": "Bílé tělo se závitem (pevné)"
+    },
+    "uhel": {
+      "v": 35,
+      "stav": "koncept",
+      "popis": "Sklon prutu od osy profilu (nastavitelný)"
+    }
   },
   "scena": {
-    "sirka_auta":   { "v": 1850,"stav": "koncept", "popis": "Šířka vozu pro scénu na autě" },
-    "vyska_montaze":{ "v": 700,"stav": "koncept", "popis": "Výška středu senzoru nad zemí (montáž svisle)" }
+    "sirka_auta": {
+      "v": 1850,
+      "stav": "koncept",
+      "popis": "Šířka vozu pro scénu na autě"
+    },
+    "vyska_montaze": {
+      "v": 700,
+      "stav": "koncept",
+      "popis": "Výška středu senzoru nad zemí (montáž svisle)"
+    }
   }
 }

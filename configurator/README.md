@@ -17,6 +17,7 @@ npm run dev      # http://localhost:5174
   sloupky, ESP modulem, JST a svorkovnicí, nohy s přísavkou a pumpičkou, pevně nakloněné podél těla: přední u konektorů jinak než zadní).
 - `src/cad/worker.js`: OpenCascade ve workeru; síť pro náhled, export STEP (AP242, pojmenované
   a obarvené díly) a STL. Export otáčí model do konvence CAD: **Z nahoru**, osa X podél těla.
+- `src/geometry.js`: rozvržení podél těla (polohy oken) a nohy (klínové válce, náklon), sdílené CAD i náhledem.
 - `src/names.js`: značení lidarů J1–J4 podle pořadí oken (master od antény, slave od konektoru).
 - `src/model.js`: rychlý zjednodušený náhled, dokud se nenačte WASM, a popisky / paprsky.
 - `src/main.js`: scéna (na stole / na autě), panel parametrů, exporty.

@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import { WIN_NAMES } from './names.js';
+import { layout, feet, footHeight } from './geometry.js';
+
+export { layout, footHeight };
 
 // Lokální souřadnice jednotky:
 //   X podél těla (0 = konec s anténou u masteru),
@@ -66,33 +69,10 @@ function label(text, size = 14) {
   return s;
 }
 
-// Rozvržení podél délky: čep | okno | A | okno | B | okno | C | okno | čep
-export function layout(P) {
-  const cep = v(P, 'delky', 'cep');
-  const win = v(P, 'delky', 'modul_okna');
-  const segs = ['segment_A', 'segment_B', 'segment_C'].map(k => v(P, 'delky', k));
-  const parts = [];
-  let x = 0;
-  parts.push({ kind: 'cap', x0: x, len: cep, end: 0 }); x += cep;
-  for (let i = 0; i < 4; i++) {
-    parts.push({ kind: 'window', x0: x, len: win, index: i }); x += win;
-    if (i < 3) { parts.push({ kind: 'segment', x0: x, len: segs[i], name: 'ABC'[i] }); x += segs[i]; }
-  }
-  parts.push({ kind: 'cap', x0: x, len: cep, end: 1 }); x += cep;
-  return { parts, total: x };
-}
-
-// Nejnižší bod nohy pod spodkem těla (u nakloněné nohy rozhoduje okraj přísavky)
-export function footHeight(P) {
-  const L = v(P, 'noha', 'drzak_vyska') + v(P, 'noha', 'prisavka_vyska');
-  const pr = v(P, 'noha', 'prisavka_prumer') / 2;
-  const drop = (deg) => { const a = Math.abs(deg) * Math.PI / 180; return L * Math.cos(a) + pr * Math.sin(a); };
-  return v(P, 'noha', 'valec_vyska') + Math.max(drop(v(P, 'noha', 'uhel_predni')), drop(v(P, 'noha', 'uhel_zadni')));
-}
-
-function buildFoot(P, tiltDeg = 0) {
+function buildFoot(P, ft) {
   const g = new THREE.Group();
-  const vh = v(P, 'noha', 'valec_vyska');
+  const vh = ft.hc;
+  const tiltDeg = ft.tilt;
   const vr = v(P, 'noha', 'valec_prumer') / 2;
   const dh = v(P, 'noha', 'drzak_vyska');
   const pr = v(P, 'noha', 'prisavka_prumer') / 2;
@@ -153,10 +133,11 @@ export function buildUnit(P, role, opts = {}) {
   for (const p of parts) {
     const cx = p.x0 + p.len / 2;
     if (p.kind === 'segment') {
+      const edge = p.edge;
       const s = box(p.len - 0.6, kh, W, MAT.print);
       s.position.set(cx, H - kh / 2, 0);
       unit.add(s);
-      if (opts.labels) { const l = label(p.name, 22); l.position.set(cx, H + 18, 0); unit.add(l); }
+      if (opts.labels && !edge) { const l = label(p.name, 22); l.position.set(cx, H + 18, 0); unit.add(l); }
     } else if (p.kind === 'window') {
       // rámeček okna = tištěný modul s průzorem
       const frame = box(p.len - 0.6, kh, W, MAT.printDark);
@@ -199,10 +180,9 @@ export function buildUnit(P, role, opts = {}) {
   if (opts.labels) { const l = label(role === 'master' ? 'RICE · ESP32-S3' : 'RICE · ESP32', 12); l.position.set(bx, t + 30, -W / 2 - 30); unit.add(l); }
 
   // Nohy s přísavkami
-  const off = v(P, 'noha', 'odsazeni');
-  for (const [fx, deg] of [[off, v(P, 'noha', 'uhel_zadni')], [total - off, v(P, 'noha', 'uhel_predni')]]) {
-    const f = buildFoot(P, deg);
-    f.position.x = fx;
+  for (const ft of feet(P)) {
+    const f = buildFoot(P, ft);
+    f.position.x = ft.x;
     unit.add(f);
   }
 

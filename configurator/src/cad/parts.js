@@ -6,6 +6,9 @@
 // Každý díl má: name (do STEP), cat (kategorie pro UI), mat (vzhled v náhledu), color (barva ve STEP).
 import { makeBox, makeCylinder, Sketcher } from 'replicad';
 import { WIN_NAMES } from '../names.js';
+import { layout, feet } from '../geometry.js';
+
+export { layout };
 
 const v = (P, g, k) => P[g][k].v;
 
@@ -48,21 +51,6 @@ function revolveX(pts) {
   const sk = new Sketcher('XY').movePointerTo(pts[0]);
   for (const p of pts.slice(1)) sk.lineTo(p);
   return sk.close().revolve([1, 0, 0]);
-}
-
-export function layout(P) {
-  const cep = v(P, 'delky', 'cep');
-  const win = v(P, 'delky', 'modul_okna');
-  const segs = ['segment_A', 'segment_B', 'segment_C'].map(k => v(P, 'delky', k));
-  const parts = [];
-  let x = 0;
-  parts.push({ kind: 'cap', x0: x, len: cep, end: 0 }); x += cep;
-  for (let i = 0; i < 4; i++) {
-    parts.push({ kind: 'window', x0: x, len: win, index: i }); x += win;
-    if (i < 3) { parts.push({ kind: 'segment', x0: x, len: segs[i], name: 'ABC'[i] }); x += segs[i]; }
-  }
-  parts.push({ kind: 'cap', x0: x, len: cep, end: 1 }); x += cep;
-  return { parts, total: x };
 }
 
 /** Vrátí seznam dílů { name, cat, mat, color, shape } pro jednu jednotku. */
@@ -135,10 +123,8 @@ export function buildUnitCad(P, role) {
   addBoard(add, P, role, parts, t);
 
   // --- nohy: pevné, náklon podél těla; přední = u konektorů (čelo B) ---
-  const off = v(P, 'noha', 'odsazeni');
-  const feet = [['zadni', off, v(P, 'noha', 'uhel_zadni')], ['predni', total - off, v(P, 'noha', 'uhel_predni')]];
-  for (const [nm, fx, tilt] of feet) {
-    for (const f of buildFoot(P, tilt)) add(`noha_${nm}_${f.name}`, 'noha', f.mat, f.shape.translate([fx, 0, 0]));
+  for (const ft of feet(P)) {
+    for (const f of buildFoot(P, ft)) add(`noha_${ft.name}_${f.name}`, 'noha', f.mat, f.shape.translate([ft.x, 0, 0]));
   }
   return { parts: out, total };
 }
@@ -194,8 +180,9 @@ function addBoard(add, P, role, parts, t) {
   }
 }
 
-function buildFoot(P, tilt) {
-  const vh = v(P, 'noha', 'valec_vyska');
+function buildFoot(P, ft) {
+  const { tilt, hc } = ft;
+  const vh = hc; // výška válce v ose
   const vr = v(P, 'noha', 'valec_prumer') / 2;
   const dh = v(P, 'noha', 'drzak_vyska');
   const pr = v(P, 'noha', 'prisavka_prumer') / 2;
@@ -206,13 +193,13 @@ function buildFoot(P, tilt) {
   // Náklon `tilt` (°) kolem osy Z: válec je dole seříznutý do klínu, držák s přísavkou
   // je kolmý na seříznutou plochu. + = spodek nohy se posune do +X (ke konektorům).
   let y = 0;
-  const h1 = vh * 0.5, h2 = vh * 0.3, h3 = vh - h1 - h2;
+  // válec seříznutý do klínu (výšky blizko/daleko změřené), pruh pásky v horní části
+  const hMin = Math.min(ft.near, ft.far);
   const ext = vr * Math.tan(Math.abs(tilt) * Math.PI / 180) + 1;
-  add('valec', 'printDark', revolveY([[0, y], [vr, y], [vr, y - h1], [0, y - h1]]));
-  add('valec_paska', 'tape', makeCylinder(vr + 0.3, h2, [0, y - h1 - h2, 0], [0, 1, 0]));
-  let wedge = makeCylinder(vr, h3 + ext, [0, y - vh - ext, 0], [0, 1, 0]);
+  let wedge = makeCylinder(vr, vh + ext, [0, y - vh - ext, 0], [0, 1, 0]);
   if (tilt) wedge = wedge.cut(cbox(0, -vh - 100, 0, 400, 200, 400).rotate(tilt, [0, -vh, 0], [0, 0, 1]));
-  add('valec_spodek', 'printDark', wedge);
+  add('valec', 'printDark', wedge);
+  add('valec_paska', 'tape', makeCylinder(vr + 0.3, hMin * 0.35, [0, y - hMin * 0.65, 0], [0, 1, 0]));
   y -= vh;
   const lower = [];
   const addRaw = add;
@@ -274,15 +261,16 @@ function addCapFittings(add, P, role, end, outX, dir, H, W, cap) {
   if (role === 'master' && end === 0) {
     const gz = -W * 0.22;
     holes.push(makeCylinder(6, 60, [outX + 30, cy, gz], [-1, 0, 0]));
-    // kabelová vývodka (bílá): šestihran, tělo, kopule
-    add('vyvodka_matice', 'konektory', 'white', place(makeCylinder(11, 4, [0, 0, 0], [1, 0, 0]), gz));
-    add('vyvodka', 'konektory', 'white', place(revolveX([[4, 0], [4, 9.5], [12, 9.5], [16, 7.5], [18, 6], [18, 0]]), gz));
+    // bílá patka antény se závitem (pevná): šestihran, tělo, kopule
+    const pl = Math.max(v(P, 'antena', 'patka'), 8);
+    add('antena_patka_matice', 'konektory', 'white', place(makeCylinder(11, 4, [0, 0, 0], [1, 0, 0]), gz));
+    add('antena_patka', 'konektory', 'white', place(revolveX([[4, 0], [4, 9.5], [pl - 6, 9.5], [pl - 2, 7.5], [pl, 6], [pl, 0]]), gz));
     // prutová anténa: SMA patka, kloub, kuželový prut se zaobleným koncem
     const a = v(P, 'antena', 'uhel');
-    const al = Math.max(v(P, 'antena', 'delka'), 30);
+    const al = Math.max(v(P, 'antena', 'delka') + 17, 30); // prut + SMA kloub
     const ant = revolveY([[0, 0], [5.5, 0], [5.5, 9], [5, 9], [5, 17], [4.6, 21], [4, al - 4], [3, al - 1.5], [1.5, al], [0, al]])
       .rotate(90 - a, [0, 0, 0], [0, 0, 1])
-      .translate([outX - 18, cy, gz]);
+      .translate([outX - pl, cy, gz]);
     add('antena', 'konektory', 'rubber', ant);
     level(W * 0.14);
   } else if (role === 'master' && end === 1) {

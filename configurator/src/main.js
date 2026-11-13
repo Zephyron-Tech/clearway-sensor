@@ -8,6 +8,7 @@ import { buildCar, buildRoad } from './car.js';
 import { makeLabel, makeDim, makeCable } from './overlay.js';
 import { PHOTOS } from './photos.js';
 import { WIN_NAMES } from './names.js';
+import { feet } from './geometry.js';
 
 const STORE = 'clearway-params-v1';
 const UI_STORE = 'clearway-ui-v1';
@@ -215,7 +216,7 @@ function addOverlays(u, role) {
         l.position.set(cx, H + 28 + lift, W / 2 + 10);
         u.add(l);
       }
-    } else if (p.kind === 'segment' && state.labels && state.scene === 'stul') {
+    } else if (p.kind === 'segment' && !p.edge && state.labels && state.scene === 'stul') {
       const l = makeLabel(p.name, { size: 0.7 });
       l.position.set(cx, H + 12 + lift, 0);
       u.add(l);
@@ -231,8 +232,8 @@ function addOverlays(u, role) {
     u.add(makeDim([0, H, W / 2], [total, H, W / 2], [0, 0, 60], `${fmt(total)} mm`));
     u.add(makeDim([total, 0, -W / 2], [total, 0, W / 2], [70, 0, 0], `${fmt(W)} mm`));
     u.add(makeDim([0, -fh, W / 2], [0, H, W / 2], [-90, 0, 0], `${fmt(H + fh)} mm`));
-    const off = v('noha', 'odsazeni');
-    u.add(makeDim([off, -fh, W / 2], [total - off, -fh, W / 2], [0, 0, 160], `rozteč nohou ${fmt(total - 2 * off)} mm`));
+    const [f0, f1] = feet(P);
+    u.add(makeDim([f0.x, -fh, W / 2], [f1.x, -fh, W / 2], [0, 0, 160], `rozteč nohou ${fmt(f1.x - f0.x)} mm`));
   }
 }
 
@@ -491,7 +492,7 @@ function renderStats(total, fh, H) {
 }
 
 const GROUP_LABEL = {
-  profil: 'Hliníkový profil', delky: 'Délky segmentů', okno: 'Okno lidaru', lidar: 'Lidar',
+  profil: 'Hliníkový profil', delky: 'Délky a okna', okno: 'Okno lidaru', lidar: 'Lidar',
   deska: 'Deska RICE', noha: 'Noha a přísavka', konektor: 'Konektor', antena: 'Anténa', scena: 'Scéna na autě',
 };
 const openGroups = new Set(['profil', 'delky', 'noha']);
