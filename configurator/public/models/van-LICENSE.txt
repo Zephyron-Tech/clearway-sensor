@@ -1,0 +1,6 @@
+Model: "2019 Mercedes-Benz Sprinter" by tonielpro520
+https://sketchfab.com/3d-models/2019-mercedes-benz-sprinter-5788a290ddb5483fbbd5831aeef829a1
+License: CC BY 4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+Changes: replaced the licence plate texture with a blank plate, simplified the mesh,
+resized textures to 1024 px and compressed with meshopt (gltf-transform).

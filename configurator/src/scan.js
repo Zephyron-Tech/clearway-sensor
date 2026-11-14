@@ -95,8 +95,8 @@ function sign() {
   return g;
 }
 
-/** Zaparkovaná auta a překážky. `car` = načtený model vozu (klonuje se), nebo null. */
-export function buildStreet(car) {
+/** Zaparkovaná auta a překážky. `car` a `vanModel` = načtené modely (klonují se), nebo null. */
+export function buildStreet(car, vanModel = null) {
   const g = new THREE.Group();
   g.name = 'ulice';
   const carLen = 4709;
@@ -123,8 +123,9 @@ export function buildStreet(car) {
   // vlevo: auta u chodníku (vnitřní hrana ~3,0 m od osy vozu)
   for (const [x, d] of [[-16800, false], [-11600, false], [2200, true], [16200, false], [21400, false]]) parked(x, -4000, Math.PI, d);
   // zúžení 1: dodávka ve druhé řadě
-  const van = vanMesh('#d8dde2');
+  const van = vanModel ? vanModel.clone(true) : vanMesh('#d8dde2');
   van.position.set(9200, 0, -2250);
+  if (vanModel) van.rotation.y = Math.PI; // stojí v protisměru jako auta vlevo
   g.add(van);
   // zúžení 2: kontejner vytlačený do silnice
   const ct = container();

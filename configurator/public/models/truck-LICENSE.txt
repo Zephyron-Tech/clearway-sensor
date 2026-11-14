@@ -1,0 +1,7 @@
+Model: "GARBAGE TRUCK" by liebherr996litronic
+https://sketchfab.com/3d-models/garbage-truck-9aee01b569f043b290cd7dc1abf38b71
+License: CC BY 4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+Changes: removed the trash pile with flags and books behind the truck, replaced the side
+livery texture (Spanish lettering) with a plain colour, simplified the mesh, resized
+textures to 1024 px and compressed with meshopt (gltf-transform).

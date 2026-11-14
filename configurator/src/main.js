@@ -8,7 +8,7 @@ import paramsV3 from './variants/v3/params.json';
 import { buildUnit, footHeight, layout, setBodyOpacity } from './model.js';
 import { cadBuild, cadStep, cadStl, cadStepOnly, cadStlPart, cadToGroup, setCadOpacity, setHighlight, setSection, section } from './cad/client.js';
 import { buildCar, buildRoad, loadCar, CAR_CREDIT } from './car.js';
-import { buildTruck } from './truck.js';
+import { buildTruck, loadTruck, loadVan, TRUCK_CREDIT } from './truck.js';
 import { buildStreet, simulate, drawScan } from './scan.js';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { makeLabel, makeDim, makeCable } from './overlay.js';
@@ -173,14 +173,20 @@ function ensureCarScene() {
   Promise.allSettled([
     import('./plzen.json').then(async (m) => { const { buildCity } = await import('./city.js'); return buildCity(m.default); }),
     loadCar(),
-  ]).then(([city, car]) => {
+    loadTruck(),
+    loadVan(),
+  ]).then(([city, car, truck, van]) => {
     if (city.status === 'fulfilled') { carScene.city = city.value; world.add(city.value); } else console.error(city.reason);
     if (car.status === 'fulfilled') { carScene.car = car.value; world.add(car.value); }
     else { console.warn('Model vozu nenačten', car.reason); toast('Model vozu chybí (public/models/car.glb), zobrazuji zjednodušený vůz', true); }
     // popelářský vůz a ulice s překážkami (zaparkovaná auta jsou klony modelu vozu)
-    carScene.truck = buildTruck();
+    // skutečné modely, při chybě zjednodušené
+    if (truck.status !== 'fulfilled') console.warn('Model popeláře nenačten', truck.reason);
+    if (van.status !== 'fulfilled') console.warn('Model dodávky nenačten', van.reason);
+    carScene.truck = truck.status === 'fulfilled' ? truck.value : buildTruck();
+    carScene.models = truck.status === 'fulfilled' || van.status === 'fulfilled';
     world.add(carScene.truck);
-    carScene.street = buildStreet(carScene.car);
+    carScene.street = buildStreet(carScene.car, van.status === 'fulfilled' ? van.value : null);
     world.add(carScene.street);
     setStatus(cad.data ? 'CAD připraven' : 'Načítám CAD jádro…', cad.data ? 'ok' : 'busy');
     if (onVehicle()) rebuild(true, false);
@@ -208,7 +214,7 @@ function applyEnvironment() {
   const credit = $('#credit');
   if (credit) {
     credit.hidden = !auto;
-    credit.textContent = `Mapová data © přispěvatelé OpenStreetMap (ODbL)${carScene.car ? ' · Model vozu: ' + CAR_CREDIT : ''}`;
+    credit.textContent = `Mapová data © přispěvatelé OpenStreetMap (ODbL)${carScene.car ? ' · Model vozu: ' + CAR_CREDIT : ''}${carScene.models ? ' · ' + TRUCK_CREDIT : ''}`;
   }
 }
 

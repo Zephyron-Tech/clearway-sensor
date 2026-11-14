@@ -189,7 +189,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
   #pinned { width: 46%; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
-#credit { position: absolute; left: 14px; bottom: 68px; max-width: calc(100% - 110px); font-size: 10.5px; color: rgba(20, 24, 30, 0.72); background: rgba(255, 255, 255, 0.6); padding: 2px 7px; border-radius: 6px; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#credit { position: absolute; left: 14px; bottom: 68px; max-width: calc(100% - 110px); font-size: 10.5px; color: rgba(20, 24, 30, 0.72); background: rgba(255, 255, 255, 0.6); padding: 2px 7px; border-radius: 6px; pointer-events: none; line-height: 1.35; }
 #credit[hidden] { display: none; }
 
 .tb-left { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; pointer-events: none; }

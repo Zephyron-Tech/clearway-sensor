@@ -151,3 +151,53 @@ export function buildTruck() {
   g.userData = { roofX: xf - cabL / 2 - 120, length: L, width: W, label: 'Popelářský vůz' };
   return g;
 }
+
+// ---------- skutečné modely z GLB (public/models) ----------
+// Popelář: "GARBAGE TRUCK" od liebherr996litronic, dodávka: "2019 Mercedes-Benz Sprinter" od tonielpro520,
+// obojí Sketchfab, CC BY 4.0 (úpravy viz public/models/*-LICENSE.txt).
+export const TRUCK_CREDIT = 'Popelář: GARBAGE TRUCK – liebherr996litronic, dodávka: 2019 Mercedes-Benz Sprinter – tonielpro520 (Sketchfab), CC BY 4.0';
+
+/**
+ * Načte GLB, převede na mm (`scale`), natočí přídí do +X (`yaw`), postaví kola na y = 0
+ * a vycentruje v X i Z. Vrací skupinu; userData.front = x přídě.
+ */
+async function loadNormalized(file, scale, yaw) {
+  const [{ GLTFLoader }, { MeshoptDecoder }] = await Promise.all([
+    import('three/addons/loaders/GLTFLoader.js'), import('three/addons/libs/meshopt_decoder.module.js'),
+  ]);
+  const loader = new GLTFLoader();
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  const gltf = await loader.loadAsync(`${import.meta.env.BASE_URL}models/${file}`);
+  const model = gltf.scene;
+  model.scale.setScalar(scale);
+  model.rotation.y = yaw;
+  model.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(model);
+  const c = box.getCenter(new THREE.Vector3());
+  model.position.set(-c.x, -box.min.y, -c.z);
+  const g = new THREE.Group();
+  g.add(model);
+  model.traverse((n) => {
+    if (!n.isMesh) return;
+    n.castShadow = true; n.receiveShadow = true;
+    for (const m of [n.material].flat()) if (m && 'envMapIntensity' in m) m.envMapIntensity = 1;
+  });
+  g.userData.front = box.max.x - c.x;
+  g.userData.length = box.max.x - box.min.x;
+  return g;
+}
+
+/** Popelářský vůz z GLB (v modelu metry, příď do +Z). Střed kabiny ~1,35 m za přídí. */
+export async function loadTruck() {
+  const g = await loadNormalized('truck.glb', 1000, Math.PI / 2);
+  g.name = 'truck';
+  g.userData = { ...g.userData, roofX: g.userData.front - 1350, width: 2550, label: 'Popelářský vůz' };
+  return g;
+}
+
+/** Dodávka z GLB (v modelu palce). Natočení podle modelu, příď do +X. */
+export async function loadVan() {
+  const g = await loadNormalized('van.glb', 25.4, Math.PI / 2);
+  g.name = 'van';
+  return g;
+}
