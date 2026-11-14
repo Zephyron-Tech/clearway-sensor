@@ -13,6 +13,9 @@ const BUILDERS = { v1: buildV1, v2: buildV2 };
 const DENSITY = {
   alu: 2.7, print: 0.8, printDark: 0.8, cap: 0.8, lidar: 0.8, pcb: 1.9, shield: 2.5, nickel: 7.9, brass: 8.5,
   rubber: 1.1, plasticBlack: 1.0, blue: 2.6, glass: 1.2, lens: 1.2, jst: 1.2, chip: 2.0, white: 1.2, yellow: 1.0,
+  // v2: PA12 ze SLS je plný materiál; článek 21700 váží ~69 g (objem 26,2 cm³)
+  pa12: 1.0, pa12Dark: 1.0, silicone: 1.15, foam: 0.15, steel: 7.9, cell: 2.63, fishpaper: 1.2, kapton: 1.4, fpc: 1.6,
+  ceramic: 4.5, green: 1.2, ledRing: 1.2, tantalum: 3.0, switch: 3.0,
 };
 
 const ready = (async () => {
@@ -61,13 +64,14 @@ function meshParts(parts, fine) {
       cat: p.cat,
       mat: p.mat,
       color: p.color,
-      ex: p.ex,
+      ex: p.ex, label: p.label, spec: p.spec, src: p.src,
       vertices: new Float32Array(m.vertices),
       normals: new Float32Array(m.normals),
       triangles: new Uint32Array(m.triangles),
       lines: new Float32Array(e.lines),
     };
-    mass += meshVolume(item.vertices, item.triangles) / 1000 * (DENSITY[p.mat] ?? 1.2);
+    item.mass = meshVolume(item.vertices, item.triangles) / 1000 * (DENSITY[p.mat] ?? 1.2);
+    mass += item.mass;
     transfer.push(item.vertices.buffer, item.normals.buffer, item.triangles.buffer, item.lines.buffer);
     out.push(item);
   }
@@ -75,7 +79,7 @@ function meshParts(parts, fine) {
 }
 
 self.onmessage = async ({ data }) => {
-  const { id, type, params, role, variant = 'v1' } = data;
+  const { id, type, params, role, variant = 'v1', only, index } = data;
   try {
     await ready;
     const t0 = performance.now();
@@ -90,8 +94,13 @@ self.onmessage = async ({ data }) => {
       }
       self.postMessage({ id, ok: true, result, ms: Math.round(performance.now() - t0) }, transfer);
     } else if (type === 'step') {
-      const { parts } = getParts(params, role, variant);
+      let { parts } = getParts(params, role, variant);
+      if (only) parts = parts.filter(p => p.src === only);
       const blob = exportSTEP(parts.map(p => ({ shape: toZUp(p.shape), name: p.name, color: p.color })), { unit: 'MM', modelUnit: 'MM' });
+      self.postMessage({ id, ok: true, result: blob });
+    } else if (type === 'stlPart') {
+      const { parts } = getParts(params, role, variant);
+      const blob = toZUp(parts[index].shape).blobSTL({ binary: true, tolerance: 0.03, angularTolerance: 0.15 });
       self.postMessage({ id, ok: true, result: blob });
     } else if (type === 'stl') {
       const { parts } = getParts(params, role, variant);

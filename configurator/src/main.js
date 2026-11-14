@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import paramsV1 from './variants/v1/params.json';
 import paramsV2 from './variants/v2/params.json';
 import { buildUnit, footHeight, layout, setBodyOpacity } from './model.js';
-import { cadBuild, cadStep, cadStl, cadToGroup, setCadOpacity, setHighlight } from './cad/client.js';
+import { cadBuild, cadStep, cadStl, cadStepOnly, cadStlPart, cadToGroup, setCadOpacity, setHighlight, setSection, section } from './cad/client.js';
 import { buildCar, buildRoad, loadCar, CAR_CREDIT } from './car.js';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { makeLabel, makeDim, makeCable } from './overlay.js';
@@ -30,11 +31,17 @@ const fmt = (n) => (Math.round(n * 10) / 10).toLocaleString('cs-CZ');
 
 // ---------- stav ----------
 const state = Object.assign(
-  { scene: 'stul', variant: 'v1', compare: false, compareMode: 'side', shown: {}, beams: true, labels: true, dims: false, edges: true, xray: false, cable: true, explode: 0, tab: 'params',
+  { scene: 'stul', variant: 'v1', unit: 'both', ortho: false, compare: false, compareMode: 'side', shown: {}, beams: true, labels: true, dims: false, edges: true, xray: false, cable: true, explode: 0, tab: 'params',
     hidden: {} },
   loadUi(),
 );
 if (!VARIANTS[state.variant]) state.variant = 'v1';
+// Stav prohlížení, který se neukládá: nástroj, ručně skryté a posunuté díly, izolace, výběr, řez, měření.
+// Klíč dílu je `${verze}:${role}:${index}`.
+const ui3d = {
+  tool: 'select', hiddenParts: new Set(), moved: new Map(), isolated: null, selKey: null, listRole: 'master',
+  section: { on: false, axis: 'x', pos: 0.5, flip: false }, measure: [],
+};
 const PV = { v1: loadParams('v1'), v2: loadParams('v2') };
 let P = PV[state.variant];
 const defaults = () => VARIANTS[state.variant].defaults;
@@ -60,8 +67,8 @@ function saveParams() {
 function loadUi() { try { return JSON.parse(localStorage.getItem(UI_STORE)) || {}; } catch { return {}; } }
 function saveUi() {
   try {
-    const { scene, variant, compare, compareMode, shown, beams, labels, dims, edges, xray, cable, explode, tab, hidden } = state;
-    localStorage.setItem(UI_STORE, JSON.stringify({ scene, variant, compare, compareMode, shown, beams, labels, dims, edges, xray, cable, explode, tab, hidden }));
+    const { scene, variant, unit, ortho, compare, compareMode, shown, beams, labels, dims, edges, xray, cable, explode, tab, hidden } = state;
+    localStorage.setItem(UI_STORE, JSON.stringify({ scene, variant, unit, ortho, compare, compareMode, shown, beams, labels, dims, edges, xray, cable, explode, tab, hidden }));
   } catch { /* ignorovat */ }
 }
 // Přebírá jen známé klíče, aby starý JSON nerozbil novou verzi parametrů
@@ -89,6 +96,7 @@ renderer.toneMapping = THREE.NeutralToneMapping;
 renderer.toneMappingExposure = 0.95;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled = true; // řez přes clippingPlanes na CAD materiálech
 renderer.setClearColor(0x000000, 0);
 view.prepend(renderer.domElement);
 
@@ -180,6 +188,8 @@ function applyEnvironment() {
   camera.near = auto ? 20 : 5;
   camera.far = city ? 3e6 : 80000;
   camera.updateProjectionMatrix();
+  // na stole lze model obejít i zespodu (základna, víčko, nohy), na autě ne pod silnici
+  controls.maxPolarAngle = auto ? Math.PI * 0.495 : Math.PI * 0.985;
   const credit = $('#credit');
   if (credit) {
     credit.hidden = !auto;
@@ -264,14 +274,20 @@ async function runCad() {
   if (cad.data) setStatus('Přepočítávám model…', 'busy');
   try {
     const res = await cadBuild(JSON.parse(key), vr);
-    const first = !Object.values(cadStore).some(c => c.data);
+    const prev = cadStore[vr].data;
     cadStore[vr] = { data: res.result, key };
     syncCad();
     const n = res.result.master.parts.length + res.result.slave.parts.length;
     setStatus(`CAD · ${n} dílů · ${res.ms} ms`, 'ok');
+    // změna počtu dílů (jiný počet šroubů apod.) znehodnotí indexy skrytých a posunutých dílů této verze
+    if (prev && prev.master.parts.length !== res.result.master.parts.length) {
+      for (const k of [...ui3d.hiddenParts]) if (k.startsWith(vr + ':')) ui3d.hiddenParts.delete(k);
+      for (const k of [...ui3d.moved.keys()]) if (k.startsWith(vr + ':')) ui3d.moved.delete(k);
+      ui3d.isolated = null;
+    }
     rebuild(false, false);
     $('#loading').classList.add('gone');
-    if (first || !$('#partsList [data-cat]')) renderPartsTab();
+    renderPartsTab();
   } catch (err) {
     setStatus('Chyba CAD: ' + err.message, 'err');
     console.error(err);
@@ -283,8 +299,22 @@ async function runCad() {
 
 // ---------- stavba scény ----------
 const CATS = {
-  telo: 'Tělo a kryty', lidar: 'Lidary', elektronika: 'Elektronika', baterie: 'Baterie', konektory: 'Konektory, anténa, libela', noha: 'Nohy s přísavkami',
+  telo: 'Tělo a kryty', tesneni: 'Těsnění', spoj: 'Šrouby a závitové vložky', lidar: 'Lidary', elektronika: 'Elektronika',
+  baterie: 'Baterie', kabely: 'Kabeláž', konektory: 'Konektory, anténa, libela', noha: 'Nohy s přísavkami',
 };
+const SRC_LABEL = { tisk: '3D tisk', nakup: 'nákup', pcb: 'osazená deska', kabel: 'kabeláž', tesneni: 'těsnění' };
+
+// svislý posun lidaru v rozloženém pohledu (v1 nahoru o 50 mm, v2 podle CAD)
+function lidarEx(vr, role) {
+  const p = cadStore[vr].data?.[role]?.parts.find(q => /^lidar_J\d$/.test(q.name));
+  return p?.ex ? p.ex[1] : 50;
+}
+// nejhlubší posun dílu dolů při plném rozložení (o tolik se jednotka na stole zvedne)
+function maxDown(vr) {
+  const parts = cadStore[vr].data?.master.parts;
+  if (!parts?.[0]?.ex) return 240;
+  return Math.max(0, ...parts.map(p => -p.ex[1]));
+}
 
 // v1: díly nohy postupně od těla dolů (úroveň × krok)
 const V1_FOOT_LEVEL = { valec: 1, valec_paska: 1.4, drzak: 2.6, priruba: 3.2, priruba_sroub: 3.4, pumpa: 3.8, pumpa_krouzek: 3.8, pumpa_pist: 4.2, prisavka: 5.2, prisavka_okraj: 5.4 };
@@ -333,12 +363,13 @@ function buildUnitGroup(role, vr = state.variant, ghost = false) {
     const g = cadToGroup(data[role], { edges: state.edges || ghost, role });
     for (const m of g.children) {
       if (!m.isMesh) continue;
+      const key = `${vr}:${role}:${m.userData.idx}`;
       const o = explodeOffset(m.userData, state.explode);
-      m.position.set(...o);
-      m.userData.edges?.position.set(...o);
-      const vis = !state.hidden[m.userData.cat];
-      m.visible = vis;
-      if (m.userData.edges) m.userData.edges.visible = vis;
+      const mv = ghost ? null : ui3d.moved.get(key);
+      Object.assign(m.userData, { key, vr, base: o });
+      m.position.set(o[0] + (mv?.[0] ?? 0), o[1] + (mv?.[1] ?? 0), o[2] + (mv?.[2] ?? 0));
+      m.visible = !state.hidden[m.userData.cat]
+        && (ghost || (!ui3d.hiddenParts.has(key) && (!ui3d.isolated || ui3d.isolated.has(key))));
       if (!ghost) pickables.push(m);
     }
     u.add(g);
@@ -377,7 +408,8 @@ function addOverlays(u, role, vr = state.variant, ghost = false) {
   // na stole jen naznačit směr, na autě celý dosah
   const reach = state.scene === 'stul' ? Math.min(v('lidar', 'dosah'), 450) : v('lidar', 'dosah');
   const names = winNames(vr, role);
-  const lift = 95 * state.explode;
+  // v1: kryt s popisky odjíždí nahoru; v2: kryt zůstává, díly jdou dolů
+  const lift = (cadStore[vr].data?.[role]?.parts[0]?.ex ? 0 : 95) * state.explode;
   for (const p of parts) {
     const cx = p.x0 + p.len / 2;
     if (p.kind === 'window') {
@@ -386,7 +418,7 @@ function addOverlays(u, role, vr = state.variant, ghost = false) {
         const r = Math.tan(THREE.MathUtils.degToRad(1.8)) * reach;
         const cone = new THREE.Mesh(new THREE.ConeGeometry(r, reach, 32, 1, true), beamMat);
         cone.rotation.x = Math.PI; // špička u lidaru
-        const by = H + 50 * state.explode; // paprsek vychází z (posunutého) lidaru
+        const by = H + lidarEx(vr, role) * state.explode; // paprsek vychází z (posunutého) lidaru
         cone.position.set(cx, by + reach / 2, 0);
         cone.userData.noExport = true;
         const core = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(cx, by, 0), new THREE.Vector3(cx, by + reach, 0)]), beamCoreMat);
@@ -428,6 +460,7 @@ const connPoint = (role, side = 1) => [
 ];
 
 function rebuild(resetCamera = false, askCad = true) {
+  detachGizmo();
   scene.remove(content);
   disposeTree(content);
   content = new THREE.Group();
@@ -437,8 +470,11 @@ function rebuild(resetCamera = false, askCad = true) {
 
   const vr = state.variant;
   const overlay = state.compareMode === 'overlay';
-  const pairs = [[vr, buildUnitGroup('master', vr), buildUnitGroup('slave', vr)]];
-  for (const id of compared()) pairs.push([id, buildUnitGroup('master', id, overlay), buildUnitGroup('slave', id, overlay)]);
+  // jednotky k zobrazení: obě, nebo jen master / slave (druhá se vůbec nestaví)
+  const want = (role) => state.unit === 'both' || state.unit === role;
+  const mk = (id, ghost) => [id, want('master') ? buildUnitGroup('master', id, ghost) : null, want('slave') ? buildUnitGroup('slave', id, ghost) : null];
+  const pairs = [mk(vr, false)];
+  for (const id of compared()) pairs.push(mk(id, overlay));
   if (compared().length) ensureCompareCad();
   const [, master, slave] = pairs[0];
   const total = layout(P).total;
@@ -459,10 +495,10 @@ function rebuild(resetCamera = false, askCad = true) {
   pairs.forEach(([pv, m, sl], i) => placePair(pv, m, sl, overlay ? 0 : i));
   applyEnvironment();
   for (const [pv, m, sl] of pairs) {
-    content.add(m, sl);
+    for (const u of [m, sl]) if (u) content.add(u);
     content.updateMatrixWorld(true);
     // kabely má jen v1, v2 je bezdrátová
-    if (state.cable && pv === 'v1' && !(overlay && pv !== vr)) withParams(PV.v1, () => addCables(m, sl));
+    if (state.cable && pv === 'v1' && m && sl && !(overlay && pv !== vr)) withParams(PV.v1, () => addCables(m, sl));
   }
 
   setBodyOpacity(state.xray ? 0.22 : 1);
@@ -470,15 +506,17 @@ function rebuild(resetCamera = false, askCad = true) {
   if (askCad && cad.key !== JSON.stringify(P)) requestCad();
   // šířka přes senzory: na skutečném voze z polohy jednotek, jinak z parametru
   let carW = v('scena', 'sirka_auta') + 2 * (fh + H);
-  if (state.scene === 'auto' && carScene.car) {
+  if (state.scene === 'auto' && carScene.car && master && slave) {
     const partsBox = (u) => { const b = new THREE.Box3(); u.traverse((n) => { if (n.isMesh && n.userData.part) b.expandByObject(n); }); return b; };
     const bm = partsBox(master), bs = partsBox(slave);
     if (!bm.isEmpty() && !bs.isEmpty()) carW = bm.max.z - bs.min.z;
   }
   renderStats(total, fh, H, carW);
+  updateSection();
+  fixLabelScale();
   fitShadow();
   if (resetCamera) frame();
-  hideCard();
+  restoreSelection();
   requestRender();
 }
 
@@ -489,10 +527,11 @@ function placePair(vr, master, slave, slot) {
     const fh = footHeight(P);
     if (state.scene === 'stul') {
       // při rozložení zvednout, aby nohy nezajely pod stůl; druhý pár stojí za prvním
-      const lift = fh + 240 * state.explode;
-      const dz = slot ? -1000 : 0;
-      master.position.set(-total / 2, lift, 230 + dz);
-      slave.position.set(-total / 2, lift, -230 + dz);
+      const lift = fh + maxDown(vr) * state.explode;
+      const dz = -1000 * slot;
+      const side = state.unit === 'both' ? 230 : 0; // jedna jednotka stojí uprostřed
+      master?.position.set(-total / 2, lift, side + dz);
+      slave?.position.set(-total / 2, lift, -side + dz);
       return;
     }
     // Montáž svisle: čelo A nahoře, čelo B dole, okna ven, nohy na karoserii. Master vpravo (+Z), slave vlevo.
@@ -500,9 +539,10 @@ function placePair(vr, master, slave, slot) {
     const car = carScene.car;
     const Wc = v('scena', 'sirka_auta');
     const y = v('scena', 'vyska_montaze');
-    const px = v('scena', 'poloha_x') - (slot ? 1150 : 0);
+    const px = v('scena', 'poloha_x') - 1150 * slot;
     const down = new THREE.Vector3(0, -1, 0);
     for (const [u, s] of [[master, 1], [slave, -1]]) {
+      if (!u) continue;
       if (car && mountOnCar(u, s, car, px)) continue;
       const out = new THREE.Vector3(0, 0, s);
       u.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(down, out, new THREE.Vector3().crossVectors(down, out)));
@@ -554,7 +594,57 @@ function fitShadow() {
 // ---------- kamera ----------
 const VIEWS = {
   iso: [0.5, 0.55, 0.68], top: [0.0001, 1, 0.001], side: [0, 0.12, 1], end: [-1, 0.25, 0.0001], front: [1, 0.25, 0.0001],
+  bottom: [0.25, -1, 0.35],
 };
+
+// „Orto“ = velmi úzký zorný úhel (5°): rovnoběžné hrany zůstávají skoro rovnoběžné, ovládání se nemění
+const FOV_PERSP = 35, FOV_ORTHO = 5;
+function applyProjection(keepSize = false) {
+  const fov = state.ortho ? FOV_ORTHO : FOV_PERSP;
+  if (camera.fov === fov) return;
+  if (keepSize) {
+    const k = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / Math.tan(THREE.MathUtils.degToRad(fov / 2));
+    camera.position.sub(controls.target).multiplyScalar(k).add(controls.target);
+  }
+  camera.fov = fov;
+  camera.updateProjectionMatrix();
+  controls.update();
+  fixLabelScale();
+  requestRender();
+}
+// popisky mají pevnou velikost na obrazovce pro 35°; při jiném úhlu je přepočítat
+function fixLabelScale() {
+  const f = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / Math.tan(THREE.MathUtils.degToRad(FOV_PERSP / 2));
+  for (const root of [content, measureGroup]) {
+    root.traverse((n) => {
+      if (!n.isSprite || !n.userData.isLabel) return;
+      n.userData.bs ??= n.scale.clone();
+      n.scale.copy(n.userData.bs).multiplyScalar(f);
+    });
+  }
+}
+
+// ---------- řez ----------
+// Rovina v osách jednotky (master, jinak slave): podél těla, kolmo k oknům, napříč.
+function updateSection() {
+  const s = ui3d.section;
+  setSection(s.on);
+  if (!s.on) return;
+  const u = content.children.find(c => c.name === 'master') || content.children.find(c => c.name === 'slave');
+  if (!u) return;
+  const box = new THREE.Box3();
+  for (const m of pickables) {
+    if (m.userData.role !== u.name || !m.visible) continue;
+    box.union(m.geometry.boundingBox.clone().translate(m.position));
+  }
+  if (box.isEmpty()) return;
+  const i = 'xyz'.indexOf(s.axis);
+  const p = box.getCenter(new THREE.Vector3());
+  p.setComponent(i, THREE.MathUtils.lerp(box.min.getComponent(i) - 0.5, box.max.getComponent(i) + 0.5, s.pos));
+  const n = new THREE.Vector3().setComponent(i, s.flip ? 1 : -1);
+  u.updateMatrixWorld(true);
+  section.plane.setFromNormalAndCoplanarPoint(n.transformDirection(u.matrixWorld), p.applyMatrix4(u.matrixWorld));
+}
 let tween = null;
 
 function frame(dirKey = 'iso', target = null, animate = false) {
@@ -617,12 +707,170 @@ const ndc = new THREE.Vector2();
 let hovered = null, selected = null, downAt = null;
 const card = $('#partCard');
 
-function pick(ev) {
+function pickHit(ev) {
   const r = renderer.domElement.getBoundingClientRect();
   ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(ndc, camera);
-  const hit = ray.intersectObjects(pickables.filter(m => m.visible), false)[0];
-  return hit ? hit.object : null;
+  const hits = ray.intersectObjects(pickables.filter(m => m.visible), false);
+  // při řezu přeskočit zásahy v odříznuté části
+  return hits.find(h => !section.on || section.plane.distanceToPoint(h.point) >= 0) || null;
+}
+const pick = (ev) => pickHit(ev)?.object ?? null;
+
+// úchyt pro ruční přesun vybraného dílu (nástroj Přesun)
+const gizmo = new TransformControls(camera, renderer.domElement);
+gizmo.setSize(0.75);
+gizmo.setSpace('local');
+scene.add(gizmo.getHelper());
+let gizmoUsed = false;
+gizmo.addEventListener('dragging-changed', (e) => { controls.enabled = !e.value; if (e.value) gizmoUsed = true; });
+gizmo.addEventListener('change', () => requestRender());
+// Úchyt se nasazuje na pomocný bod ve středu dílu (geometrie dílů má počátek v počátku jednotky).
+function attachGizmo(m) {
+  gizmo.detach();
+  const c = m.geometry.boundingBox.getCenter(new THREE.Vector3());
+  const proxy = new THREE.Object3D();
+  proxy.position.copy(m.position).add(c);
+  proxy.userData = { mesh: m, center: c, noExport: true };
+  m.parent.add(proxy);
+  gizmo.attach(proxy);
+}
+function detachGizmo() {
+  const proxy = gizmo.object;
+  gizmo.detach();
+  proxy?.removeFromParent();
+}
+gizmo.addEventListener('objectChange', () => {
+  const proxy = gizmo.object;
+  const m = proxy?.userData.mesh;
+  if (!m) return;
+  m.position.copy(proxy.position).sub(proxy.userData.center);
+  const b = m.userData.base;
+  ui3d.moved.set(m.userData.key, [m.position.x - b[0], m.position.y - b[1], m.position.z - b[2]]);
+  markTree();
+});
+
+// měření: dvojice bodů ve světových souřadnicích
+const measureGroup = new THREE.Group();
+scene.add(measureGroup);
+const measureLineMat = new THREE.LineBasicMaterial({ color: 0x0b6bcb, depthTest: false, transparent: true });
+const measureDotMat = new THREE.PointsMaterial({ color: 0x0b6bcb, size: 8, sizeAttenuation: false, depthTest: false, transparent: true });
+function screenDist(a, b) {
+  const r = renderer.domElement.getBoundingClientRect();
+  const pa = a.clone().project(camera), pb = b.clone().project(camera);
+  return Math.hypot((pa.x - pb.x) * r.width / 2, (pa.y - pb.y) * r.height / 2);
+}
+function pickPoint(ev) {
+  const hit = pickHit(ev);
+  if (!hit) return null;
+  // přichytit k nejbližšímu vrcholu trojúhelníku, pokud je na obrazovce do 10 px
+  const pos = hit.object.geometry.attributes.position;
+  let best = hit.point.clone(), bd = 10;
+  for (const i of [hit.face.a, hit.face.b, hit.face.c]) {
+    const p = new THREE.Vector3().fromBufferAttribute(pos, i).applyMatrix4(hit.object.matrixWorld);
+    const d = screenDist(p, hit.point);
+    if (d < bd) { bd = d; best = p; }
+  }
+  return best;
+}
+function addMeasurePoint(ev) {
+  const p = pickPoint(ev);
+  if (!p) return;
+  const list = ui3d.measure;
+  if (!list.length || list.at(-1).b) list.push({ a: p, b: null });
+  else {
+    const m = list.at(-1);
+    m.b = p;
+    // rozklad do os jednotky (podél těla / kolmo k oknům / napříč)
+    const u = content.children.find(c => c.name === 'master') || content.children.find(c => c.name === 'slave');
+    const d = m.b.clone().sub(m.a);
+    if (u) d.applyQuaternion(u.getWorldQuaternion(new THREE.Quaternion()).invert());
+    toast(`${fmt(m.a.distanceTo(m.b))} mm · podél ${fmt(Math.abs(d.x))} · výška ${fmt(Math.abs(d.y))} · napříč ${fmt(Math.abs(d.z))}`);
+  }
+  drawMeasures();
+}
+function drawMeasures() {
+  disposeTree(measureGroup);
+  measureGroup.clear();
+  for (const m of ui3d.measure) {
+    const pts = m.b ? [m.a, m.b] : [m.a];
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const dots = new THREE.Points(geo, measureDotMat);
+    dots.renderOrder = 30;
+    measureGroup.add(dots);
+    if (!m.b) continue;
+    const line = new THREE.Line(geo.clone(), measureLineMat);
+    line.renderOrder = 29;
+    const lbl = makeLabel(`${fmt(m.a.distanceTo(m.b))} mm`, { size: 0.9, color: '#0b6bcb', strong: true });
+    lbl.position.copy(m.a).add(m.b).multiplyScalar(0.5);
+    measureGroup.add(line, lbl);
+  }
+  fixLabelScale();
+  requestRender();
+}
+function clearMeasures() { ui3d.measure.length = 0; drawMeasures(); }
+
+// ---------- výběr a práce s díly ----------
+const partLabel = (ud) => ud.label || prettyName(ud.name);
+function select(m, focus = false) {
+  if (selected && selected !== m) setHighlight(selected, false);
+  selected = m;
+  ui3d.selKey = m ? m.userData.key : null;
+  if (m) { setHighlight(m, true); showCard(m, true); } else hideCard();
+  if (m && ui3d.tool === 'move') attachGizmo(m); else detachGizmo();
+  markTree();
+  if (m && focus) focusOn([m]);
+  requestRender();
+}
+// po přestavbě scény znovu najít vybraný díl podle klíče
+function restoreSelection() {
+  const m = ui3d.selKey ? pickables.find(x => x.userData.key === ui3d.selKey && x.visible) : null;
+  if (!m) { ui3d.selKey = null; hideCard(); detachGizmo(); markTree(); return; }
+  selected = m;
+  setHighlight(m, true);
+  showCard(m, true);
+  if (ui3d.tool === 'move') attachGizmo(m);
+  markTree();
+}
+function focusOn(meshes) {
+  const box = new THREE.Box3();
+  meshes.forEach(m => box.expandByObject(m));
+  if (box.isEmpty()) return;
+  box.expandByScalar(Math.max(15, box.getSize(new THREE.Vector3()).length() * 0.45));
+  VIEWS._cur = camera.position.clone().sub(controls.target).normalize().toArray();
+  frame('_cur', box, true);
+}
+function setTool(tool) {
+  ui3d.tool = tool;
+  if (tool === 'move' && selected) attachGizmo(selected); else detachGizmo();
+  renderer.domElement.style.cursor = tool === 'measure' ? 'crosshair' : '';
+  syncTools();
+  requestRender();
+}
+function setKeysHidden(keys, hide) {
+  for (const k of keys) hide ? ui3d.hiddenParts.add(k) : ui3d.hiddenParts.delete(k);
+  if (hide && keys.includes(ui3d.selKey)) ui3d.selKey = null;
+  rebuild();
+}
+function toggleIsolate() {
+  if (ui3d.isolated) ui3d.isolated = null;
+  else if (selected) ui3d.isolated = new Set([selected.userData.key]);
+  rebuild();
+  syncTools();
+}
+function showAllParts() {
+  ui3d.hiddenParts.clear();
+  ui3d.isolated = null;
+  state.hidden = {};
+  saveUi();
+  rebuild();
+  renderPartsTab();
+  syncTools();
+}
+function resetMoved(onlySelected = false) {
+  if (onlySelected && selected) ui3d.moved.delete(selected.userData.key);
+  else ui3d.moved.clear();
+  rebuild();
 }
 
 const PRETTY = [
@@ -652,19 +900,43 @@ function showCard(mesh, pinned) {
   const bb = mesh.geometry.boundingBox;
   const s = bb.getSize(new THREE.Vector3());
   const ud = mesh.userData;
+  const moved = ui3d.moved.has(ud.key);
+  const meta = [CATS[ud.cat] ?? ud.cat, SRC_LABEL[ud.src], ud.mass >= 0.05 ? `~${fmt(ud.mass)} g` : null].filter(Boolean).join(' · ');
   card.innerHTML = `
     <div class="pc-role ${ud.role}">${ud.role}</div>
-    <div class="pc-name">${prettyName(ud.name)}</div>
-    <div class="pc-meta">${CATS[ud.cat] ?? ud.cat}</div>
+    <div class="pc-name">${partLabel(ud)}</div>
+    <div class="pc-meta">${meta}</div>
+    ${ud.spec ? `<div class="pc-spec">${ud.spec}</div>` : ''}
     <div class="pc-dims"><span><b>${fmt(s.x)}</b>délka</span><span><b>${fmt(s.y)}</b>výška</span><span><b>${fmt(s.z)}</b>šířka</span></div>
-    <div class="pc-hint">${pinned ? 'Dvojklik přiblíží · Esc zruší výběr' : 'Klik vybere díl'}</div>`;
+    ${pinned ? `<div class="pc-acts">
+      <button data-pact="hide" title="Skrýt díl (H)">Skrýt</button>
+      <button data-pact="isolate" title="Zobrazit jen tento díl (I)" class="${ui3d.isolated ? 'on' : ''}">Jen tento</button>
+      <button data-pact="move" title="Přesunout díl (G)" class="${ui3d.tool === 'move' ? 'on' : ''}">Přesunout</button>
+      ${moved ? '<button data-pact="reset" title="Vrátit díl na místo">Vrátit</button>' : ''}
+      <button data-pact="focus" title="Přiblížit (F)">Přiblížit</button>
+      ${ud.src === 'tisk' ? '<button data-pact="stl" title="STL tohoto dílu pro tisk">STL</button>' : ''}
+    </div>` : '<div class="pc-hint">Klik vybere díl</div>'}`;
   card.classList.add('on');
+  card.classList.toggle('pinned', !!pinned);
 }
-function hideCard() { card.classList.remove('on'); }
+function hideCard() { card.classList.remove('on', 'pinned'); }
+card.addEventListener('click', (e) => {
+  const act = e.target.closest('[data-pact]')?.dataset.pact;
+  if (!act || !selected) return;
+  if (act === 'hide') { setKeysHidden([selected.userData.key], true); renderPartsTab(); }
+  else if (act === 'isolate') toggleIsolate();
+  else if (act === 'move') setTool(ui3d.tool === 'move' ? 'select' : 'move');
+  else if (act === 'reset') resetMoved(true);
+  else if (act === 'focus') focusOn([selected]);
+  else if (act === 'stl') exportPartStl(selected);
+  if (selected) showCard(selected, true);
+});
 
-renderer.domElement.addEventListener('pointerdown', (e) => { downAt = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener('pointerdown', (e) => { downAt = [e.clientX, e.clientY]; gizmoUsed = false; });
 renderer.domElement.addEventListener('pointermove', (e) => {
-  if (e.buttons) return;
+  if (e.buttons || gizmo.dragging) return;
+  if (ui3d.tool === 'measure') return;
+  if (gizmo.object && gizmo.axis) return; // kurzor je nad úchytem přesunu
   const m = pick(e);
   if (m === hovered) return;
   if (hovered && hovered !== selected) setHighlight(hovered, false);
@@ -675,23 +947,16 @@ renderer.domElement.addEventListener('pointermove', (e) => {
   requestRender();
 });
 renderer.domElement.addEventListener('pointerup', (e) => {
+  if (gizmoUsed) { gizmoUsed = false; if (selected) showCard(selected, true); return; }
   if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 4) return;
-  const m = pick(e);
-  if (selected && selected !== m) setHighlight(selected, false);
-  selected = m;
-  if (m) { setHighlight(m, true); showCard(m, true); } else hideCard();
-  requestRender();
+  if (ui3d.tool === 'measure') { addMeasurePoint(e); return; }
+  if (gizmo.object && gizmo.axis) return;
+  select(pick(e));
 });
 renderer.domElement.addEventListener('dblclick', (e) => {
+  if (ui3d.tool === 'measure') return;
   const m = pick(e);
-  if (!m) return;
-  const box = new THREE.Box3().setFromObject(m);
-  box.expandByScalar(Math.max(15, box.getSize(new THREE.Vector3()).length() * 0.4));
-  const dir = camera.position.clone().sub(controls.target).normalize();
-  const key = 'iso';
-  VIEWS._cur = dir.toArray();
-  frame('_cur', box, true);
-  void key;
+  if (m) focusOn([m]);
 });
 
 // ---------- panel ----------
@@ -744,7 +1009,7 @@ function renderStats(total, fh, H, carW = lastCarW) {
 
 let lastCarW = 0;
 const GROUP_LABEL = {
-  baterie: 'Baterie',
+  baterie: 'Baterie', tesneni: 'Těsnění a šrouby základny',
   profil: 'Hliníkový profil', delky: 'Délky a okna', okno: 'Okno lidaru', lidar: 'Lidar',
   deska: 'Deska RICE', noha: 'Noha a přísavka', konektor: 'Konektor', libela: 'Libela', antena: 'Anténa', scena: 'Scéna na autě',
 };
@@ -762,7 +1027,7 @@ function renderParams() {
     det.open = q ? true : openGroups.has(g);
     det.addEventListener('toggle', () => { if (!q) det.open ? openGroups.add(g) : openGroups.delete(g); });
     const done = keys.filter(k => P[g][k].stav === 'zmereno').length;
-    const label = state.variant === 'v2' ? ({ profil: 'Tělo (plast)', deska: 'Hlavní deska', noha: 'Kloubová noha a přísavka' }[g] ?? GROUP_LABEL[g]) : GROUP_LABEL[g];
+    const label = state.variant === 'v2' ? ({ profil: 'Tělo (kryt a základna)', delky: 'Délky a polohy lidarů', okno: 'Průchod lidaru stropem', deska: 'Hlavní deska', noha: 'Noha: kloub a přísavka' }[g] ?? GROUP_LABEL[g]) : GROUP_LABEL[g];
     det.innerHTML = `<summary><span>${label ?? g}</span><em>${done}/${keys.length}</em></summary>`;
     for (const k of keys) det.appendChild(paramRow(g, k));
     root.appendChild(det);
@@ -775,7 +1040,7 @@ function paramRow(g, k) {
   const def = defaults()[g][k].v;
   const ro = readonly();
   const row = document.createElement('div');
-  const unit = k.includes('uhel') ? '°' : k === 'kapacita' ? 'mAh' : k === 'odber' ? 'W' : k === 'pocet' ? 'ks' : 'mm';
+  const unit = k.includes('uhel') ? '°' : k === 'kapacita' ? 'mAh' : k.startsWith('odber') ? 'W' : k.includes('vydrz') ? 'h' : (k === 'pocet' || k.startsWith('srouby')) ? 'ks' : 'mm';
   const changed = () => row.classList.toggle('changed', p.v !== def);
   row.className = `row ${p.stav}${ro ? ' locked' : ''}`;
   row.innerHTML = `
@@ -805,48 +1070,127 @@ function paramRow(g, k) {
   return row;
 }
 
+// Strom dílů: kategorie -> díly seskupené podle názvu. Oko skrývá, klik vybere a přiblíží.
+const openCats = new Set(['telo']);
 function renderPartsTab() {
-  const root = $('#partsList');
-  if (!cad.data) { root.innerHTML = '<p class="empty">Čekám na CAD model…</p>'; return; }
-  const counts = {};
-  for (const r of ['master', 'slave']) for (const p of cad.data[r].parts) counts[p.cat] = (counts[p.cat] || 0) + 1;
-  root.innerHTML = Object.entries(CATS).filter(([c]) => counts[c]).map(([c, label]) => `
-    <label class="cat">
-      <input type="checkbox" data-cat="${c}" ${state.hidden[c] ? '' : 'checked'} />
-      <span class="sw sw-${c}"></span><span class="cl">${label}</span><em>${counts[c] || 0}</em>
-    </label>`).join('');
-  root.querySelectorAll('[data-cat]').forEach((cb) => cb.addEventListener('change', () => {
-    state.hidden[cb.dataset.cat] = !cb.checked; saveUi(); rebuild();
-  }));
-  // seznam dílů masteru (bez opakujících se šroubků)
-  // seskupit podle čitelného názvu (např. vývodka = tělo + matice)
-  const seen = new Map();
-  for (const p of cad.data.master.parts) {
-    const k = prettyName(p.name);
-    const e = seen.get(k) || { names: new Set(), c: 0 };
-    e.names.add(p.name); e.c++;
-    seen.set(k, e);
-  }
-  $('#partsNames').innerHTML = [...seen].map(([k, e]) =>
-    `<li data-names="${[...e.names].join(' ')}"><span>${k}</span>${e.c > 1 ? `<em>${e.c}×</em>` : ''}</li>`).join('');
-  $('#partsNames').querySelectorAll('li').forEach((li) => {
-    const names = new Set(li.dataset.names.split(' '));
-    li.addEventListener('mouseenter', () => flashParts(names, true));
-    li.addEventListener('mouseleave', () => flashParts(names, false));
-    li.addEventListener('click', () => {
-      const ms = pickables.filter(m => names.has(m.userData.name) && m.userData.role === 'master');
-      if (!ms.length) return;
-      const box = new THREE.Box3();
-      ms.forEach(m => box.expandByObject(m));
-      box.expandByScalar(Math.max(20, box.getSize(new THREE.Vector3()).length() * 0.5));
-      VIEWS._cur = camera.position.clone().sub(controls.target).normalize().toArray();
-      frame('_cur', box, true);
-    });
+  const root = $('#partsTree');
+  if (!cad.data) { root.innerHTML = '<p class="empty">Čekám na CAD model…</p>'; $('#bomBox').hidden = true; return; }
+  const role = ui3d.listRole, vr = state.variant;
+  const q = ($('#partSearch').value || '').trim().toLowerCase();
+  const cats = new Map();
+  cad.data[role].parts.forEach((p, idx) => {
+    const label = p.label || prettyName(p.name);
+    if (q && !`${label} ${p.name} ${p.spec || ''}`.toLowerCase().includes(q)) return;
+    if (!cats.has(p.cat)) cats.set(p.cat, new Map());
+    const c = cats.get(p.cat);
+    if (!c.has(label)) c.set(label, { keys: [], spec: p.spec });
+    c.get(label).keys.push(`${vr}:${role}:${idx}`);
   });
+  root.innerHTML = '';
+  for (const [cat, catLabel] of Object.entries(CATS)) {
+    const c = cats.get(cat);
+    if (!c) continue;
+    const det = document.createElement('details');
+    det.className = 'pcat';
+    det.open = q ? true : openCats.has(cat);
+    det.addEventListener('toggle', () => { if (!q) det.open ? openCats.add(cat) : openCats.delete(cat); });
+    const n = [...c.values()].reduce((a, e) => a + e.keys.length, 0);
+    det.innerHTML = `<summary><i class="sw sw-${cat}"></i><span>${catLabel}</span><em>${n}</em><button class="eye${state.hidden[cat] ? ' off' : ''}" data-cat="${cat}" title="Skrýt / zobrazit kategorii" aria-label="Skrýt nebo zobrazit kategorii"></button></summary>`;
+    det.querySelector('.eye').addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      state.hidden[cat] = !state.hidden[cat];
+      saveUi(); rebuild(); markTree();
+    });
+    const ul = document.createElement('ul');
+    ul.className = 'ptree';
+    for (const [label, e] of c) {
+      const li = document.createElement('li');
+      li.dataset.keys = e.keys.join(' ');
+      li.dataset.cat = cat;
+      li.innerHTML = `<button class="eye" title="Skrýt / zobrazit" aria-label="Skrýt nebo zobrazit díl"></button><span class="pl" title="${(e.spec || '').replace(/"/g, '&quot;')}">${label}</span><i class="mv" title="Ručně posunuto">↔</i>${e.keys.length > 1 ? `<em>${e.keys.length}×</em>` : ''}`;
+      li.addEventListener('mouseenter', () => flashKeys(e.keys, true));
+      li.addEventListener('mouseleave', () => flashKeys(e.keys, false));
+      li.querySelector('.eye').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        setKeysHidden(e.keys, !e.keys.every(k => ui3d.hiddenParts.has(k)));
+      });
+      li.addEventListener('click', () => {
+        const ms = pickables.filter(m => e.keys.includes(m.userData.key) && m.visible);
+        if (!ms.length) { toast(state.unit !== 'both' && state.unit !== role ? `Jednotka ${role} není zobrazená` : 'Díl je skrytý'); return; }
+        select(ms[0]);
+        focusOn(ms);
+      });
+      ul.appendChild(li);
+    }
+    det.appendChild(ul);
+    root.appendChild(det);
+  }
+  if (!root.children.length) root.innerHTML = '<p class="empty">Nic neodpovídá hledání.</p>';
+  markTree();
+  renderBom();
 }
-function flashParts(names, on) {
-  for (const m of pickables) if (names.has(m.userData.name) && m !== selected) setHighlight(m, on);
+// stav řádků stromu (skryté, vybrané, posunuté) bez překreslení celého seznamu
+function markTree() {
+  $$('#partsTree .ptree li').forEach((li) => {
+    const keys = li.dataset.keys.split(' ');
+    const hid = keys.every(k => ui3d.hiddenParts.has(k)) || !!state.hidden[li.dataset.cat] || (ui3d.isolated && !keys.some(k => ui3d.isolated.has(k)));
+    li.classList.toggle('hid', !!hid);
+    li.classList.toggle('sel', keys.includes(ui3d.selKey));
+    li.classList.toggle('moved', keys.some(k => ui3d.moved.has(k)));
+  });
+  $$('#partsTree summary .eye').forEach(b => b.classList.toggle('off', !!state.hidden[b.dataset.cat]));
+  const sel = $('#partsTree li.sel');
+  if (sel && state.tab === 'parts') {
+    sel.closest('details').open = true;
+    sel.scrollIntoView({ block: 'nearest' });
+  }
+}
+function flashKeys(keys, on) {
+  for (const m of pickables) if (keys.includes(m.userData.key) && m !== selected) setHighlight(m, on);
   requestRender();
+}
+
+// Kusovník se skládá přímo z dílů modelu (label + spec + src), takže vždy odpovídá CAD.
+const BOM_GROUPS = [['tisk', 'Tištěné díly'], ['nakup', 'Nakupované díly'], ['tesneni', 'Těsnění'], ['pcb', 'Desky a hlavní součástky'], ['kabel', 'Kabeláž']];
+function bomRows() {
+  const rows = new Map();
+  for (const role of ['master', 'slave']) {
+    for (const p of cad.data?.[role].parts ?? []) {
+      if (!p.src || (p.spec || '').startsWith('součást')) continue;
+      const key = `${p.src}|${p.label}|${p.spec || ''}`;
+      if (!rows.has(key)) rows.set(key, { src: p.src, label: p.label, spec: p.spec || '', master: 0, slave: 0 });
+      rows.get(key)[role]++;
+    }
+  }
+  return [...rows.values()];
+}
+function renderBom() {
+  const rows = bomRows();
+  $('#bomBox').hidden = !rows.length;
+  if (!rows.length) return;
+  $('#bom').innerHTML = BOM_GROUPS.map(([src, title]) => {
+    const g = rows.filter(r => r.src === src);
+    if (!g.length) return '';
+    return `<details class="bomg"><summary><span>${title}</span><em>${g.length}</em></summary><table><thead><tr><th>Díl</th><th>M</th><th>S</th></tr></thead><tbody>${
+      g.map(r => `<tr><td><b>${r.label}</b>${r.spec ? `<small>${r.spec}</small>` : ''}</td><td>${r.master || '–'}</td><td>${r.slave || '–'}</td></tr>`).join('')}</tbody></table></details>`;
+  }).join('');
+}
+function bomCsv() {
+  const esc = (s) => `"${String(s).replace(/"/g, '""')}"`;
+  const title = Object.fromEntries(BOM_GROUPS);
+  const lines = [['skupina', 'dil', 'specifikace', 'master_ks', 'slave_ks', 'par_ks'].join(';')];
+  for (const [src] of BOM_GROUPS) for (const r of bomRows().filter(x => x.src === src)) {
+    lines.push([title[src], r.label, r.spec, r.master, r.slave, r.master + r.slave].map(esc).join(';'));
+  }
+  return '﻿' + lines.join('\r\n');
+}
+async function exportPartStl(mesh) {
+  const ud = mesh.userData;
+  try {
+    const name = `clearway-${ud.vr}-${ud.name}.stl`;
+    download(name, await cadStlPart(clone(PV[ud.vr]), ud.role, ud.vr, ud.idx), 'model/stl');
+    toast(`Staženo ${name}`);
+  } catch (err) { toast('Export selhal: ' + err.message, true); }
 }
 
 function renderPhotos() {
@@ -893,6 +1237,7 @@ function renderVariantUi() {
     if (state.variant === b.dataset.variant) return;
     state.variant = b.dataset.variant;
     P = PV[state.variant];
+    ui3d.selKey = null; ui3d.isolated = null;
     syncCad();
     saveUi(); syncControls(); renderParams(); renderPartsTab(); rebuild(true);
   }));
@@ -925,14 +1270,70 @@ function syncControls() {
   $('#explode').value = state.explode;
   $$('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === state.tab));
   $$('.tabpane').forEach(p => p.hidden = p.id !== `tab-${state.tab}`);
+  $$('[data-unit]').forEach(b => b.classList.toggle('on', b.dataset.unit === state.unit));
+  $$('[data-prole]').forEach(b => b.classList.toggle('on', b.dataset.prole === ui3d.listRole));
+  syncTools();
 }
+function syncTools() {
+  $$('[data-tool]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tool === ui3d.tool)));
+  const s = ui3d.section;
+  $('[data-act="section"]').setAttribute('aria-pressed', String(s.on));
+  $('[data-act="isolate"]').setAttribute('aria-pressed', String(!!ui3d.isolated));
+  $('#sectionPanel').hidden = !s.on;
+  $$('[data-sax]').forEach(b => b.classList.toggle('on', b.dataset.sax === s.axis));
+  $('#sectionPos').value = s.pos;
+  $('#sectionFlip').checked = s.flip;
+  $('#measureClear').hidden = !(ui3d.tool === 'measure' || ui3d.measure.length);
+}
+function toggleSection(on = !ui3d.section.on) {
+  ui3d.section.on = on;
+  updateSection();
+  syncTools();
+  requestRender();
+}
+function toggleHelp(on = $('#help').hidden) { $('#help').hidden = !on; }
 
 $$('[data-scene]').forEach((b) => b.addEventListener('click', () => {
   state.scene = b.dataset.scene; saveUi(); syncControls(); rebuild(true);
 }));
 $$('[data-toggle]').forEach((b) => b.addEventListener('click', () => {
-  const k = b.dataset.toggle; state[k] = !state[k]; saveUi(); syncControls(); rebuild();
+  const k = b.dataset.toggle; state[k] = !state[k]; saveUi(); syncControls();
+  if (k === 'ortho') applyProjection(true); else rebuild();
 }));
+$$('[data-unit]').forEach((b) => b.addEventListener('click', () => {
+  state.unit = b.dataset.unit; saveUi(); syncControls(); rebuild(true);
+}));
+$$('[data-tool]').forEach((b) => b.addEventListener('click', () => setTool(b.dataset.tool)));
+$$('[data-act]').forEach((b) => b.addEventListener('click', () => {
+  const a = b.dataset.act;
+  if (a === 'section') toggleSection();
+  else if (a === 'isolate') { if (ui3d.isolated || selected) toggleIsolate(); else toast('Nejdřív vyber díl'); }
+  else if (a === 'showall') showAllParts();
+  else if (a === 'resetmoved') { resetMoved(); toast('Díly vráceny na místo'); }
+  else if (a === 'help') toggleHelp();
+}));
+$$('[data-sax]').forEach((b) => b.addEventListener('click', () => { ui3d.section.axis = b.dataset.sax; updateSection(); syncTools(); requestRender(); }));
+$('#sectionPos').addEventListener('input', (e) => { ui3d.section.pos = +e.target.value; updateSection(); requestRender(); });
+$('#sectionFlip').addEventListener('change', (e) => { ui3d.section.flip = e.target.checked; updateSection(); requestRender(); });
+$('#measureClear').addEventListener('click', () => { clearMeasures(); syncTools(); });
+$('#help').addEventListener('click', (e) => { if (e.target.closest('.close') || e.target === $('#help')) toggleHelp(false); });
+$$('[data-prole]').forEach((b) => b.addEventListener('click', () => { ui3d.listRole = b.dataset.prole; syncControls(); renderPartsTab(); }));
+$('#partSearch').addEventListener('input', renderPartsTab);
+$('#showAll').addEventListener('click', showAllParts);
+$('#resetMoved').addEventListener('click', () => { resetMoved(); toast('Díly vráceny na místo'); });
+$('#bomCsv').addEventListener('click', () => { download(`clearway-${state.variant}-kusovnik.csv`, bomCsv(), 'text/csv'); toast('Kusovník stažen'); });
+$('#stepPrinted').addEventListener('click', async (e) => {
+  const btn = e.currentTarget, label = btn.innerHTML;
+  if (!cad.data?.master.parts.some(p => p.src === 'tisk')) { toast('Tato verze nemá označené tištěné díly'); return; }
+  btn.disabled = true; btn.textContent = 'Exportuji…';
+  try {
+    const name = `clearway-${state.variant}-tistene-dily.step`;
+    download(name, await cadStepOnly(clone(P), 'master', state.variant, 'tisk'), 'model/step');
+    toast(`Staženo ${name}`);
+  } catch (err) { toast('Export selhal: ' + err.message, true); }
+  finally { btn.disabled = false; btn.innerHTML = label; }
+});
+$('#stlSelected').addEventListener('click', () => { if (selected) exportPartStl(selected); else toast('Nejdřív vyber díl v modelu'); });
 $('#explode').addEventListener('input', (e) => { state.explode = +e.target.value; saveUi(); rebuild(); });
 $$('[data-view]').forEach((b) => b.addEventListener('click', () => frame(b.dataset.view, null, true)));
 $$('[data-tab]').forEach((b) => b.addEventListener('click', () => { state.tab = b.dataset.tab; saveUi(); syncControls(); }));
@@ -991,9 +1392,12 @@ function toast(text, err = false) {
 
 window.addEventListener('keydown', (e) => {
   if (e.target.closest('input, textarea, select')) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (e.key === 'Escape') {
     if (lb.classList.contains('on')) return closeLightbox();
-    if (selected) { setHighlight(selected, false); selected = null; hideCard(); requestRender(); }
+    if (!$('#help').hidden) return toggleHelp(false);
+    if (ui3d.tool !== 'select') return setTool('select');
+    if (selected) select(null);
     return;
   }
   if (lb.classList.contains('on')) {
@@ -1001,13 +1405,29 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') openLightbox(lbIndex + 1);
     return;
   }
-  const map = { f: 'iso', 1: 'iso', 2: 'top', 3: 'side', 4: 'end' };
-  if (map[e.key.toLowerCase()]) frame(map[e.key.toLowerCase()], null, true);
+  const k = e.key.toLowerCase();
+  const views = { 1: 'iso', 2: 'top', 3: 'side', 4: 'end', 5: 'bottom' };
+  if (views[k]) return frame(views[k], null, true);
+  if (e.key === '?') return toggleHelp();
+  if (k === 'f') return selected ? focusOn([selected]) : frame('iso', null, true);
+  if (k === 'v') return setTool('select');
+  if (k === 'g') return setTool(ui3d.tool === 'move' ? 'select' : 'move');
+  if (k === 'm') return setTool(ui3d.tool === 'measure' ? 'select' : 'measure');
+  if (k === 'x') return toggleSection();
+  if (k === 'o') { state.ortho = !state.ortho; saveUi(); syncControls(); return applyProjection(true); }
+  if (k === 'h' && e.shiftKey) return showAllParts();
+  if ((k === 'h' || e.key === 'Delete' || e.key === 'Backspace') && selected) { setKeysHidden([selected.userData.key], true); return renderPartsTab(); }
+  if (k === 'i' && (selected || ui3d.isolated)) return toggleIsolate();
+  if (k === 'r') { resetMoved(!e.shiftKey && !!selected); if (selected) showCard(selected, true); }
 });
 
 // ladění z konzole prohlížeče
-window.__clearway = { scene, camera, controls, get content() { return content; }, get params() { return P; } };
+window.__clearway = {
+  scene, camera, controls, ui3d, select, setTool, toggleSection, rebuild,
+  get content() { return content; }, get params() { return P; }, get pickables() { return pickables; },
+};
 
+applyProjection(false);
 syncControls();
 renderParams();
 renderPhotos();

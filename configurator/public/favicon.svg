@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22262e"/><stop offset="1" stop-color="#0d0f13"/></linearGradient>
+    <linearGradient id="beamL" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#ff453a"/><stop offset="1" stop-color="#ff453a" stop-opacity=".15"/></linearGradient>
+    <linearGradient id="beamR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff453a"/><stop offset="1" stop-color="#ff453a" stop-opacity=".15"/></linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#bg)"/>
+  <!-- vůz shora: dva senzory po stranách -->
+  <rect x="25" y="13" width="14" height="38" rx="5.5" fill="#f4f6f8" opacity=".14"/>
+  <rect x="22.5" y="18" width="4.5" height="28" rx="2.25" fill="#f4f6f8"/>
+  <rect x="37" y="18" width="4.5" height="28" rx="2.25" fill="#f4f6f8"/>
+  <!-- paprsky lidarů do stran -->
+  <g stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M19 23H9M19 32H5M19 41H9" stroke="url(#beamL)"/>
+    <path d="M45 23h10M45 32h14M45 41h10" stroke="url(#beamR)"/>
+  </g>
+</svg>

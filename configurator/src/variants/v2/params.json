@@ -1,74 +1,89 @@
 {
-  "_info": "ClearWay v2 – detailní koncept. Jedna jednotka pro master i slave, tělo IP67 (skořepina + vana, šrouby do insertů, O-kroužky), 3× 21700 na ≥ 12 h, modem jako vyměnitelná karta, jeden vodotěsný USB-C, kloubové nohy s vakuovou přísavkou. Lidary a jejich rozteč jako v1.",
+  "_info": "ClearWay v2, revize 2 – stavební koncept. Kryt z jednoho dílu + základna s jedním obvodovým těsněním, 4× 21700, modem na kartě Mini PCIe pod servisním víčkem, vodotěsný USB-C, nohy s kulovým kloubem a přísavkou z v1. Lidary a jejich rozteč jako v1. v1 je archiv ve variants/v1 a nemění se.",
   "profil": {
     "sirka": {
-      "v": 60,
+      "v": 64,
       "stav": "koncept",
-      "popis": "Šířka těla (v1: 80)"
+      "popis": "Šířka těla (v1: 80); dva články 21700 vedle sebe + příruba těsnění"
     },
     "vyska": {
-      "v": 32,
+      "v": 34,
       "stav": "koncept",
-      "popis": "Výška těla bez nohou (v1: 40)"
+      "popis": "Výška těla bez nohou (v1: 40); lidar 21 mm + konektor + základna"
     },
     "stena": {
       "v": 2.5,
       "stav": "koncept",
-      "popis": "Tloušťka stěny plastu (PA12 / ASA)"
+      "popis": "Tloušťka bočnic krytu (PA12)"
+    },
+    "strop": {
+      "v": 2.5,
+      "stav": "koncept",
+      "popis": "Tloušťka stropu krytu (vnější plocha s okny)"
+    },
+    "zakladna": {
+      "v": 3,
+      "stav": "koncept",
+      "popis": "Tloušťka základny"
     },
     "zaobleni": {
-      "v": 8,
+      "v": 5,
       "stav": "koncept",
-      "popis": "Zaoblení podélných hran"
+      "popis": "Zaoblení svislých rohů krytu a základny"
     }
   },
   "delky": {
     "celkova": {
-      "v": 508,
+      "v": 516,
       "stav": "koncept",
-      "popis": "Celková délka čelo–čelo (v1: 506; určuje ji rozteč lidarů z v1)"
+      "popis": "Celková délka (v1: 506); určuje ji rozteč lidarů z v1"
     },
     "cep": {
-      "v": 10,
+      "v": 3,
       "stav": "koncept",
-      "popis": "Tloušťka čela (duté, s límcem 6 mm do těla)"
+      "popis": "Tloušťka čelních stěn krytu"
     },
     "modul_okna": {
       "v": 26,
       "stav": "koncept",
-      "popis": "Délka okna podél těla vč. okolí"
+      "popis": "Zóna lidaru podél těla (třmen)"
     },
     "okno_1": {
-      "v": 29,
+      "v": 32,
       "stav": "koncept",
-      "popis": "Střed okna 1 od čela A (nahoře na voze)"
+      "popis": "Střed lidaru J1 od čela A (nahoře na voze)"
     },
     "okno_2": {
-      "v": 181,
+      "v": 184,
       "stav": "koncept",
-      "popis": "Střed okna 2 od čela A (rozteč jako v1: 152)"
+      "popis": "Střed lidaru J2 od čela A (rozteč jako v1: 152)"
     },
     "okno_3": {
-      "v": 339,
+      "v": 342,
       "stav": "koncept",
-      "popis": "Střed okna 3 od čela A (rozteč jako v1: 158)"
+      "popis": "Střed lidaru J3 od čela A (rozteč jako v1: 158)"
     },
     "okno_4": {
-      "v": 479,
+      "v": 482,
       "stav": "koncept",
-      "popis": "Střed okna 4 od čela A (rozteč jako v1: 140)"
+      "popis": "Střed lidaru J4 od čela A (rozteč jako v1: 140)"
     }
   },
   "okno": {
     "delka": {
-      "v": 35.4,
-      "stav": "zmereno",
-      "popis": "Delší strana okna (napříč), stejný lidar jako v1"
+      "v": 35.6,
+      "stav": "koncept",
+      "popis": "Průchod lidaru stropem napříč (obrys lidaru + 0,3 mm na stranu; před výrobou změřit lidar)"
     },
     "sirka": {
-      "v": 19.5,
-      "stav": "zmereno",
-      "popis": "Kratší strana okna (podél těla)"
+      "v": 19.1,
+      "stav": "koncept",
+      "popis": "Průchod lidaru stropem podél těla"
+    },
+    "zapusteni": {
+      "v": 0.8,
+      "stav": "koncept",
+      "popis": "Zapuštění čela lidaru pod vnější plochu (ochrana čočky)"
     }
   },
   "lidar": {
@@ -94,27 +109,32 @@
     }
   },
   "deska": {
-    "sirka": {
-      "v": 44,
-      "stav": "koncept",
-      "popis": "Hlavní deska napříč (mezi sloupky šroubů)"
-    },
     "delka": {
-      "v": 80,
+      "v": 100,
       "stav": "koncept",
       "popis": "Hlavní deska podél těla"
+    },
+    "sirka": {
+      "v": 40,
+      "stav": "koncept",
+      "popis": "Hlavní deska napříč"
     },
     "tloustka": {
       "v": 1.6,
       "stav": "koncept",
       "popis": ""
+    },
+    "poloha_x": {
+      "v": 100,
+      "stav": "koncept",
+      "popis": "Střed hlavní desky od čela A (segment A, nad servisním víčkem)"
     }
   },
   "baterie": {
     "pocet": {
-      "v": 3,
+      "v": 4,
       "stav": "koncept",
-      "popis": "Počet článků 21700 (1S3P: 2 v segmentu A, 1 v segmentu C)"
+      "popis": "Počet článků 21700 (1S4P: paket 1S2P v segmentu B a v segmentu C)"
     },
     "prumer": {
       "v": 21.7,
@@ -134,12 +154,12 @@
     "odber_master": {
       "v": 3.2,
       "stav": "koncept",
-      "popis": "Odběr masteru ve W (4× TFmini Plus 5 V, ESP32-S3, modem LTE-M, GNSS)"
+      "popis": "Odběr masteru ve W (4× TFmini Plus, ESP32-S3, GNSS, modem LTE-M)"
     },
     "odber_slave": {
       "v": 2.8,
       "stav": "koncept",
-      "popis": "Odběr slave ve W (4× TFmini Plus 5 V, ESP32-S3, ESP-NOW)"
+      "popis": "Odběr slave ve W (4× TFmini Plus, ESP32-S3)"
     },
     "pozadovana_vydrz": {
       "v": 12,
@@ -147,46 +167,58 @@
       "popis": "Požadovaná výdrž v hodinách"
     }
   },
+  "tesneni": {
+    "prumer_snury": {
+      "v": 2,
+      "stav": "koncept",
+      "popis": "Průměr silikonové šňůry obvodového těsnění (drážka 2,0 × 1,5 mm)"
+    },
+    "srouby_na_stranu": {
+      "v": 9,
+      "stav": "koncept",
+      "popis": "Počet šroubů základny na jedné straně (rozteč ~61 mm)"
+    }
+  },
   "noha": {
     "odsazeni_predni": {
-      "v": 70,
+      "v": 71,
       "stav": "koncept",
       "popis": "Střed přední nohy od čela B (dole)"
     },
     "odsazeni_zadni": {
-      "v": 70,
+      "v": 178,
       "stav": "koncept",
-      "popis": "Střed zadní nohy od čela A (nahoře)"
-    },
-    "valec_prumer": {
-      "v": 18,
-      "stav": "koncept",
-      "popis": "Dřík nohy"
+      "popis": "Střed zadní nohy od čela A (nahoře), za servisním víčkem"
     },
     "kloub_vyska": {
-      "v": 34,
+      "v": 17,
       "stav": "koncept",
-      "popis": "Od spodku těla ke středu koule (vč. rychloupínáku)"
+      "popis": "Od spodku základny ke středu koule"
     },
     "kloub_prumer": {
-      "v": 22,
+      "v": 18,
       "stav": "koncept",
       "popis": "Průměr koule kloubu"
     },
-    "drzak_vyska": {
+    "cep_delka": {
       "v": 16,
       "stav": "koncept",
-      "popis": "Od středu koule k základně přísavky"
+      "popis": "Od středu koule k adaptéru přísavky"
+    },
+    "drzak_vyska": {
+      "v": 46.5,
+      "stav": "koncept",
+      "popis": "Od středu koule ke gumě přísavky (čep 16 + adaptér 4 + tělo přísavky 26,5 změřené na v1)"
     },
     "prisavka_prumer": {
-      "v": 100,
-      "stav": "koncept",
-      "popis": "Vakuová přísavka s pumpičkou a indikátorem"
+      "v": 116.6,
+      "stav": "zmereno",
+      "popis": "Průměr přísavky (stejná jako ve v1)"
     },
     "prisavka_vyska": {
-      "v": 18,
-      "stav": "koncept",
-      "popis": "Výška přísavky"
+      "v": 22,
+      "stav": "zmereno",
+      "popis": "Výška gumy přísavky (v1)"
     },
     "kloub_uhel": {
       "v": 0,

@@ -20,6 +20,9 @@ function call(msg) {
 export const cadBuild = (params, variant = 'v1') => call({ type: 'build', params, variant });
 export const cadStep = (params, role, variant = 'v1') => call({ type: 'step', params, role, variant }).then(d => d.result);
 export const cadStl = (params, role, variant = 'v1') => call({ type: 'stl', params, role, variant }).then(d => d.result);
+// jen díly s daným zdrojem (např. 'tisk'), nebo jeden díl podle indexu
+export const cadStepOnly = (params, role, variant, only) => call({ type: 'step', params, role, variant, only }).then(d => d.result);
+export const cadStlPart = (params, role, variant, index) => call({ type: 'stlPart', params, role, variant, index }).then(d => d.result);
 
 // ---------- materiály ----------
 
@@ -77,14 +80,66 @@ const DEF = {
   joint: () => phys({ color: '#7b4fd6', roughness: 0.35, clearcoat: 0.5 }),
   led: () => phys({ color: '#ff4b3a', emissive: '#ff2a1a', emissiveIntensity: 2 }),
   ledGreen: () => phys({ color: '#33d17a', emissive: '#1fe070', emissiveIntensity: 2 }),
+  // --- v2 ---
+  pa12: () => addGrain(phys({ color: '#c9cbce', roughness: 0.84, sheen: 0.25, sheenRoughness: 0.9 }), { amount: 0.05 }),
+  pa12Dark: () => addGrain(phys({ color: '#3b3d41', roughness: 0.86, sheen: 0.2, sheenRoughness: 0.9 }), { amount: 0.06 }),
+  silicone: () => phys({ color: '#cf4a32', roughness: 0.5, sheen: 0.4, sheenRoughness: 0.5 }),
+  foam: () => phys({ color: '#2a2b2d', roughness: 1 }),
+  steel: () => phys({ color: '#b8bcc0', metalness: 1, roughness: 0.3 }),
+  cell: () => phys({ color: '#1f8fa3', roughness: 0.32, clearcoat: 0.7, clearcoatRoughness: 0.2 }),
+  fishpaper: () => phys({ color: '#4a6b57', roughness: 0.85 }),
+  kapton: () => phys({ color: '#c98a1b', roughness: 0.28, clearcoat: 0.5 }),
+  fpc: () => phys({ color: '#b8741a', roughness: 0.4, metalness: 0.25, clearcoat: 0.4 }),
+  ceramic: () => phys({ color: '#e6dfcc', roughness: 0.55 }),
+  green: () => phys({ color: '#2f9e55', roughness: 0.45 }),
+  ledRing: () => phys({ color: '#33d17a', emissive: '#1fe070', emissiveIntensity: 1.6 }),
 };
+
+// ---------- řez ----------
+// Rovina řezu sdílená všemi CAD materiály. Odvrácené plochy se při řezu kreslí plnou barvou dílu,
+// takže řez vypadá jako plný materiál, ne jako dutá skořepina.
+export const section = { plane: new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0), on: false };
+const capOn = { value: 0 };
+function withCap(mat) {
+  const prev = mat.onBeforeCompile;
+  const prevKey = mat.customProgramCacheKey;
+  const hasPrevKey = prevKey !== THREE.Material.prototype.customProgramCacheKey;
+  const cap = { value: new THREE.Color(mat.color).multiplyScalar(0.62) };
+  mat.onBeforeCompile = (sh, r) => {
+    if (prev) prev.call(mat, sh, r);
+    sh.uniforms.uCapOn = capOn;
+    sh.uniforms.uCapColor = cap;
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform float uCapOn;\nuniform vec3 uCapColor;')
+      .replace('#include <dithering_fragment>', '#include <dithering_fragment>\nif (uCapOn > 0.5 && !gl_FrontFacing) gl_FragColor = vec4(uCapColor, gl_FragColor.a);');
+  };
+  mat.customProgramCacheKey = () => `${hasPrevKey ? prevKey.call(mat) : 'plain'}|cap`;
+  return mat;
+}
+function applySection(m) {
+  m.clippingPlanes = section.on ? [section.plane] : null;
+  m.side = section.on ? THREE.DoubleSide : THREE.FrontSide;
+  m.needsUpdate = true;
+}
+export function setSection(on) {
+  section.on = on;
+  capOn.value = on ? 1 : 0;
+  for (const m of mats.values()) applySection(m);
+  for (const m of hiMats.values()) applySection(m);
+  edgeMat.clippingPlanes = on ? [section.plane] : null;
+  edgeMat.needsUpdate = true;
+}
 // Materiály těla, které se zprůhlední v režimu rentgen
-const BODY = new Set(['alu', 'print', 'printDark', 'cap', 'glass']);
+const BODY = new Set(['alu', 'print', 'printDark', 'cap', 'glass', 'pa12', 'pa12Dark']);
 const mats = new Map();
 const hiMats = new Map();
 
 export function material(key, color) {
-  if (!mats.has(key)) mats.set(key, DEF[key] ? DEF[key]() : phys({ color: color || '#888', roughness: 0.6 }));
+  if (!mats.has(key)) {
+    const m = withCap(DEF[key] ? DEF[key]() : phys({ color: color || '#888', roughness: 0.6 }));
+    if (section.on) applySection(m);
+    mats.set(key, m);
+  }
   return mats.get(key);
 }
 
@@ -110,6 +165,7 @@ export function setHighlight(mesh, on) {
       h.customProgramCacheKey = base.customProgramCacheKey;
       h.emissive = new THREE.Color('#2f7cf6');
       h.emissiveIntensity = 0.55;
+      h.clippingPlanes = base.clippingPlanes; // sdílená rovina řezu (clone by ji zkopíroval)
       hiMats.set(base, h);
     }
     mesh.material = hiMats.get(base);
@@ -122,7 +178,7 @@ export function setHighlight(mesh, on) {
 export function cadToGroup(unitResult, { edges = true, role } = {}) {
   const g = new THREE.Group();
   const total = unitResult.total;
-  for (const p of unitResult.parts) {
+  unitResult.parts.forEach((p, idx) => {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(p.vertices, 3));
     geo.setAttribute('normal', new THREE.BufferAttribute(p.normals, 3));
@@ -133,16 +189,21 @@ export function cadToGroup(unitResult, { edges = true, role } = {}) {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     const cx = (geo.boundingBox.min.x + geo.boundingBox.max.x) / 2;
-    mesh.userData = { part: true, name: p.name, cat: p.cat, role, end: cx < total / 2 ? 0 : 1, ex: p.ex };
+    mesh.userData = {
+      part: true, idx, name: p.name, cat: p.cat, mat: p.mat, role, end: cx < total / 2 ? 0 : 1,
+      ex: p.ex, label: p.label, spec: p.spec, src: p.src, mass: p.mass,
+    };
     g.add(mesh);
     if (edges && p.lines.length) {
+      // hrany jsou potomek dílu: hýbou se a skrývají s ním
       const eg = new THREE.BufferGeometry();
       eg.setAttribute('position', new THREE.BufferAttribute(p.lines, 3));
       const ls = new THREE.LineSegments(eg, edgeMat);
       ls.userData = { noExport: true, edgeOf: mesh };
+      ls.raycast = () => {};
       mesh.userData.edges = ls;
-      g.add(ls);
+      mesh.add(ls);
     }
-  }
+  });
   return g;
 }
