@@ -12,6 +12,9 @@ npm run dev      # http://localhost:5174
 
 - `src/variants/v1/params.json`: rozměry stávajícího zařízení (archiv, tag `v1-archiv`, v UI jen pro čtení).
 - `src/variants/v2/params.json` + `src/cad/parts-v2.js`: návrh v2 (koncept), popsaný v `docs/navrh-v2.md`.
+- `src/variants/v3/params.json` + `src/cad/parts-v3.js`: experiment v3, střešní skener, popsaný v `docs/navrh-v3.md`.
+- `src/scan.js`: ulice s překážkami a simulace průjezdu v3 (paprsky přes BVH, volná šířka, podjezdná výška).
+- `src/truck.js`: obecný popelářský vůz pro scénu „Popelář“.
 - Každý parametr má `v` (mm / °) a `stav`:
   `odhad` (z fotek), `zmereno` (posuvkou), `koncept` (navržená úprava).
 - `src/cad/parts.js`: CAD díly (U profil s drážkami, kryty A/B/C, rámečky oken se stadionovým
@@ -35,7 +38,7 @@ npm run dev      # http://localhost:5174
   Zobrazit vše (Shift+H), Vrátit posunuté díly (Shift+R), Nápověda (?).
 - H nebo Delete skryje vybraný díl. Skrytí, posuny a měření se neukládají, jsou jen pro prohlížení.
 - Pohledy 1–5 (Izo, Shora, Bok, Čelo, Zdola), F přiblíží výběr, O přepne rovnoběžné promítání.
-- Nahoře: scéna (stůl / auto), verze (v1 archiv / v2 koncept), jednotka (obě / master / slave), porovnání verzí.
+- Nahoře: scéna (stůl / auto / popelář), verze (v1 archiv / v2 koncept / v3 střešní skener), jednotka (obě / master / slave, u v3 není), porovnání verzí.
 - Spodní lišta: paprsky, popisky, kóty, hrany, rentgen, kabely, porovnat, rozložený pohled.
 - Záložka Díly: strom dílů s hledáním a okem u každého dílu, pod ním kusovník složený z modelu (CSV).
 - Záložka Export: STEP a STL celé jednotky, STEP jen tištěných dílů, STL vybraného dílu, parametry, snímek.
@@ -45,6 +48,8 @@ npm run dev      # http://localhost:5174
 - **v1 · archiv**: stávající zařízení, změřené. Jen pro čtení (`src/variants/v1`, `src/cad/parts.js`, tagy `v1-archiv`, `v1-archiv-2`).
 - **v2 · koncept**: návrh nové verze. Popis a zdůvodnění v `docs/navrh-v2.md`, výroba a montáž v `docs/v2-stavba.md`.
   Každý díl v `src/cad/parts-v2.js` nese název, specifikaci, zdroj (tisk, nákup, deska, kabel, těsnění) a posun pro rozložený pohled.
+- **v3 · střešní skener**: experiment s jinou koncepcí: jedna jednotka na střeše, dva profilové skenery a 3D lidar.
+  Ve scéně na voze se spustí simulace průjezdu ulicí (přepínač Paprsky) s nejužším místem a podjezdnou výškou. Popis v `docs/navrh-v3.md`.
 - Další verze: nová složka `src/variants/vN`, builder v `src/cad/worker.js`, řádek ve `VARIANTS` v `src/main.js`.
 
 ## Workflow měření
