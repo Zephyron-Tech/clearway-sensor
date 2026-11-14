@@ -63,6 +63,10 @@ a staženým souborem nahraď `src/variants/v2/params.json` (v1 je archiv a nem�
   (https://sketchfab.com/3d-models/2025-skoda-octavia-rs-combi-e584bb09fa6547a0a3ca7c1ec7c2053a), licence CC BY 4.0.
   Zmenšeno z 53 MB na 3 MB: `npx @gltf-transform/cli optimize scene.gltf public/models/car.glb --compress meshopt --simplify-ratio 0.35`.
   Licence je v `public/models/car-LICENSE.txt`.
+- Popelář: „GARBAGE TRUCK“ od liebherr996litronic (https://sketchfab.com/3d-models/garbage-truck-9aee01b569f043b290cd7dc1abf38b71),
+  dodávka: „2019 Mercedes-Benz Sprinter“ od tonielpro520 (https://sketchfab.com/3d-models/2019-mercedes-benz-sprinter-5788a290ddb5483fbbd5831aeef829a1),
+  obojí CC BY 4.0. Z popeláře odstraněna hromada odpadu s vlajkami a knihami a španělský polep, dodávka má prázdnou SPZ.
+  Úpravy a licence v `public/models/truck-LICENSE.txt` a `van-LICENSE.txt`. Když se modely nenačtou, použijí se zjednodušené z `src/truck.js` a `src/scan.js`.
 - Okolí: centrum Plzně (nám. Republiky) z OpenStreetMap, © přispěvatelé OpenStreetMap, licence ODbL.
   Data obnoví `node scripts/fetch-plzen.mjs` (zapíše `src/plzen.json`), stavbu dělá `src/city.js`.
 - Senzory se přisají na skutečný bok vozu (raycast v místě přísavek). Poloha podél vozu je `scena.poloha_x`,
