@@ -4,21 +4,27 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import paramsV1 from './variants/v1/params.json';
 import paramsV2 from './variants/v2/params.json';
+import paramsV3 from './variants/v3/params.json';
 import { buildUnit, footHeight, layout, setBodyOpacity } from './model.js';
 import { cadBuild, cadStep, cadStl, cadStepOnly, cadStlPart, cadToGroup, setCadOpacity, setHighlight, setSection, section } from './cad/client.js';
 import { buildCar, buildRoad, loadCar, CAR_CREDIT } from './car.js';
+import { buildTruck } from './truck.js';
+import { buildStreet, simulate, drawScan } from './scan.js';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { makeLabel, makeDim, makeCable } from './overlay.js';
 import { PHOTOS } from './photos.js';
 import { winNames } from './names.js';
 import { feet } from './geometry.js';
 
-// v1 = stávající zařízení (archiv, jen pro čtení, neukládá se), v2 = koncept (úpravy v localStorage)
+// v1 = stávající zařízení (archiv, jen pro čtení, neukládá se), v2 = koncept (úpravy v localStorage),
+// v3 = experiment: jedna jednotka na střeše (roof), boční profilové skenery + 3D lidar.
 // Další verze = nová složka variants/vN, builder v cad/worker.js a řádek sem.
 const VARIANTS = {
   v1: { label: 'v1 · archiv', defaults: paramsV1, readonly: true, color: '#e8590c' },
   v2: { label: 'v2 · koncept', defaults: paramsV2, readonly: false, store: 'clearway-params-v2', color: '#2f7cf6' },
+  v3: { label: 'v3 · střešní skener', defaults: paramsV3, readonly: false, store: 'clearway-params-v3', color: '#16a34a', roof: true },
 };
+const isRoof = (vr) => !!VARIANTS[vr]?.roof;
 const VARIANT_IDS = Object.keys(VARIANTS);
 const others = (vr) => VARIANT_IDS.filter(x => x !== vr);
 const UI_STORE = 'clearway-ui-v1';
@@ -42,7 +48,7 @@ const ui3d = {
   tool: 'select', hiddenParts: new Set(), moved: new Map(), isolated: null, selKey: null, listRole: 'master',
   section: { on: false, axis: 'x', pos: 0.5, flip: false }, measure: [],
 };
-const PV = { v1: loadParams('v1'), v2: loadParams('v2') };
+const PV = Object.fromEntries(Object.keys(VARIANTS).map(id => [id, loadParams(id)]));
 let P = PV[state.variant];
 const defaults = () => VARIANTS[state.variant].defaults;
 const readonly = () => VARIANTS[state.variant].readonly;
@@ -156,7 +162,10 @@ scene.add(content);
 // Trvalá scéna na autě (načítá se jednou): Plzeň z OSM + model vozu
 const world = new THREE.Group();
 scene.add(world);
-const carScene = { city: null, car: null, started: false };
+const carScene = { city: null, car: null, truck: null, street: null, started: false };
+// scéna na voze: 'auto' = osobní vůz (Octavia), 'popelar' = popelářský vůz
+const onVehicle = () => state.scene !== 'stul';
+const vehicle = () => (state.scene === 'popelar' ? carScene.truck : state.scene === 'auto' ? carScene.car : null);
 function ensureCarScene() {
   if (carScene.started) return; // načítá se jen jednou, i když selže
   carScene.started = true;
@@ -168,17 +177,23 @@ function ensureCarScene() {
     if (city.status === 'fulfilled') { carScene.city = city.value; world.add(city.value); } else console.error(city.reason);
     if (car.status === 'fulfilled') { carScene.car = car.value; world.add(car.value); }
     else { console.warn('Model vozu nenačten', car.reason); toast('Model vozu chybí (public/models/car.glb), zobrazuji zjednodušený vůz', true); }
+    // popelářský vůz a ulice s překážkami (zaparkovaná auta jsou klony modelu vozu)
+    carScene.truck = buildTruck();
+    world.add(carScene.truck);
+    carScene.street = buildStreet(carScene.car);
+    world.add(carScene.street);
     setStatus(cad.data ? 'CAD připraven' : 'Načítám CAD jádro…', cad.data ? 'ok' : 'busy');
-    if (state.scene === 'auto') rebuild(true, false);
+    if (onVehicle()) rebuild(true, false);
   });
 }
 
 // Přepíná prostředí podle scény (místnost + mřížka na stole, obloha + město na autě)
 function applyEnvironment() {
-  const auto = state.scene === 'auto';
+  const auto = onVehicle();
   const city = auto && !!carScene.city;
   world.visible = auto;
-  if (carScene.car) carScene.car.visible = auto;
+  if (carScene.car) carScene.car.visible = state.scene === 'auto';
+  if (carScene.truck) carScene.truck.visible = state.scene === 'popelar';
   sky.visible = city;
   scene.environment = city ? skyEnv : roomEnv;
   scene.environmentIntensity = city ? 0.9 : 0.75;
@@ -225,6 +240,26 @@ function mountOnCar(u, side, car, px = v('scena', 'poloha_x')) {
   u.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ex, ey, ez));
   u.position.copy(p0.p).addScaledVector(ex, -p0.f.x);
   return true;
+}
+/**
+ * v3 na střechu: paprsky shora v místech patek příčníků najdou podélníky / střechu, rám stojí
+ * na nejvyšším z nich (patky se dorovnají). Vůz jede do +X, takže jednotka se nenatáčí.
+ */
+function mountOnRoof(u, veh) {
+  const Q = PV.v3;
+  const S = Q.ram.rozestup_pricniku.v, LB = Q.ram.delka_pricniku.v;
+  const rx = veh?.userData.roofX ?? Q.scena.poloha_x.v;
+  let top = -Infinity;
+  if (veh) {
+    veh.updateMatrixWorld(true);
+    for (const dx of [-S / 2, S / 2]) for (const dz of [-(LB / 2 - 45), LB / 2 - 45]) {
+      carRay.set(new THREE.Vector3(rx + dx, 8000, dz), new THREE.Vector3(0, -1, 0));
+      const hit = carRay.intersectObject(veh, true)[0];
+      if (hit) top = Math.max(top, hit.point.y);
+    }
+  }
+  u.quaternion.identity();
+  u.position.set(rx, Number.isFinite(top) ? top : 1480, 0);
 }
 const pickables = [];
 
@@ -301,8 +336,9 @@ async function runCad() {
 const CATS = {
   telo: 'Tělo a kryty', tesneni: 'Těsnění', spoj: 'Šrouby a závitové vložky', lidar: 'Lidary', elektronika: 'Elektronika',
   baterie: 'Baterie', kabely: 'Kabeláž', konektory: 'Konektory, anténa, libela', noha: 'Nohy s přísavkami',
+  nosic: 'Nosič a rám', senzory: 'Skenery a 3D lidar', skrin: 'Skříň elektroniky',
 };
-const SRC_LABEL = { tisk: '3D tisk', nakup: 'nákup', pcb: 'osazená deska', kabel: 'kabeláž', tesneni: 'těsnění' };
+const SRC_LABEL = { tisk: '3D tisk', nakup: 'nákup', pcb: 'osazená deska', kabel: 'kabeláž', tesneni: 'těsnění', obrabeni: 'řezání / CNC' };
 
 // svislý posun lidaru v rozloženém pohledu (v1 nahoru o 50 mm, v2 podle CAD)
 function lidarEx(vr, role) {
@@ -376,6 +412,15 @@ function buildUnitGroup(role, vr = state.variant, ghost = false) {
   } else if (vr === 'v1') {
     // zjednodušený náhled, dokud se nenačte CAD jádro
     u.add(buildUnit(PV.v1, role, { beams: false, labels: false }));
+  } else if (isRoof(vr)) {
+    // v3 bez CAD: jen obrys skříně a nosníku
+    const Q = PV[vr];
+    const m = new THREE.MeshStandardMaterial({ color: '#9da2a8', roughness: 0.6 });
+    const b = new THREE.Mesh(new THREE.BoxGeometry(Q.skrin.delka.v, Q.skrin.vyska.v, Q.skrin.sirka.v), m);
+    b.position.set(0, 117 + Q.skrin.vyska.v / 2, 0);
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(40, 80, Q.ram.sirka.v), m);
+    beam.position.set(Q.ram.rozestup_pricniku.v / 2 + 60, 157, 0);
+    u.add(b, beam);
   } else {
     // v2 bez CAD: jen obrys těla
     const { total } = layout(PV.v2);
@@ -385,7 +430,7 @@ function buildUnitGroup(role, vr = state.variant, ghost = false) {
     u.add(b);
   }
   if (ghost) makeGhost(u, vr);
-  withParams(PV[vr], () => addOverlays(u, role, vr, ghost));
+  withParams(PV[vr], () => (isRoof(vr) ? addRoofOverlays(u, vr, ghost) : addOverlays(u, role, vr, ghost)));
   return u;
 }
 
@@ -452,6 +497,107 @@ function addOverlays(u, role, vr = state.variant, ghost = false) {
   }
 }
 
+// střed dílu v souřadnicích jednotky (podle názvu dílu z CAD)
+function partCenter(u, name) {
+  let m = null;
+  u.traverse((n) => { if (!m && n.isMesh && n.userData.name === name) m = n; });
+  if (!m) return null;
+  return m.geometry.boundingBox.getCenter(new THREE.Vector3()).add(m.position);
+}
+const fanTableMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.2, depthWrite: false, side: THREE.DoubleSide });
+const ringTableMat = new THREE.MeshBasicMaterial({ color: 0xe879f9, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide });
+
+/** v3: popisky, naznačené zorné pole skenerů a 3D lidaru (na stole), kóty. */
+function addRoofOverlays(u, vr, ghost) {
+  const box = new THREE.Box3();
+  u.traverse((n) => { if (n.isMesh && n.userData.part) box.union(n.geometry.boundingBox.clone().translate(n.position)); });
+  if (box.isEmpty()) box.setFromObject(u);
+  const top = box.max.y;
+  if (ghost) {
+    if (state.labels) {
+      const l = makeLabel(`STŘEŠNÍ SKENER · ${vr}`, { size: 0.9, tone: 'light', strong: true, color: VARIANTS[vr].color });
+      l.position.set(0, top + 160, 0);
+      u.add(l);
+    }
+    return;
+  }
+  const table = state.scene === 'stul';
+  if (state.beams && table) {
+    // boční skenery: vějíř 270° v rovině kolmé na jízdu, 90° slepý sektor k vozu
+    const fov = v('skener', 'uhel_pole'), r = 520;
+    for (const [n, side] of [['skener_P_okno', 1], ['skener_L_okno', -1]]) {
+      const c = partCenter(u, n);
+      if (!c) continue;
+      const pts = [c];
+      for (let a = -fov / 2; a <= fov / 2; a += 3) {
+        const t = THREE.MathUtils.degToRad(a);
+        pts.push(new THREE.Vector3(c.x, c.y + r * Math.sin(t), c.z + side * r * Math.cos(t)));
+      }
+      const pos = [];
+      for (let i = 1; i < pts.length - 1; i++) pos.push(...pts[0].toArray(), ...pts[i].toArray(), ...pts[i + 1].toArray());
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      const fan = new THREE.Mesh(geo, fanTableMat);
+      fan.userData.noExport = true;
+      fan.raycast = () => {};
+      u.add(fan);
+    }
+    // 3D lidar: pás -7° až +52° kolem osy nakloněné dopředu
+    const c3 = partCenter(u, 'lidar3d_okno');
+    if (c3) {
+      const prof = [];
+      for (let e = -7; e <= 52; e += 4) { const t = THREE.MathUtils.degToRad(e); prof.push(new THREE.Vector2(Math.max(1, 420 * Math.cos(t)), 420 * Math.sin(t))); }
+      const ring = new THREE.Mesh(new THREE.LatheGeometry(prof, 64), ringTableMat);
+      ring.rotation.z = -THREE.MathUtils.degToRad(v('lidar3d', 'sklon'));
+      ring.position.copy(c3);
+      ring.userData.noExport = true;
+      ring.raycast = () => {};
+      u.add(ring);
+    }
+  }
+  if (state.labels) {
+    const l = makeLabel(`STŘEŠNÍ SKENER${state.compare ? ' · ' + vr : ''}`, { size: 1.05, tone: 'dark', strong: true, color: state.compare ? VARIANTS[vr].color : null });
+    l.position.set(0, top + 170, 0);
+    u.add(l);
+    if (table) {
+      for (const [name, text] of [['skener_P_okno', 'boční skener P'], ['skener_L_okno', 'boční skener L'], ['lidar3d_okno', '3D lidar'], ['cm5', 'CM5 · GNSS · LTE'], ['antena_gnss_lte', 'anténa GNSS + LTE']]) {
+        const c = partCenter(u, name);
+        if (!c) continue;
+        const lb = makeLabel(text, { size: 0.75 });
+        lb.position.copy(c).add(new THREE.Vector3(0, 70, 0));
+        u.add(lb);
+      }
+    }
+  }
+  if (state.dims && vr === state.variant) {
+    const b = box;
+    u.add(makeDim([b.max.x, b.min.y, b.min.z], [b.max.x, b.min.y, b.max.z], [160, 0, 0], `${fmt(b.max.z - b.min.z)} mm`));
+    u.add(makeDim([b.min.x, b.min.y, b.max.z], [b.max.x, b.min.y, b.max.z], [0, 0, 160], `${fmt(b.max.x - b.min.x)} mm`));
+    u.add(makeDim([b.min.x, b.min.y, b.max.z], [b.min.x, b.max.y, b.max.z], [-120, 0, 0], `${fmt(b.max.y - b.min.y)} mm nad podélníky`));
+  }
+}
+
+// ---------- simulace průjezdu (v3 na voze) ----------
+let scanCache = { key: null, res: null };
+let lastScan = null;
+function addScanSim(u) {
+  u.updateMatrixWorld(true);
+  const w = (name) => { const c = partCenter(u, name); return c ? u.localToWorld(c) : null; };
+  const scanners = [['skener_P_okno', 1], ['skener_L_okno', -1]].map(([n, side]) => ({ origin: w(n), side })).filter(s => s.origin);
+  if (!scanners.length) return;
+  const o3 = w('lidar3d_okno');
+  const sk = THREE.MathUtils.degToRad(PV.v3.lidar3d.sklon.v);
+  const lidar3d = o3 ? { origin: o3, up: new THREE.Vector3(Math.sin(sk), Math.cos(sk), 0).applyQuaternion(u.quaternion) } : null;
+  const targets = [carScene.city, carScene.street].filter(Boolean);
+  const Q = PV.v3;
+  const key = JSON.stringify([Q.skener, Q.scena, Q.hasici, Q.lidar3d, state.scene, scanners.map(s => s.origin.toArray().map(Math.round)), !!carScene.city, !!carScene.street]);
+  const truck = state.scene === 'popelar';
+  const halfW = truck ? 1275 : PV.v3.scena.sirka_auta.v / 2, vehH = truck ? 3500 : 1500;
+  if (scanCache.key !== key) scanCache = { key, res: simulate({ scanners, lidar3d, targets, P: Q, x0: u.position.x, halfW, vehH }) };
+  lastScan = scanCache.res;
+  content.add(drawScan(lastScan, Q, { labels: state.labels }));
+}
+
 // bod u konektoru na čepu B (lokální souřadnice jednotky); side +1 = vlevo (4pin), -1 = vpravo (2pin)
 const connPoint = (role, side = 1) => [
   layout(P).total + v('konektor', 'delka') + 4 + 70 * state.explode,
@@ -470,65 +616,92 @@ function rebuild(resetCamera = false, askCad = true) {
 
   const vr = state.variant;
   const overlay = state.compareMode === 'overlay';
-  // jednotky k zobrazení: obě, nebo jen master / slave (druhá se vůbec nestaví)
-  const want = (role) => state.unit === 'both' || state.unit === role;
-  const mk = (id, ghost) => [id, want('master') ? buildUnitGroup('master', id, ghost) : null, want('slave') ? buildUnitGroup('slave', id, ghost) : null];
+  // jednotky k zobrazení: obě, nebo jen master / slave (druhá se vůbec nestaví); v3 je jediná jednotka
+  const want = (id, role) => (isRoof(id) ? role === 'master' : state.unit === 'both' || state.unit === role);
+  const mk = (id, ghost) => [id, want(id, 'master') ? buildUnitGroup('master', id, ghost) : null, want(id, 'slave') ? buildUnitGroup('slave', id, ghost) : null];
   const pairs = [mk(vr, false)];
   for (const id of compared()) pairs.push(mk(id, overlay));
   if (compared().length) ensureCompareCad();
   const [, master, slave] = pairs[0];
-  const total = layout(P).total;
-  const fh = footHeight(P);
-  const H = v('profil', 'vyska');
 
-  if (state.scene === 'auto') {
+  if (onVehicle()) {
     ensureCarScene();
     const car = carScene.car;
     if (car) {
+      // měřítko vozu z parametrů verze, která ho má (v3 i v1/v2 mají scena.delka_auta)
       car.scale.setScalar(v('scena', 'delka_auta'));
       car.updateMatrixWorld(true);
-    } else {
+    } else if (state.scene === 'auto') {
       content.add(buildCar(v('scena', 'sirka_auta')));
     }
     if (!carScene.city) content.add(buildRoad());
   }
-  pairs.forEach(([pv, m, sl], i) => placePair(pv, m, sl, overlay ? 0 : i));
+  // na stole stojí verze za sebou podle své hloubky (v3 je široká přes celý vůz)
+  let cursor = 0;
+  pairs.forEach(([pv, m, sl], i) => {
+    const depth = isRoof(pv) ? 1500 : (m && sl ? 620 : 260);
+    let z = 0;
+    if (!overlay && i > 0) z = cursor - depth / 2;
+    if (!overlay) cursor = (i === 0 ? -depth / 2 : z - depth / 2) - 260;
+    placePair(pv, m, sl, overlay ? 0 : i, z);
+  });
   applyEnvironment();
+  lastScan = null;
   for (const [pv, m, sl] of pairs) {
     for (const u of [m, sl]) if (u) content.add(u);
     content.updateMatrixWorld(true);
     // kabely má jen v1, v2 je bezdrátová
     if (state.cable && pv === 'v1' && m && sl && !(overlay && pv !== vr)) withParams(PV.v1, () => addCables(m, sl));
+    // v3 na voze: simulace průjezdu ulicí (jen u zobrazené, ne průhledné verze)
+    if (isRoof(pv) && m && onVehicle() && state.beams && !(overlay && pv !== vr) && cadStore[pv].data) addScanSim(m);
   }
 
   setBodyOpacity(state.xray ? 0.22 : 1);
   setCadOpacity(state.xray ? 0.22 : 1);
   if (askCad && cad.key !== JSON.stringify(P)) requestCad();
+  refreshStats(master, slave);
+  updateSection();
+  fixLabelScale();
+  fitShadow();
+  if (resetCamera) {
+    // v3 na voze: přehled úseku ulice před vozem (skeny, koridor, nejužší místo)
+    if (isRoof(vr) && onVehicle() && master) {
+      const x0 = master.position.x;
+      frame('scan', new THREE.Box3(new THREE.Vector3(x0 - 6000, 0, -4500), new THREE.Vector3(x0 + 13000, 3500, 2500)));
+    } else frame();
+  }
+  restoreSelection();
+  requestRender();
+}
+
+// statistiky v panelu podle aktivní verze
+function refreshStats(master = null, slave = null) {
+  if (isRoof(state.variant)) { renderRoofStats(); return; }
+  const total = layout(P).total, fh = footHeight(P), H = v('profil', 'vyska');
   // šířka přes senzory: na skutečném voze z polohy jednotek, jinak z parametru
   let carW = v('scena', 'sirka_auta') + 2 * (fh + H);
-  if (state.scene === 'auto' && carScene.car && master && slave) {
+  if (onVehicle() && vehicle() && master && slave) {
     const partsBox = (u) => { const b = new THREE.Box3(); u.traverse((n) => { if (n.isMesh && n.userData.part) b.expandByObject(n); }); return b; };
     const bm = partsBox(master), bs = partsBox(slave);
     if (!bm.isEmpty() && !bs.isEmpty()) carW = bm.max.z - bs.min.z;
   }
   renderStats(total, fh, H, carW);
-  updateSection();
-  fixLabelScale();
-  fitShadow();
-  if (resetCamera) frame();
-  restoreSelection();
-  requestRender();
 }
 
-/** Rozmístí pár jednotek. slot 0 = zvolená verze, slot 1 = druhá verze při porovnání. */
-function placePair(vr, master, slave, slot) {
+/** Rozmístí pár jednotek. slot 0 = zvolená verze, slot 1+ = další verze při porovnání; dz = posun na stole. */
+function placePair(vr, master, slave, slot, dz = -1000 * slot) {
+  if (isRoof(vr)) {
+    if (!master) return;
+    if (state.scene === 'stul') master.position.set(0, maxDown(vr) * state.explode, dz);
+    else mountOnRoof(master, vehicle());
+    return;
+  }
   withParams(PV[vr], () => {
     const total = layout(P).total;
     const fh = footHeight(P);
     if (state.scene === 'stul') {
       // při rozložení zvednout, aby nohy nezajely pod stůl; druhý pár stojí za prvním
       const lift = fh + maxDown(vr) * state.explode;
-      const dz = -1000 * slot;
       const side = state.unit === 'both' ? 230 : 0; // jedna jednotka stojí uprostřed
       master?.position.set(-total / 2, lift, side + dz);
       slave?.position.set(-total / 2, lift, -side + dz);
@@ -536,7 +709,7 @@ function placePair(vr, master, slave, slot) {
     }
     // Montáž svisle: čelo A nahoře, čelo B dole, okna ven, nohy na karoserii. Master vpravo (+Z), slave vlevo.
     // Zvolená verze na předních dveřích, porovnávaná na zadních.
-    const car = carScene.car;
+    const car = vehicle();
     const Wc = v('scena', 'sirka_auta');
     const y = v('scena', 'vyska_montaze');
     const px = v('scena', 'poloha_x') - 1150 * slot;
@@ -572,7 +745,7 @@ function contentBox() {
   content.traverse((n) => {
     if ((n.isMesh && !n.userData.noExport) || n.userData.cable) box.expandByObject(n);
   });
-  if (state.scene === 'auto' && carScene.car) box.expandByObject(carScene.car);
+  if (onVehicle() && vehicle()) box.expandByObject(vehicle());
   return box;
 }
 
@@ -581,7 +754,7 @@ function fitShadow() {
   if (box.isEmpty()) return;
   const c = box.getCenter(new THREE.Vector3());
   const r = box.getSize(new THREE.Vector3()).length() / 2 + 200;
-  const dir = state.scene === 'auto' && carScene.city ? SUN_DIR : new THREE.Vector3(0.5, 1.4, 0.7);
+  const dir = onVehicle() && carScene.city ? SUN_DIR : new THREE.Vector3(0.5, 1.4, 0.7);
   sun.position.copy(c).add(dir.clone().setLength(r * 2));
   sun.target.position.copy(c);
   const cam = sun.shadow.camera;
@@ -595,6 +768,7 @@ function fitShadow() {
 const VIEWS = {
   iso: [0.5, 0.55, 0.68], top: [0.0001, 1, 0.001], side: [0, 0.12, 1], end: [-1, 0.25, 0.0001], front: [1, 0.25, 0.0001],
   bottom: [0.25, -1, 0.35],
+  scan: [-0.62, 0.66, -0.42],
 };
 
 // „Orto“ = velmi úzký zorný úhel (5°): rovnoběžné hrany zůstávají skoro rovnoběžné, ovládání se nemění
@@ -965,9 +1139,14 @@ renderer.domElement.addEventListener('dblclick', (e) => {
 
 // ---------- panel ----------
 // souhrn verze pro porovnání (rozměry z parametrů, hmotnost z objemů CAD)
+// příkon v3 (W) z parametrů
+const roofPower = (Q) => 2 * Q.napajeni.odber_skener.v + Q.napajeni.odber_lidar3d.v + Q.napajeni.odber_pocitac.v + Q.napajeni.odber_ostatni.v;
 function summary(vr) {
   const Q = PV[vr];
   const mass = cadStore[vr].data?.master.mass;
+  if (isRoof(vr)) {
+    return { total: Q.ram.sirka.v + Q.skener.sirka.v, height: 0, section: 'rám na střeše', mass, wh: 0, hMaster: 0, hSlave: 0, need: 0, roof: true, power: roofPower(Q) };
+  }
   const b = Q.baterie;
   const wh = b ? b.pocet.v * b.kapacita.v * 3.6 / 1000 : 0;
   // 85 % využitelné energie (měnič 5 V, rezerva na stárnutí a zimu)
@@ -992,11 +1171,11 @@ function renderStats(total, fh, H, carW = lastCarW) {
   const refs = (compared().length ? compared() : others(state.variant)).map(id => [id, summary(id)]);
   const cur = summary(state.variant);
   // pod hodnotou ostatní verze (zeleně, když je zvolená verze menší / lehčí)
-  const cmp = (a, key, unit = 'mm', round = false) => refs.map(([id, r]) => (r[key]
+  const cmp = (a, key, unit = 'mm', round = false) => refs.map(([id, r]) => (r[key] && !r.roof
     ? `<small class="${a < r[key] ? 'better' : ''}">${id}: ${fmt(round ? Math.round(r[key]) : r[key])} ${unit}</small>` : '')).join('');
   const h = (x, need) => `<i class="${need && x < need ? 'bad' : ''}">${fmt(x)} h</i>`;
   const power = cur.wh
-    ? `<div class="stat"><b>${fmt(cur.wh)} Wh</b><span>výdrž ${h(cur.hMaster, cur.need)} / ${h(cur.hSlave, cur.need)} (master / slave)</span>${refs.map(([id, r]) => `<small>${id}: ${r.wh ? fmt(r.wh) + ' Wh' : 'napájení z vozu'}</small>`).join('')}</div>`
+    ? `<div class="stat"><b>${fmt(cur.wh)} Wh</b><span>výdrž ${h(cur.hMaster, cur.need)} / ${h(cur.hSlave, cur.need)} (master / slave)</span>${refs.map(([id, r]) => `<small>${id}: ${r.wh ? fmt(r.wh) + ' Wh' : r.roof ? `z vozu, ${fmt(r.power)} W` : 'napájení z vozu'}</small>`).join('')}</div>`
     : `<div class="stat"><b>12 V</b><span>napájení ze zapalovače</span>${refs.map(([id, r]) => `<small>${id}: ${r.wh ? `${fmt(r.wh)} Wh, ${fmt(r.hMaster)} h` : 'z vozu'}</small>`).join('')}</div>`;
   $('#stats').innerHTML = `
     <div class="stat"><b>${fmt(total)}</b><span>délka jednotky, mm</span>${cmp(total, 'total')}</div>
@@ -1012,12 +1191,49 @@ function renderStats(total, fh, H, carW = lastCarW) {
 }
 
 let lastCarW = 0;
+
+// v3: jiné veličiny než u bočních jednotek (rám na střeše, příkon z vozu, hustota profilů, výsledek průjezdu)
+function renderRoofStats() {
+  const cur = summary(state.variant);
+  const parts = cadStore[state.variant].data?.master.parts;
+  let top = 0;
+  if (parts) for (const p of parts) for (let i = 1; i < p.vertices.length; i += 3) top = Math.max(top, p.vertices[i]);
+  const dx = (v('scena', 'rychlost') / 3.6) / v('skener', 'frekvence') * 1000;
+  const W = cur.power;
+  const refs = (compared().length ? compared() : others(state.variant)).filter(id => !isRoof(id)).map(id => [id, summary(id)]);
+  const sc = lastScan?.narrowest;
+  const stCls = sc ? (sc.status === 'bad' ? 'bad' : sc.status === 'tight' ? 'warn' : 'good') : '';
+  const stTxt = sc ? (sc.status === 'bad' ? 'cisterna neprojede' : sc.status === 'tight' ? 'projede těsně' : 'projede') : '';
+  const lw = lastScan?.lowest;
+  const m2 = (mm) => (mm / 1000).toLocaleString('cs-CZ', { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+  const last = onVehicle()
+    ? `<div class="stat ${stCls}"><b>${sc ? m2(sc.width) + ' m' : '…'}</b><span>nejužší místo průjezdu</span>${sc ? `<small>${stTxt}; potřeba ${m2(v('hasici', 'sirka_vozu') + 2 * v('hasici', 'rezerva'))} m</small>` : ''}${lw ? `<small class="${lw.low ? 'bad' : ''}">podjezdná výška ${m2(lw.clear)} m</small>` : ''}</div>`
+    : `<div class="stat"><b>${m2(v('hasici', 'sirka_vozu'))} m</b><span>šířka cisterny (cíl měření)</span><small>zrcátka ${m2(v('hasici', 'sirka_zrcatka'))} m, výška ${m2(v('hasici', 'vyska_vozu'))} m</small></div>`;
+  document.querySelector('#stats').innerHTML = `
+    <div class="stat"><b>${fmt(cur.total)}</b><span>šířka rámu přes skenery, mm</span><small>vůz ${fmt(v('scena', 'sirka_auta'))} · popelář 2 550</small></div>
+    <div class="stat"><b>${top ? fmt(Math.round(top)) : '…'}</b><span>výška nad podélníky, mm</span></div>
+    <div class="stat"><b>${cur.mass ? fmt(Math.round(cur.mass / 100) / 10) + ' kg' : '…'}</b><span>hmotnost s nosičem (odhad)</span>${refs.map(([id, r]) => (r.mass ? `<small>${id}: ${fmt(Math.round(r.mass))} g / kus</small>` : '')).join('')}</div>
+    <div class="stat"><b>${fmt(W)} W</b><span>příkon z vozu, ${fmt(Math.round(W / 12 * 10) / 10)} A při 12 V</span>${refs.map(([id, r]) => `<small>${id}: ${r.wh ? fmt(r.wh) + ' Wh baterie' : 'z vozu'}</small>`).join('')}</div>
+    <div class="stat"><b>${fmt(Math.round(dx))}</b><span>mm mezi profily při ${fmt(v('scena', 'rychlost'))} km/h</span><small>${fmt(v('skener', 'frekvence'))} profilů/s, ${fmt(v('skener', 'uhel_pole'))}°</small></div>
+    ${last}`;
+  const counts = { odhad: 0, zmereno: 0, koncept: 0 };
+  for (const g of Object.keys(P)) if (!g.startsWith('_')) for (const k of Object.keys(P[g])) counts[P[g][k].stav]++;
+  const meas = counts.zmereno + counts.odhad;
+  document.querySelector('#progress').innerHTML = `
+    <div class="pg-top"><span>Změřeno / ověřeno</span><b>${counts.zmereno} z ${meas}</b></div>
+    <div class="pg-bar"><i style="width:${meas ? (counts.zmereno / meas) * 100 : 0}%"></i></div>
+    <div class="pg-legend"><span class="tag odhad">${counts.odhad} odhad</span><span class="tag zmereno">${counts.zmereno} změřeno</span><span class="tag koncept">${counts.koncept} koncept</span></div>`;
+}
 const GROUP_LABEL = {
   baterie: 'Baterie', tesneni: 'Těsnění a šrouby základny',
   profil: 'Hliníkový profil', delky: 'Délky a okna', okno: 'Okno lidaru', lidar: 'Lidar',
   deska: 'Deska RICE', noha: 'Noha a přísavka', konektor: 'Konektor', libela: 'Libela', antena: 'Anténa', scena: 'Scéna na autě',
 };
-const openGroups = new Set(['profil', 'delky', 'noha']);
+const openGroups = new Set(['profil', 'delky', 'noha', 'ram', 'skener', 'hasici']);
+const GROUP_LABEL_V3 = {
+  ram: 'Rám a střešní nosič', skener: 'Boční skenery (2D)', lidar3d: 'Přední 3D lidar', skrin: 'Skříň elektroniky',
+  napajeni: 'Příkon z vozu', hasici: 'Hasičský vůz (co musí projet)', scena: 'Scéna a simulace průjezdu',
+};
 
 function renderParams() {
   const root = $('#params');
@@ -1031,7 +1247,7 @@ function renderParams() {
     det.open = q ? true : openGroups.has(g);
     det.addEventListener('toggle', () => { if (!q) det.open ? openGroups.add(g) : openGroups.delete(g); });
     const done = keys.filter(k => P[g][k].stav === 'zmereno').length;
-    const label = state.variant === 'v2' ? ({ profil: 'Tělo (kryt a základna)', delky: 'Délky a polohy lidarů', okno: 'Průchod lidaru stropem', deska: 'Hlavní deska', noha: 'Noha: kloub a přísavka' }[g] ?? GROUP_LABEL[g]) : GROUP_LABEL[g];
+    const label = isRoof(state.variant) ? GROUP_LABEL_V3[g] : state.variant === 'v2' ? ({ profil: 'Tělo (kryt a základna)', delky: 'Délky a polohy lidarů', okno: 'Průchod lidaru stropem', deska: 'Hlavní deska', noha: 'Noha: kloub a přísavka' }[g] ?? GROUP_LABEL[g]) : GROUP_LABEL[g];
     det.innerHTML = `<summary><span>${label ?? g}</span><em>${done}/${keys.length}</em></summary>`;
     for (const k of keys) det.appendChild(paramRow(g, k));
     root.appendChild(det);
@@ -1044,7 +1260,8 @@ function paramRow(g, k) {
   const def = defaults()[g][k].v;
   const ro = readonly();
   const row = document.createElement('div');
-  const unit = k.includes('uhel') ? '°' : k === 'kapacita' ? 'mAh' : k.startsWith('odber') ? 'W' : k.includes('vydrz') ? 'h' : (k === 'pocet' || k.startsWith('srouby')) ? 'ks' : 'mm';
+  const unit = (k.includes('uhel') || k === 'naklon' || k === 'sklon') ? '°' : k === 'kapacita' ? 'mAh' : k.startsWith('odber') ? 'W' : k.includes('vydrz') ? 'h'
+    : k === 'frekvence' ? 'Hz' : k === 'rychlost' ? 'km/h' : (k === 'pocet' || k.startsWith('srouby')) ? 'ks' : 'mm';
   const changed = () => row.classList.toggle('changed', p.v !== def);
   row.className = `row ${p.stav}${ro ? ' locked' : ''}`;
   row.innerHTML = `
@@ -1068,7 +1285,7 @@ function paramRow(g, k) {
       p.stav = b.dataset.s;
       row.className = `row ${p.stav}`; changed();
       row.querySelectorAll('.stav button').forEach(x => x.classList.toggle('on', x === b));
-      saveParams(); renderStats(layout(P).total, footHeight(P), v('profil', 'vyska'));
+      saveParams(); refreshStats();
     });
   }
   return row;
@@ -1079,7 +1296,7 @@ const openCats = new Set(['telo']);
 function renderPartsTab() {
   const root = $('#partsTree');
   if (!cad.data) { root.innerHTML = '<p class="empty">Čekám na CAD model…</p>'; $('#bomBox').hidden = true; return; }
-  const role = ui3d.listRole, vr = state.variant;
+  const vr = state.variant, role = isRoof(vr) ? 'master' : ui3d.listRole;
   const q = ($('#partSearch').value || '').trim().toLowerCase();
   const cats = new Map();
   cad.data[role].parts.forEach((p, idx) => {
@@ -1155,7 +1372,7 @@ function flashKeys(keys, on) {
 }
 
 // Kusovník se skládá přímo z dílů modelu (label + spec + src), takže vždy odpovídá CAD.
-const BOM_GROUPS = [['tisk', 'Tištěné díly'], ['nakup', 'Nakupované díly'], ['tesneni', 'Těsnění'], ['pcb', 'Desky a hlavní součástky'], ['kabel', 'Kabeláž']];
+const BOM_GROUPS = [['tisk', 'Tištěné díly'], ['obrabeni', 'Řezané a obráběné díly'], ['nakup', 'Nakupované díly'], ['tesneni', 'Těsnění'], ['pcb', 'Desky a hlavní součástky'], ['kabel', 'Kabeláž']];
 function bomRows() {
   const rows = new Map();
   for (const role of ['master', 'slave']) {
@@ -1177,8 +1394,9 @@ function renderBom() {
   $('#bom').innerHTML = BOM_GROUPS.map(([src, title]) => {
     const g = rows.filter(r => r.src === src);
     if (!g.length) return '';
-    return `<details class="bomg"><summary><span>${title}</span><em>${g.length}</em></summary><table><thead><tr><th>Díl</th><th>M</th><th>S</th></tr></thead><tbody>${
-      g.map(r => `<tr><td><b>${r.label}</b>${r.spec ? `<small>${r.spec}</small>` : ''}</td><td>${r.master || '–'}</td><td>${r.slave || '–'}</td></tr>`).join('')}</tbody></table></details>`;
+    const one = isRoof(state.variant);
+    return `<details class="bomg"><summary><span>${title}</span><em>${g.length}</em></summary><table><thead><tr><th>Díl</th>${one ? '<th>ks</th>' : '<th>M</th><th>S</th>'}</tr></thead><tbody>${
+      g.map(r => `<tr><td><b>${r.label}</b>${r.spec ? `<small>${r.spec}</small>` : ''}</td><td>${r.master || '–'}</td>${one ? '' : `<td>${r.slave || '–'}</td>`}</tr>`).join('')}</tbody></table></details>`;
   }).join('');
 }
 function bomCsv() {
@@ -1278,6 +1496,12 @@ function syncControls() {
   $$('.tabpane').forEach(p => p.hidden = p.id !== `tab-${state.tab}`);
   $$('[data-unit]').forEach(b => b.classList.toggle('on', b.dataset.unit === state.unit));
   $$('[data-prole]').forEach(b => b.classList.toggle('on', b.dataset.prole === ui3d.listRole));
+  // v3 je jediná jednotka: přepínače master / slave nemají smysl
+  const roof = isRoof(state.variant);
+  $('.seg-unit').style.display = roof ? 'none' : '';
+  $('[data-prole]').parentElement.style.display = roof ? 'none' : '';
+  $$('[data-export^="slave"]').forEach(b => { b.style.display = roof ? 'none' : ''; });
+  $$('[data-export^="master"]').forEach(b => { b.textContent = b.dataset.export.endsWith('step') ? (roof ? 'STEP sestavy' : 'STEP master') : (roof ? 'STL sestavy' : 'STL master'); });
   syncTools();
 }
 function syncTools() {
@@ -1430,7 +1654,7 @@ window.addEventListener('keydown', (e) => {
 // ladění z konzole prohlížeče
 window.__clearway = {
   scene, camera, controls, ui3d, select, setTool, toggleSection, rebuild,
-  get content() { return content; }, get params() { return P; }, get pickables() { return pickables; },
+  get content() { return content; }, get params() { return P; }, get pickables() { return pickables; }, get scan() { return lastScan; },
 };
 
 applyProjection(false);

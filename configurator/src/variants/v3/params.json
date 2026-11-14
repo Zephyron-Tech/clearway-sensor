@@ -1,0 +1,53 @@
+{
+  "_info": "ClearWay v3 – experiment: střešní skener. Jedna jednotka na střeše vozu (osobní nebo popelářský), pevně na příčnících, napájení z vozu. Dva boční 2D skenery s rovinou skenu kolmo na směr jízdy (270°) měří celý příčný profil ulice od země do 4 m, přední 3D lidar vidí rohy a křižovatky. Skříň s počítačem, GNSS s dead reckoningem a LTE. Souřadnice: X dopředu, Y nahoru, Z doprava, 0 = střed rámu na horní ploše střešních podélníků.",
+  "ram": {
+    "sirka": { "v": 1240, "stav": "koncept", "popis": "Rozteč bočních skenerů (osa okna vlevo – vpravo)" },
+    "rozestup_pricniku": { "v": 700, "stav": "koncept", "popis": "Vzdálenost předního a zadního příčníku" },
+    "delka_pricniku": { "v": 1150, "stav": "koncept", "popis": "Délka příčníku střešního nosiče (koupený)" },
+    "vyska_patky": { "v": 55, "stav": "koncept", "popis": "Výška patky nosiče nad podélníkem" },
+    "profil": { "v": 40, "stav": "koncept", "popis": "Hliníkový profil rámu (drážka 8)" },
+    "rozchod_podelniku": { "v": 140, "stav": "koncept", "popis": "Rozchod dvou podélných profilů rámu (osa – osa)" }
+  },
+  "skener": {
+    "sirka": { "v": 60, "stav": "odhad", "popis": "Boční skener: šířka pouzdra (třída SICK TiM781, ověřit v katalogu)" },
+    "delka": { "v": 86, "stav": "odhad", "popis": "Boční skener: délka pouzdra v ose (okno vpředu)" },
+    "uhel_pole": { "v": 270, "stav": "odhad", "popis": "Zorné pole v rovině skenu" },
+    "krok_uhlu": { "v": 0.5, "stav": "koncept", "popis": "Úhlový krok simulace (skener má jemnější, ~0,33°)" },
+    "frekvence": { "v": 15, "stav": "odhad", "popis": "Počet profilů za sekundu" },
+    "dosah": { "v": 25000, "stav": "odhad", "popis": "Dosah skeneru (10 % odrazivost je méně, ověřit)" },
+    "naklon": { "v": 0, "stav": "koncept", "popis": "Náklon roviny skenu dopředu (0 = svisle kolmo na jízdu)" }
+  },
+  "lidar3d": {
+    "prumer": { "v": 65, "stav": "odhad", "popis": "Přední 3D lidar: průměr (třída Livox Mid-360, ověřit)" },
+    "vyska": { "v": 60, "stav": "odhad", "popis": "Přední 3D lidar: výška" },
+    "sklon": { "v": 20, "stav": "koncept", "popis": "Sklon dopředu dolů, aby viděl vozovku a rohy před vozem" },
+    "dosah": { "v": 40000, "stav": "odhad", "popis": "Dosah 3D lidaru" }
+  },
+  "skrin": {
+    "delka": { "v": 260, "stav": "koncept", "popis": "Skříň elektroniky: délka (podél jízdy)" },
+    "sirka": { "v": 180, "stav": "koncept", "popis": "Skříň elektroniky: šířka" },
+    "vyska": { "v": 66, "stav": "koncept", "popis": "Skříň elektroniky: výška bez žeber" },
+    "stena": { "v": 3, "stav": "koncept", "popis": "Tloušťka stěny (tlakově litý hliník)" },
+    "zebra": { "v": 9, "stav": "koncept", "popis": "Výška chladicích žeber na víku" }
+  },
+  "napajeni": {
+    "odber_skener": { "v": 4, "stav": "odhad", "popis": "Příkon jednoho bočního skeneru" },
+    "odber_lidar3d": { "v": 6.5, "stav": "odhad", "popis": "Příkon předního 3D lidaru" },
+    "odber_pocitac": { "v": 8, "stav": "odhad", "popis": "Příkon počítače (CM5) při zpracování" },
+    "odber_ostatni": { "v": 3, "stav": "odhad", "popis": "Modem, GNSS, přepínač, ztráty měničů" }
+  },
+  "hasici": {
+    "sirka_vozu": { "v": 2550, "stav": "odhad", "popis": "Šířka cisterny bez zrcátek" },
+    "sirka_zrcatka": { "v": 3000, "stav": "odhad", "popis": "Šířka přes zrcátka" },
+    "vyska_zrcatek": { "v": 2000, "stav": "odhad", "popis": "Výška zrcátek (střed)" },
+    "vyska_vozu": { "v": 3300, "stav": "odhad", "popis": "Výška cisterny" },
+    "rezerva": { "v": 200, "stav": "koncept", "popis": "Bezpečná vůle na každou stranu" }
+  },
+  "scena": {
+    "delka_auta": { "v": 4709, "stav": "odhad", "popis": "Délka osobního vozu (Octavia IV Combi); model se na ni škáluje" },
+    "sirka_auta": { "v": 1829, "stav": "odhad", "popis": "Šířka osobního vozu bez zrcátek" },
+    "poloha_x": { "v": -250, "stav": "koncept", "popis": "Poloha rámu na střeše osobního vozu od středu vozu" },
+    "rychlost": { "v": 30, "stav": "koncept", "popis": "Rychlost jízdy v simulaci" },
+    "delka_jizdy": { "v": 44000, "stav": "koncept", "popis": "Délka simulovaného průjezdu ulicí" }
+  }
+}

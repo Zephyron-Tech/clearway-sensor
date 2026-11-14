@@ -5,9 +5,10 @@ import wasmUrl from 'replicad-opencascadejs/wasm?url';
 import { setOC, exportSTEP, makeCompound } from 'replicad';
 import { buildUnitCad as buildV1 } from './parts.js';
 import { buildUnitCad as buildV2 } from './parts-v2.js';
+import { buildUnitCad as buildV3 } from './parts-v3.js';
 
-// v1 = archiv (parts.js se nemění), v2 = koncept
-const BUILDERS = { v1: buildV1, v2: buildV2 };
+// v1 = archiv (parts.js se nemění), v2 = koncept, v3 = experiment střešní skener (jen „master“)
+const BUILDERS = { v1: buildV1, v2: buildV2, v3: buildV3 };
 
 // Hustoty v g/cm³ pro hrubý odhad hmotnosti z objemu (tisk s výplní ~60 %, přísavky a držáky plné)
 const DENSITY = {
@@ -16,6 +17,8 @@ const DENSITY = {
   // v2: PA12 ze SLS je plný materiál; článek 21700 váží ~69 g (objem 26,2 cm³)
   pa12: 1.0, pa12Dark: 1.0, silicone: 1.15, foam: 0.15, steel: 7.9, cell: 2.63, fishpaper: 1.2, kapton: 1.4, fpc: 1.6,
   ceramic: 4.5, green: 1.2, ledRing: 1.2, tantalum: 3.0, switch: 3.0,
+  // v3: profily a příčníky jsou duté (~1,1 kg/m pro 40×40), skříň litý hliník
+  anodBlack: 0.7, powder: 2.7, copper: 8.9, ferrite: 4.8,
 };
 
 const ready = (async () => {

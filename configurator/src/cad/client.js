@@ -93,6 +93,11 @@ const DEF = {
   ceramic: () => phys({ color: '#e6dfcc', roughness: 0.55 }),
   green: () => phys({ color: '#2f9e55', roughness: 0.45 }),
   ledRing: () => phys({ color: '#33d17a', emissive: '#1fe070', emissiveIntensity: 1.6 }),
+  // --- v3 ---
+  anodBlack: () => phys({ color: '#2a2c30', metalness: 0.7, roughness: 0.42, clearcoat: 0.15 }),
+  powder: () => addGrain(phys({ color: '#d7dadd', roughness: 0.55, clearcoat: 0.25, clearcoatRoughness: 0.5 }), { amount: 0.025 }),
+  copper: () => phys({ color: '#c26e3a', metalness: 1, roughness: 0.3 }),
+  ferrite: () => phys({ color: '#3a3b3e', roughness: 0.75 }),
 };
 
 // ---------- řez ----------
@@ -130,7 +135,7 @@ export function setSection(on) {
   edgeMat.needsUpdate = true;
 }
 // Materiály těla, které se zprůhlední v režimu rentgen
-const BODY = new Set(['alu', 'print', 'printDark', 'cap', 'glass', 'pa12', 'pa12Dark']);
+const BODY = new Set(['alu', 'print', 'printDark', 'cap', 'glass', 'pa12', 'pa12Dark', 'powder']);
 const mats = new Map();
 const hiMats = new Map();
 
