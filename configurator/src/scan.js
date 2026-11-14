@@ -184,45 +184,56 @@ export function simulate({ scanners, lidar3d, targets, P, x0, halfW = 915, vehH 
   const o = new THREE.Vector3();
   const angles = [];
   for (let a = -fov / 2; a <= fov / 2 + 1e-6; a += step) angles.push(THREE.MathUtils.degToRad(a));
+  const fanLen = Math.min(reach, 6000);   // délka paprsku bez zásahu ve vějíři
   for (let i = 0; i <= n; i++) {
     const shift = xs0 + i * dx - x0;
     let R = Infinity, L = -Infinity, RM = Infinity, LM = -Infinity, clear = Infinity;
+    const p0 = pts.length / 3;
+    const fans = [];
     for (const s of scanners) {
       o.copy(s.origin); o.x += shift;
-      for (const a of angles) {
+      // vějíř pro animaci: počátek + konec každého paprsku
+      const fan = new Float32Array((angles.length + 1) * 3);
+      fan[0] = o.x; fan[1] = o.y; fan[2] = o.z;
+      fans.push(fan);
+      angles.forEach((a, k) => {
         // 0 = vodorovně ven, +90° = nahoru; rovina skenu nakloněná dopředu o `tilt`
         const c = Math.cos(a), sn = Math.sin(a);
         dir.set(Math.sin(tilt) * sn, Math.cos(tilt) * sn, s.side * c).normalize();
         ray.set(o, dir);
         const hit = ray.intersectObjects(targets, true)[0];
-        if (!hit) continue;
+        const e = hit ? hit.point : o.clone().addScaledVector(dir, fanLen);
+        fan[(k + 1) * 3] = e.x; fan[(k + 1) * 3 + 1] = e.y; fan[(k + 1) * 3 + 2] = e.z;
+        if (!hit) return;
         const p = hit.point;
         pts.push(p.x, p.y, p.z);
-        if (p.y < 150) continue;                       // vozovka, obrubník
+        if (p.y < 150) return;                         // vozovka, obrubník
         // nad měřicím vozem (ten tudy projel, takže je to nad ním): větve, balkony, vedení
-        if (Math.abs(p.z) < halfW + 100 && p.y > vehH) { clear = Math.min(clear, p.y); continue; }
+        if (Math.abs(p.z) < halfW + 100 && p.y > vehH) { clear = Math.min(clear, p.y); return; }
         if (p.y <= fH) { if (p.z > 0) R = Math.min(R, p.z); else L = Math.max(L, p.z); }
         if (Math.abs(p.y - fhM) <= 300) { if (p.z > 0) RM = Math.min(RM, p.z); else LM = Math.max(LM, p.z); }
-      }
+      });
     }
     const width = Math.min(R, reach) - Math.max(L, -reach);
     const widthM = Math.min(RM, reach) - Math.max(LM, -reach);
     const low = clear < fH + 100;
     const fits = width >= fw + 2 * rez && widthM >= fm + 2 * rez && !low;
     const tight = width < fw + 2 * rez + 600 || clear < fH + 600;
-    profiles.push({ x: x0 + shift, L: Math.max(L, -reach), R: Math.min(R, reach), width, widthM, clear, low, status: fits ? (tight ? 'tight' : 'ok') : 'bad' });
+    profiles.push({ x: x0 + shift, L: Math.max(L, -reach), R: Math.min(R, reach), width, widthM, clear, low, status: fits ? (tight ? 'tight' : 'ok') : 'bad',
+      p0, p1: pts.length / 3, fans });
   }
   // živý pohled v poloze vozu: vějíře skenerů a mrak 3D lidaru
   const live = { fans: [], cloud: [] };
   for (const s of scanners) {
-    const fan = [s.origin.clone()];
-    for (const a of angles) {
+    const fan = new Float32Array((angles.length + 1) * 3);
+    s.origin.toArray(fan, 0);
+    angles.forEach((a, k) => {
       const c = Math.cos(a), sn = Math.sin(a);
       dir.set(Math.sin(tilt) * sn, Math.cos(tilt) * sn, s.side * c).normalize();
       ray.set(s.origin, dir);
       const hit = ray.intersectObjects(targets, true)[0];
-      fan.push(hit ? hit.point.clone() : s.origin.clone().addScaledVector(dir, Math.min(reach, 6000)));
-    }
+      (hit ? hit.point : s.origin.clone().addScaledVector(dir, fanLen)).toArray(fan, (k + 1) * 3);
+    });
     live.fans.push(fan);
   }
   if (lidar3d) {
@@ -241,7 +252,7 @@ export function simulate({ scanners, lidar3d, targets, P, x0, halfW = 915, vehH 
   }
   const narrowest = profiles.reduce((a, b) => (b.width < a.width ? b : a), profiles[0]);
   const lowest = profiles.reduce((a, b) => (b.clear < a.clear ? b : a), profiles[0]);
-  return { profiles, points: new Float32Array(pts), live, narrowest, lowest: lowest.clear < fH + 600 ? lowest : null, dx };
+  return { profiles, points: new Float32Array(pts), live, narrowest, lowest: lowest.clear < fH + 600 ? lowest : null, dx, x0 };
 }
 
 // barva bodu podle výšky: modrá (zem) → zelená → žlutá → červená (4 m)
@@ -254,12 +265,17 @@ function heightColor(y, c) {
 const STATUS_COLOR = { ok: new THREE.Color('#22c55e'), tight: new THREE.Color('#f59e0b'), bad: new THREE.Color('#ef4444') };
 const fmtM = (mm) => (mm / 1000).toLocaleString('cs-CZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-/** Vykreslí výsledek simulace do skupiny (světové souřadnice). */
+/**
+ * Vykreslí výsledek simulace do skupiny (světové souřadnice).
+ * g.userData.setProgress(i) ukáže jen prvních i profilů a vějíře v profilu i - 1 (animace jízdy);
+ * setProgress(null) ukáže celý výsledek a vějíře v poloze vozu.
+ */
 export function drawScan(res, P, { labels = true } = {}) {
   const v = (g, k) => P[g][k].v;
   const g = new THREE.Group();
   g.name = 'scan';
   const mark = (o) => { o.userData.noExport = true; o.raycast = () => {}; return o; };
+  const reveal = [];   // (i) => void, volá se při změně postupu
   // mrak bodů z průjezdu
   {
     const geo = new THREE.BufferGeometry();
@@ -269,6 +285,7 @@ export function drawScan(res, P, { labels = true } = {}) {
     for (let i = 0; i < res.points.length; i += 3) { heightColor(res.points[i + 1], c); col[i] = c.r; col[i + 1] = c.g; col[i + 2] = c.b; }
     geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
     g.add(mark(new THREE.Points(geo, new THREE.PointsMaterial({ size: 3.2, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.95, depthWrite: false }))));
+    reveal.push((i) => geo.setDrawRange(0, i == null ? Infinity : (i ? res.profiles[i - 1].p1 : 0)));
   }
   // koridor na vozovce: pás mezi levou a pravou hranicí, barva podle průjezdnosti
   {
@@ -284,30 +301,56 @@ export function drawScan(res, P, { labels = true } = {}) {
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
     g.add(mark(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.34, depthWrite: false, side: THREE.DoubleSide }))));
+    reveal.push((i) => geo.setDrawRange(0, i == null ? Infinity : i * 6));
     // hrany koridoru
     const edge = (key) => new THREE.BufferGeometry().setFromPoints(res.profiles.map(p => new THREE.Vector3(p.x, 26, THREE.MathUtils.clamp(p[key], -7000, 7000))));
     const em = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85 });
-    g.add(mark(new THREE.Line(edge('L'), em)), mark(new THREE.Line(edge('R'), em)));
+    const eL = edge('L'), eR = edge('R');
+    g.add(mark(new THREE.Line(eL, em)), mark(new THREE.Line(eR, em)));
+    reveal.push((i) => { for (const e of [eL, eR]) e.setDrawRange(0, i == null ? Infinity : i); });
   }
   // vějíře skenerů v poloze vozu
   const fanMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
   const fanLine = new THREE.LineBasicMaterial({ color: 0x7dd3fc, transparent: true, opacity: 0.9 });
-  for (const fan of res.live.fans) {
-    const pos = [];
-    for (let i = 1; i < fan.length - 1; i++) pos.push(...fan[0].toArray(), ...fan[i].toArray(), ...fan[i + 1].toArray());
+  // vějíř = trojúhelníky z počátku (vrchol 0) ke koncům paprsků; při animaci se jen přepisují souřadnice
+  res.live.fans.forEach((home, k) => {
+    const nv = home.length / 3;
+    const attr = new THREE.BufferAttribute(home.slice(), 3);
+    attr.setUsage(THREE.DynamicDrawUsage);
+    const idx = [];
+    for (let i = 1; i < nv - 1; i++) idx.push(0, i, i + 1);
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-    g.add(mark(new THREE.Mesh(geo, fanMat)));
-    g.add(mark(new THREE.Line(new THREE.BufferGeometry().setFromPoints(fan.slice(1)), fanLine)));
-  }
+    geo.setAttribute('position', attr);
+    geo.setIndex(idx);
+    const lg = new THREE.BufferGeometry();
+    lg.setAttribute('position', attr);
+    lg.setDrawRange(1, nv - 1);
+    const mesh = mark(new THREE.Mesh(geo, fanMat)), line = mark(new THREE.Line(lg, fanLine));
+    mesh.frustumCulled = line.frustumCulled = false;
+    g.add(mesh, line);
+    reveal.push((i) => {
+      const src = i == null ? home : res.profiles[Math.max(0, i - 1)].fans[k];
+      if (!src) return;
+      attr.array.set(src);
+      attr.needsUpdate = true;
+    });
+  });
   if (res.live.cloud.length) {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(res.live.cloud, 3));
-    g.add(mark(new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xe879f9, size: 3, sizeAttenuation: false, transparent: true, opacity: 0.85, depthWrite: false }))));
+    const cloud = mark(new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xe879f9, size: 3, sizeAttenuation: false, transparent: true, opacity: 0.85, depthWrite: false })));
+    g.add(cloud);
+    // mrak 3D lidaru platí jen pro polohu vozu na začátku, při jízdě se skryje
+    reveal.push((i) => { cloud.visible = i == null; });
   }
   // nejužší místo: obrys cisterny a popisek
   const nw = res.narrowest;
+  const after = (p, objs) => {
+    const idx = res.profiles.indexOf(p);
+    reveal.push((i) => { for (const o of objs) o.visible = i == null || i > idx; });
+  };
   if (nw) {
+    const n0 = g.children.length;
     const fw = v('hasici', 'sirka_vozu'), fm = v('hasici', 'sirka_zrcatka'), fH = v('hasici', 'vyska_vozu'), fhM = v('hasici', 'vyska_zrcatek');
     const zc = (Math.max(nw.L, -7000) + Math.min(nw.R, 7000)) / 2;
     const ok = nw.status !== 'bad';
@@ -336,6 +379,7 @@ export function drawScan(res, P, { labels = true } = {}) {
       lb.position.set(nw.x, fH + 700, zc);
       g.add(lb);
     }
+    after(nw, g.children.slice(n0));
   }
   const lw = res.lowest;
   if (lw && labels) {
@@ -348,6 +392,9 @@ export function drawScan(res, P, { labels = true } = {}) {
     l.computeLineDistances();
     l.renderOrder = 25;
     g.add(mark(l));
+    after(lw, [lb, l]);
   }
+  g.userData.setProgress = (i) => { for (const f of reveal) f(i); };
+  g.userData.res = res;
   return g;
 }

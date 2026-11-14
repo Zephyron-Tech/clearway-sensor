@@ -49,7 +49,8 @@ npm run dev      # http://localhost:5174
 - **v2 · koncept**: návrh nové verze. Popis a zdůvodnění v `docs/navrh-v2.md`, výroba a montáž v `docs/v2-stavba.md`.
   Každý díl v `src/cad/parts-v2.js` nese název, specifikaci, zdroj (tisk, nákup, deska, kabel, těsnění) a posun pro rozložený pohled.
 - **v3 · střešní skener**: experiment s jinou koncepcí: jedna jednotka na střeše, dva profilové skenery a 3D lidar.
-  Ve scéně na voze se spustí simulace průjezdu ulicí (přepínač Paprsky) s nejužším místem a podjezdnou výškou. Popis v `docs/navrh-v3.md`.
+  Ve scéně na voze se spustí simulace průjezdu ulicí (přepínač Paprsky) s nejužším místem a podjezdnou výškou.
+  Tlačítko **▶ Jízda** (klávesa P) ji přehraje: vůz jede ulicí, profily a koridor přibývají za ním, na konci se ukáže celý výsledek. Popis v `docs/navrh-v3.md`.
 - Další verze: nová složka `src/variants/vN`, builder v `src/cad/worker.js`, řádek ve `VARIANTS` v `src/main.js`.
 
 ## Workflow měření

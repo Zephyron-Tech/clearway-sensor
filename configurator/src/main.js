@@ -585,6 +585,72 @@ function addRoofOverlays(u, vr, ghost) {
 
 // ---------- simulace průjezdu (v3 na voze) ----------
 let scanCache = { key: null, res: null };
+let scanView = null;   // { group, unit } poslední vykreslená simulace
+
+// ---------- animace jízdy (v3): vůz jede ulicí, profily přibývají za ním ----------
+const drive = { on: false };
+function driveBtnSync() {
+  const b = $('#driveBtn');
+  if (!b) return;
+  b.hidden = !(scanView && isRoof(state.variant));
+  b.textContent = drive.on ? '■ Zastavit' : '▶ Jízda';
+  b.setAttribute('aria-pressed', String(drive.on));
+}
+function driveStop(restore = true) {
+  if (!drive.on) return;
+  drive.on = false;
+  if (restore) {
+    drive.unit.position.x = drive.homeU;
+    if (drive.veh) drive.veh.position.x = drive.homeV;
+    drive.group.userData.setProgress(null);
+  }
+  driveBtnSync();
+  requestRender();
+}
+function driveStart() {
+  if (!scanView) { toast('Simulace jízdy je jen u v3 na voze se zapnutými paprsky'); return; }
+  const res = scanView.group.userData.res;
+  const veh = vehicle();
+  const first = res.profiles[0].x, last = res.profiles.at(-1).x;
+  const speed = v('scena', 'rychlost') / 3.6 * 1000;  // mm/s
+  Object.assign(drive, {
+    on: true, t0: performance.now(), res, group: scanView.group, unit: scanView.unit, veh,
+    homeU: scanView.unit.position.x, homeV: veh ? veh.position.x : 0, first, last,
+    // reálná rychlost, ale aspoň 9 s, ať je vidět, jak profily přibývají
+    duration: Math.max(9000, (last - first) / speed * 1000), prevX: null,
+  });
+  select(null);
+  driveBtnSync();
+  // kamera za vozem, šikmo zezadu zleva
+  const x = first;
+  // podle délky vozu, aby nástavba popeláře nezakryla ulici před ním
+  const Lv = veh?.userData.length ?? v('scena', 'delka_auta');
+  controls.target.set(x + 4000, 900, -700);
+  camera.position.set(x - Lv - 5000, 6000 + Lv * 0.8, -3500);
+  controls.update();
+  drive.prevX = x;
+}
+function driveTick(now) {
+  if (!drive.on) return false;
+  const k = Math.min(1, (now - drive.t0) / drive.duration);
+  const ux = drive.first + (drive.last - drive.first) * k;
+  const d = ux - drive.homeU;
+  drive.unit.position.x = drive.homeU + d;
+  if (drive.veh) drive.veh.position.x = drive.homeV + d;
+  // kamera jede s vozem
+  const dx = ux - drive.prevX;
+  camera.position.x += dx; controls.target.x += dx;
+  drive.prevX = ux;
+  const i = Math.min(drive.res.profiles.length, Math.floor((ux - drive.first) / drive.res.dx) + 1);
+  drive.group.userData.setProgress(i);
+  if (k >= 1) {
+    // na konci vůz zpět, celý výsledek a přehled úseku
+    driveStop(true);
+    const x0 = drive.homeU;
+    frame('scan', new THREE.Box3(new THREE.Vector3(x0 - 6000, 0, -4500), new THREE.Vector3(x0 + 13000, 3500, 2500)), true);
+  }
+  return true;
+}
 let lastScan = null;
 function addScanSim(u) {
   u.updateMatrixWorld(true);
@@ -601,7 +667,8 @@ function addScanSim(u) {
   const halfW = truck ? 1275 : PV.v3.scena.sirka_auta.v / 2, vehH = truck ? 3500 : 1500;
   if (scanCache.key !== key) scanCache = { key, res: simulate({ scanners, lidar3d, targets, P: Q, x0: u.position.x, halfW, vehH }) };
   lastScan = scanCache.res;
-  content.add(drawScan(lastScan, Q, { labels: state.labels }));
+  scanView = { group: drawScan(lastScan, Q, { labels: state.labels }), unit: u };
+  content.add(scanView.group);
 }
 
 // bod u konektoru na čepu B (lokální souřadnice jednotky); side +1 = vlevo (4pin), -1 = vpravo (2pin)
@@ -612,6 +679,8 @@ const connPoint = (role, side = 1) => [
 ];
 
 function rebuild(resetCamera = false, askCad = true) {
+  driveStop(true);
+  scanView = null;
   detachGizmo();
   scene.remove(content);
   disposeTree(content);
@@ -677,6 +746,7 @@ function rebuild(resetCamera = false, askCad = true) {
     } else frame();
   }
   restoreSelection();
+  driveBtnSync();
   requestRender();
 }
 
@@ -863,7 +933,7 @@ const requestRender = () => { needsRender = true; };
 controls.addEventListener('change', requestRender);
 renderer.setAnimationLoop((now) => {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  const moving = stepTween(dt);
+  const moving = stepTween(dt) | driveTick(now);
   const damp = controls.update();
   if (needsRender || moving || damp) {
     renderer.render(scene, camera);
@@ -1547,6 +1617,7 @@ $$('[data-act]').forEach((b) => b.addEventListener('click', () => {
   else if (a === 'showall') showAllParts();
   else if (a === 'resetmoved') { resetMoved(); toast('Díly vráceny na místo'); }
   else if (a === 'help') toggleHelp();
+  else if (a === 'drive') (drive.on ? driveStop() : driveStart());
 }));
 $$('[data-sax]').forEach((b) => b.addEventListener('click', () => { ui3d.section.axis = b.dataset.sax; updateSection(); syncTools(); requestRender(); }));
 $('#sectionPos').addEventListener('input', (e) => { ui3d.section.pos = +e.target.value; updateSection(); requestRender(); });
@@ -1650,6 +1721,7 @@ window.addEventListener('keydown', (e) => {
   if (k === 'g') return setTool(ui3d.tool === 'move' ? 'select' : 'move');
   if (k === 'm') return setTool(ui3d.tool === 'measure' ? 'select' : 'measure');
   if (k === 'x') return toggleSection();
+  if (k === 'p' && scanView) return drive.on ? driveStop() : driveStart();
   if (k === 'o') { state.ortho = !state.ortho; saveUi(); syncControls(); return applyProjection(true); }
   if (k === 'h' && e.shiftKey) return showAllParts();
   if ((k === 'h' || e.key === 'Delete' || e.key === 'Backspace') && selected) { setKeysHidden([selected.userData.key], true); return renderPartsTab(); }

@@ -302,3 +302,8 @@ kbd { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; b
   .hgrid { grid-template-columns: 1fr; }
   #credit { bottom: 150px; }
 }
+
+/* animace jízdy v3 */
+#driveBtn[hidden] { display: none; }
+#driveBtn { background: #16a34a; color: #fff; font-weight: 650; }
+#driveBtn[aria-pressed="true"] { background: #b91c1c; }
