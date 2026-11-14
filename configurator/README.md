@@ -30,11 +30,22 @@ npm run dev      # http://localhost:5174
 
 ## Ovládání
 
-- Klik na díl ukáže název a rozměry, dvojklik přiblíží, Esc zruší výběr.
-- Klávesy 1–4 / F: pohledy Izo, Shora, Bok, Čelo.
-- Spodní lišta: paprsky, popisky, kóty, hrany, rentgen, kabely, rozložený pohled.
-- Záložky: Parametry (hledání, stav, vrácení hodnoty), Díly (skrývání kategorií, seznam),
-  Fotky (lightbox, připnutí fotky vedle modelu), Export (STEP, STL, JSON, PNG).
+- Klik na díl ho vybere (karta s názvem, specifikací, rozměry a hmotností), dvojklik přiblíží, Esc zruší.
+- Nástroje vlevo: Výběr (V), Přesun dílu úchytem (G), Měření dvou bodů (M), Řez (X), Jen vybraný díl (I),
+  Zobrazit vše (Shift+H), Vrátit posunuté díly (Shift+R), Nápověda (?).
+- H nebo Delete skryje vybraný díl. Skrytí, posuny a měření se neukládají, jsou jen pro prohlížení.
+- Pohledy 1–5 (Izo, Shora, Bok, Čelo, Zdola), F přiblíží výběr, O přepne rovnoběžné promítání.
+- Nahoře: scéna (stůl / auto), verze (v1 archiv / v2 koncept), jednotka (obě / master / slave), porovnání verzí.
+- Spodní lišta: paprsky, popisky, kóty, hrany, rentgen, kabely, porovnat, rozložený pohled.
+- Záložka Díly: strom dílů s hledáním a okem u každého dílu, pod ním kusovník složený z modelu (CSV).
+- Záložka Export: STEP a STL celé jednotky, STEP jen tištěných dílů, STL vybraného dílu, parametry, snímek.
+
+## Verze
+
+- **v1 · archiv**: stávající zařízení, změřené. Jen pro čtení (`src/variants/v1`, `src/cad/parts.js`, tagy `v1-archiv`, `v1-archiv-2`).
+- **v2 · koncept**: návrh nové verze. Popis a zdůvodnění v `docs/navrh-v2.md`, výroba a montáž v `docs/v2-stavba.md`.
+  Každý díl v `src/cad/parts-v2.js` nese název, specifikaci, zdroj (tisk, nákup, deska, kabel, těsnění) a posun pro rozložený pohled.
+- Další verze: nová složka `src/variants/vN`, builder v `src/cad/worker.js`, řádek ve `VARIANTS` v `src/main.js`.
 
 ## Workflow měření
 

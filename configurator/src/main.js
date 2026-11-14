@@ -723,7 +723,11 @@ gizmo.setSize(0.75);
 gizmo.setSpace('local');
 scene.add(gizmo.getHelper());
 let gizmoUsed = false;
-gizmo.addEventListener('dragging-changed', (e) => { controls.enabled = !e.value; if (e.value) gizmoUsed = true; });
+gizmo.addEventListener('dragging-changed', (e) => {
+  controls.enabled = !e.value;
+  if (e.value) gizmoUsed = true;
+  else if (selected) showCard(selected, true); // po puštění ukázat tlačítko Vrátit
+});
 gizmo.addEventListener('change', () => requestRender());
 // Úchyt se nasazuje na pomocný bod ve středu dílu (geometrie dílů má počátek v počátku jednotky).
 function attachGizmo(m) {
@@ -1157,8 +1161,10 @@ function bomRows() {
   for (const role of ['master', 'slave']) {
     for (const p of cad.data?.[role].parts ?? []) {
       if (!p.src || (p.spec || '').startsWith('součást')) continue;
-      const key = `${p.src}|${p.label}|${p.spec || ''}`;
-      if (!rows.has(key)) rows.set(key, { src: p.src, label: p.label, spec: p.spec || '', master: 0, slave: 0 });
+      // stejné díly na různých místech (lidar J1–J4, paket B/C) patří do jednoho řádku
+      const label = p.label.replace(/ J\d(?= |$)/, '').replace(/ \(paket [A-Z]\)| paketu [A-Z]| [A-Z](?= \([+−]\))/, '');
+      const key = `${p.src}|${label}|${p.spec || ''}`;
+      if (!rows.has(key)) rows.set(key, { src: p.src, label, spec: p.spec || '', master: 0, slave: 0 });
       rows.get(key)[role]++;
     }
   }

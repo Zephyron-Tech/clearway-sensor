@@ -393,7 +393,7 @@ export function buildUnitCad(P, role) {
     lidCable(2, [[xs[2], yb, 6], [xs[2] - 11, yb, 6], [xs[2] - 13, 10.5, 25.5], [bx + 58, 10.5, 25.5], [bx + 54, 14, 12], [bx + 49.6, yc, 8.5]]);
     lidCable(3, [[xs[3], yb, 6], [xs[3] - 11, yb, 6], [xs[3] - 13, 10.5, 27.7], [bx + 61, 10.5, 27.7], [bx + 56, 13, -4], [bx + 49.6, yc, -8.5]]);
     add('svazek_hlavni', 'kabely', 'rubber', tube([[xPb - 5.9, 27, 6], [xPb - 11, 27, 4], [xPb - 14, 12, -22], [xPb - 18, 10.5, -26.3], [bx + 12, 10.5, -26.3], [bx + 8, 13, -24], [bx + 4, yc, -20.2]], 1.7), exK,
-      { label: 'Hlavní svazek (napájecí ↔ hlavní deska)', src: 'kabel', spec: '10 žil: 5 V ×2, VSYS, GND ×3, SDA, SCL, USB D+/D− (kroucený pár), tlačítko; JST GH 10p, ~420 mm' });
+      { label: 'Hlavní svazek (napájecí ↔ hlavní deska)', src: 'kabel', spec: '10 žil: 5 V ×2, VSYS, GND ×3, SDA, SCL, USB D+/D− (kroucený pár); JST GH 10p, ~420 mm' });
   }
 
   // ============================== NOHY ==============================

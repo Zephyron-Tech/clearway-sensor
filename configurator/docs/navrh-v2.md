@@ -1,137 +1,188 @@
-# ClearWay v2: návrh úprav
+# ClearWay v2: návrh, revize 2
 
-Stav: detailní koncept, 2026-11-13. Výchozí bod je stávající zařízení v1, které je v konfigurátoru archivované jako varianta „v1 · archiv“. Je změřené posuvkou, git tag `v1-archiv` označuje původní stav a `v1-archiv-2` stav s jednou čočkou lidaru a vnitřkem čepu B. Návrh v2 je varianta „v2 · koncept“. Tlačítko **Porovnat** ukáže zvolené verze vedle sebe nebo přes sebe (ostatní jako barevný obrys), na stole i na autě.
+Stav: stavební koncept, 2026-11-14. Výchozí bod je stávající zařízení v1 (v konfigurátoru „v1 · archiv“, změřené posuvkou, git tagy `v1-archiv` a `v1-archiv-2`). v2 je varianta „v2 · koncept“. Jak ji vyrobit a složit, popisuje [v2-stavba.md](v2-stavba.md). Kusovník je v aplikaci v záložce Díly a dá se stáhnout jako CSV.
 
-## Rozhodnuto
+Čísla v tomto dokumentu jsou návrhová. Co je odhad a co je potřeba změřit nebo vyzkoušet, je vždy napsáno.
 
-- **Lidary zůstávají jako ve v1:** 4× TFmini Plus se stejnou roztečí (152 / 158 / 140 mm). Rozteč se zatím nepočítala, je to parametr. Proto je v2 dlouhá skoro jako v1 (508 mm proti 506). Zmenšuje se průřez, nohy a hmotnost.
-- **Modem je uvnitř a vyměnitelný:** karta v M.2 slotu pod hlavní deskou, dostupná servisním víčkem ve dně bez rozebírání těla.
-- **Datový protokol k serveru zatím neřešíme.**
-- **Výdrž na baterii aspoň 12 h.**
-- **Jeden vodotěsný USB-C** pro nabíjení i servis.
-- **Celé zařízení vodotěsné a snadno rozebíratelné.**
+## Co se rozhodlo
 
-## Proč měnit (problémy v1)
+- Lidary zůstávají: 4× TFmini Plus, rozteč jako ve v1 (152 / 158 / 140 mm). Délku těla proto určuje rozteč.
+- Modem je uvnitř a je vyměnitelný bez rozebírání těla.
+- Výdrž na baterii aspoň 12 h.
+- Jeden vodotěsný USB-C na nabíjení i servis.
+- Celé zařízení vodotěsné a přitom rozebíratelné.
+- Protokol k serveru se zatím neřeší.
 
-1. Velikost: 80 × 40 mm průřez, s nohou 137 mm, master ~1,5 kg (odhad z objemů CAD).
-2. Pevné klíny noh (45/33 a 23/35 mm), úhel sedí jen na jeden tvar dveří.
-3. Kabel ze zapalovače a kabel master ↔ slave přes střechu nebo pod vozem.
-4. Bez telefonu s aplikací nejdou data nikam.
-5. Dva různé druhy jednotek, externí prutová anténa (hliník stíní).
+## Revize prvního konceptu: co bylo špatně
 
-## Srovnání
+První koncept v2 (dělená skořepina s vanou a dvěma zasunutými čely) jsem prošel jako konstrukční revizi. Nalezené problémy a jak je řeší revize 2:
 
-| | v1 (archiv) | v2 (koncept) |
+| # | Problém prvního konceptu | Řešení v revizi 2 |
 |---|---|---|
-| Délka | 506 mm | 508 mm (rozteč lidarů jako v1) |
-| Průřez | 80 × 40 mm, hliník + tištěný kryt | 60 × 32 mm, plast PA12 / ASA |
-| Výška s nohou | 137 mm | 100 mm |
-| Hmotnost masteru (odhad z objemu) | ~1 470 g | ~930 g |
-| Lidary | 4× TFmini Plus | 4× TFmini Plus (beze změny) |
-| Spoj master ↔ slave | kabel COM H4 | ESP-NOW (bezdrátově) |
-| Napájení | 12 V ze zapalovače | 3× 21700, 54 Wh |
-| Výdrž | jen z vozu | ~14 h master / ~16 h slave |
-| Konektory | GX16 4+2 pin / 4 pin | 1× USB-C IP67 (nabíjení + servis) |
-| Data | BLE → telefon → server | LTE-M + GNSS v masteru, BLE jen servis |
-| Anténa | prutová, externí | uvnitř plastového čela A |
+| 1 | **Netěsnost v principu.** O-kroužky čel křížily dělicí rovinu skořepiny a vany. V těchto T-spojích těsnění nikdy spolehlivě nedoléhá. | Kryt je jeden díl včetně obou čel. Zůstává jediná dělicí rovina (kryt × základna) a jedno uzavřené těsnění v jedné rovině. |
+| 2 | **Šrouby vedly do suchého prostoru.** Každý šroub byl možná netěsnost. | Všech 18 šroubů základny je vně těsnění, ve slepých závitových vložkách. |
+| 3 | **Okna lidarů se těsnila zavřením těla.** Při každém servisu by se 4 těsnění rozpojila. | Každý lidar má vlastní ucpávku (silikonový rámeček stlačený třmenem). Při otevření základny se jí nikdo nedotkne. |
+| 4 | **Výdrž bez rezervy na zimu.** 3 články dávaly 14 h jen za pokojové teploty, v mrazu pod 12 h. | 4 články 21700 (72 Wh): ~19 h, při −10 °C stále ~14 h. Pakety jsou dva stejné a váhově vyvážené. |
+| 5 | **Paralelní články rozdělené 2 + 1** s různě dlouhými vodiči. | Dva shodné pakety 1S2P, každý s vlastní pojistkou a konektorem. |
+| 6 | **Modem neumí GNSS a LTE současně** (SIM7080G sdílí rádiovou část). Průběžná poloha by při vysílání vypadávala. | Samostatný GNSS přijímač (u-blox MAX-M10S) na hlavní desce. Modem dělá jen LTE. |
+| 7 | **Modem na vlastní kartě M.2** by se musel navrhnout a vyrobit. | Standardní slot Mini PCIe: karty LTE-M se dají koupit hotové (např. Quectel BG95-M3 Mini PCIe). |
+| 8 | **Antény vedle baterií.** Kovové články rozlaďují LTE anténu. | Rádiová část je celá v horním segmentu A, baterie ve spodních segmentech B a C. Antény jsou tak i nejvýš na voze. |
+| 9 | **Stavová LED a tlačítko na spodním čele** nejsou za provozu vidět ani pohodlně dosažitelné. | Podsvícené tlačítko IP67 je na vnější ploše nahoře. Je vidět z boku vozu u obou jednotek. |
+| 10 | **Vlastní membránové tlačítko a světlovod** se špatně těsní a vyrábějí. | Hotové tlačítko ⌀12 mm s vlastním O-kroužkem a maticí. |
+| 11 | **Páková přísavka ⌀100** nemá indikaci a není ověřená. | Stejná přísavka s pumpičkou jako ve v1 (změřená, vyzkoušená, už ji máte). |
+| 12 | **Aretace kloubu bočním šroubem** v tištěném dílu drží špatně. | Koule sevřená převlečnou maticí po celém obvodu, dotahuje se rukou. |
+| 13 | **Nevyřešené zajištění nohy v rybině.** | T-drážka s dorazem a pružinovým kolíkem (kupovaný díl). |
+| 14 | **Celý kryt nešel dobře tisknout** (tenké pero a drážka po 500 mm). | Rovná dosedací plocha, drážka 2 × 1,5 mm v masivní přírubě. |
+
+## Architektura
+
+Tělo má dva hlavní díly:
+
+- **Kryt** (PA12, světle šedý): strop s okny, bočnice a obě čela v jednom kusu. Všechno uvnitř je přišroubované do něj: lidary, obě desky, antény. Pakety jsou k němu přilepené pěnovou páskou.
+- **Základna** (PA12, černá): rovná deska na straně k vozu. Nese T-drážky pro nohy a servisní víčko. Nejsou na ní žádné elektrické díly, takže se při otevření nic nerozpojuje.
+
+Po délce (čelo A je na voze nahoře):
+
+| Úsek | Obsah |
+|---|---|
+| Čelo A | GNSS patch anténa (míří nahoru), podsvícené tlačítko ve stropu |
+| Lidar J1 | |
+| Segment A | hlavní deska: ESP32-S3, GNSS, slot Mini PCIe s modemem, SIM, servisní tlačítka; LTE anténa pod stropem; pod ním servisní víčko |
+| Lidar J2 | |
+| Segment B | paket 1S2P (2× 21700) |
+| Lidar J3 | |
+| Segment C | paket 1S2P (2× 21700) |
+| Lidar J4 | |
+| Čelo B | napájecí deska: USB-C IP67, nabíječ, ochrana, měnič 5 V; odvzdušňovací membrána |
+
+Baterie jsou dole kvůli těžišti, rádio nahoře kvůli výhledu na oblohu a přes okna vozu k druhé jednotce.
+
+## Srovnání s v1
+
+| | v1 (archiv) | v2 revize 2 |
+|---|---|---|
+| Délka | 506 mm | 516 mm (rozteč lidarů jako v1) |
+| Průřez | 80 × 40 mm | 64 × 34 mm |
+| Výška s nohou | 137 mm | 120 mm |
+| Tělo bez nohou (odhad) | – | ~730 g |
+| Lidary | 4× TFmini Plus | 4× TFmini Plus |
+| Spoj master ↔ slave | kabel | ESP-NOW |
+| Napájení | 12 V ze zapalovače | 4× 21700, 72 Wh |
+| Výdrž | jen z vozu | ~19 h master, ~22 h slave |
+| Konektory | GX16 (4+2 pin / 4 pin) | 1× USB-C IP67 |
+| Data | BLE → telefon | LTE-M + GNSS v masteru |
 | Krytí | neřešeno | cíl IP67 |
-| Uchycení | pevné klíny, přísavka s pumpou ⌀ 117 | rychloupínák + kulový kloub + přísavka s pumpou ⌀ 100 + pojistné lanko |
-| Druhy jednotek | 2 | 1 (role v konfiguraci) |
+| Uchycení | pevné klíny | kulový kloub ±15°, T-drážka, pojistné lanko |
+| Druhy jednotek | 2 | 1 (role v nastavení) |
 
-## Uchycení: doporučení
+Výška s nohou klesla jen o 17 mm, protože přísavka z v1 má sama 48,5 mm a kloub potřebuje dalších 37 mm. Menší výška by znamenala jinou přísavku.
 
-**Vakuová přísavka s pumpičkou a indikátorem**, ⌀ 100 mm, na kulovém kloubu s aretací, s rychloupínákem a pojistným lankem.
+Hmotnost v aplikaci (~1 310 g u masteru) je součet objemů dílů krát hustota. Přísavky jsou v modelu plné, takže je to horní odhad. Tělo bez nohou vychází zhruba takto: kryt 210 g, základna s víčkem 115 g, články 4 × 69 g, lidary ~50 g, desky a modem ~40 g, kabely, šrouby a těsnění ~40 g. Skutečnou hmotnost je potřeba zvážit na prototypu.
 
-- **Proč přísavka s pumpičkou:** stejný princip jako ve v1, kde drží. Pumpou se vytvoří podtlak a červený pruh na pístu ukáže, když podtlak klesá. Dá se dopumpovat dřív, než povolí. Lak nepoškodí (pryž, žádné tření).
-- **Proč ne magnety:** prach mezi magnetem a lakem lak poškrábe. Nedrží na hliníkových a plastových dílech karoserie. Ve smyku (boční síla za jízdy, vibrace) drží výrazně hůř než na odtrh. Nijak neukážou, že povolují.
-- **Proč ne páková přísavka:** podtlak časem uniká bez varování a nedá se dopumpovat.
-- **Kloub:** úhel se nastaví podle tvaru dveří a zajistí šroubem s kolečkem. Nahrazuje pevné klíny ve v1.
-- **Rychloupínák:** nohy zůstanou přisáté a tělo se zasune na rybinu a zacvakne západkou. Dá se tak sundat bez povolení přísavek.
-- **Pojistné lanko:** očko na saních nohy, lanko s karabinou do rámu dveří nebo pod těsnění okna. Kdyby přísavka povolila, jednotka nespadne na silnici.
-- **Ověřit:** zkouška na odtrh a ve smyku při 50 / 90 km/h, vibrace a teplota (zima, slunce).
+## Uchycení
 
-## Napájení: rozpočet a 12 h
+**Přísavka s pumpičkou z v1 na kulovém kloubu, v T-drážce, s pojistným lankem.**
+
+- **Přísavka:** stejný typ jako ve v1 (⌀117 mm, pumpička s červeným indikátorem). Na voze už drží a máte ji. Indikátor ukáže, že podtlak klesá, a dá se dopumpovat.
+- **Proč ne magnety:** prach pod magnetem poškrábe lak, nedrží na hliníkových a plastových dílech, ve smyku za jízdy drží mnohem hůř než na odtrh a neukážou, že povolují.
+- **Kloub:** ocelová koule ⌀18 mm v sedle saní, sevřená převlečnou maticí. Rozsah ±15° (klíny v1 měly ~10°). Postup: přisát obě přísavky s povolenými klouby, tělo si sedne samo, pak obě matice dotáhnout rukou.
+- **T-drážka:** saně nohy se zasunou do drážky na základně. Tělo se nasouvá shora dolů, takže tíha drží doraz. Proti vysunutí je pružinový kolík s knoflíkem na boku.
+- **Pojistné lanko:** poutko na horním konci základny, nerez lanko s karabinou do rámu dveří nebo pod těsnění okna. Když povolí obě přísavky, jednotka nespadne na silnici.
+- **Ověřit:** moment, při kterém se kloub protočí (vibrace, vítr při 90 km/h); únosnost ve smyku; chování na mokrém a studeném laku.
+
+## Napájení
 
 | Spotřebič | Master | Slave |
 |---|---|---|
 | 4× TFmini Plus (5 V, ~110 mA) | 2,2 W | 2,2 W |
-| ESP32-S3 (ESP-NOW / BLE) | 0,35 W | 0,35 W |
-| Modem LTE-M + GNSS (průměr) | 0,4 W | – |
-| Měnič 5 V, LED, ostatní | 0,25 W | 0,25 W |
-| **Celkem** | **3,2 W** | **2,8 W** |
+| ESP32-S3 (ESP-NOW, BLE) | 0,35 W | 0,35 W |
+| Modem LTE-M (průměr) + GNSS | 0,4 W | – |
+| Měniče, LED, ostatní | 0,25 W | 0,25 W |
+| **Celkem (odhad)** | **3,2 W** | **2,8 W** |
 
-- 3× 21700 (5 000 mAh, 3,6 V) paralelně = 54 Wh.
-- Počítám s 85 % využitelné energie (účinnost měniče, stárnutí, zima): master 54 × 0,85 / 3,2 ≈ **14,3 h**, slave ≈ **16,4 h**.
-- Konfigurátor výdrž přepočítává z parametrů `baterie` a pod 12 h ji zvýrazní červeně.
-- Rezerva navíc: lidary se dají mezi měřeními uspat (TFmini Plus má příkaz pro vypnutí výstupu).
-- Ochrana: BMS (přepětí, podpětí, zkrat), NTC na článku a teplotní okno nabíjení 0–45 °C (Li-ion se v mrazu nesmí nabíjet).
-- Fuel gauge hlásí stav baterie do RGB LED a přes BLE.
+- 4× 21700 po 5 000 mAh = 72 Wh. Počítám 85 % využitelné energie.
+- Master: 72 × 0,85 / 3,2 = **19 h**. Slave: **22 h**.
+- Při −10 °C má Li-ion zhruba o čtvrtinu menší kapacitu: master ~14 h. Požadavek 12 h platí i v zimě.
+- Nabíjení: USB-C s Power Delivery (9–12 V), nabíječ BQ25895 do 5 A. Z prázdna zhruba 5–6 h, přes noc.
+- Ochrany: nabíječ + samostatný ochranný obvod s MOSFETy, pojistka PTC u každého paketu, čidlo teploty na každém paketu (nabíjení jen při 0–45 °C).
+- Vypnutí: lodní režim nabíječe (odběr v µA). Zapnutí tlačítkem nebo připojením USB. Dlouhý stisk = tvrdý reset.
+- Lidary mají vlastní spínač napájení, takže je firmware umí vypnout nebo restartovat.
+- **Ověřit:** skutečný odběr 4× TFmini Plus při 250 Hz. Od něj se odvíjí celá výdrž.
 
-## Vodotěsnost a rozebírání (cíl IP67)
+## Elektronika
 
-- **Tělo:** horní skořepina s okny a spodní vana. Ve spoji je pero a drážka se silikonovou šňůrou. Drží je 12 nerezových šroubů M2,5 zespodu do mosazných zalisovaných insertů, takže se dá rozebírat opakovaně bez opotřebení plastu.
-- **Čela:** duté, s límcem zasunutým do těla a radiálním O-kroužkem. Každé drží 3 šrouby.
-- **Okna lidarů:** pryžový rámeček kolem čela lidaru. Čelo lidaru má samo IP65 a vyplní okno v rovině skořepiny.
-- **Odvzdušnění:** membránový ventil (typ GORE) ve dně u čela B proti kondenzaci a tlakovým rázům.
-- **USB-C:** panelová zásuvka IP67 s gumovou krytkou na poutku. I bez krytky je zásuvka těsná, krytka ji chrání před nečistotou.
-- **Tlačítko:** pod silikonovou membránou. **LED:** světlovod zalitý v čele.
+Dvě desky spojené jedním svazkem (10 žil, JST GH):
+
+**Hlavní deska** (100 × 40 mm, segment A, součástky směrem k servisnímu víčku):
+- ESP32-S3-MINI-1: firmware v1 už na S3 běží. Nativní USB slouží pro flash i konzoli (ve v1 to nešlo, USB piny zabíral spoj ke slave).
+- GNSS u-blox MAX-M10S s aktivní patch anténou 18 × 18 mm v čele A.
+- Slot Mini PCIe + držák nano-SIM + 2 sloupky. U slave zůstává prázdný.
+- 4× konektor lidaru (JST GH 4p), spínač 5 V pro lidary.
+- Měnič 3,3 V (buck-boost, funguje přes celý rozsah baterie).
+- Akcelerometr: probuzení pohybem, kontrola sklonu a vibrací.
+- Tlačítka BOOT a EN pod servisním víčkem.
+
+**Napájecí deska** (50 × 22 mm, svisle za čelem B):
+- zásuvka USB-C IP67 s přírubou, ochrana ESD, řadič USB PD,
+- nabíječ, měřič stavu baterie, ochrana baterie, měnič 5 V / 2 A pro lidary,
+- 2× konektor paketu, konektor svazku.
+
+Spoj slave → master: ESP-NOW. Formát rámce podle specifikace (kap. 6) se nemění, mění se jen přenos. Master vysílá synchronizační rámec s časem.
+
+- **Ověřit:** ztrátovost a zpoždění ESP-NOW mezi jednotkami na opačných bocích vozu za jízdy. Záloha, kdyby to nestačilo: kabel USB-C mezi jednotkami (ESP32-S3 umí USB host).
+- **Ověřit:** příjem GNSS z boku vozu (karoserie zakrývá půl oblohy) a přizpůsobení LTE antény v těle (měřit na prototypu).
+
+## Vodotěsnost (cíl IP67)
+
+| Místo | Těsnění |
+|---|---|
+| Kryt × základna | silikonová šňůra ⌀2 mm v drážce 2,0 × 1,5 mm, 18 šroubů M2,5 vně těsnění |
+| 4× lidar ve stropu | ucpávka: silikonový rámeček 3 mm stlačený třmenem (2 šrouby) |
+| Servisní víčko | plochý silikonový rámeček 1 mm, 4 šrouby vně těsnění |
+| USB-C | zásuvka IP67 s přírubou a plochým těsněním, silikonová zátka |
+| Tlačítko | vlastní O-kroužek a matice |
+| Odvzdušnění | samolepicí ePTFE membrána nad otvorem ⌀2 mm v čele B |
+
+USB-C a odvzdušnění jsou na spodním čele: voda odtéká pryč a nestojí na nich.
+
+- **Ověřit:** tvar lidaru. Průchod stropem (35,6 × 19,1 mm) a rámeček těsnění vycházejí z katalogových rozměrů TFmini Plus (35 × 18,5 mm). Před tiskem krytu změřit skutečný obrys a zaoblení lidaru a upravit parametry `okno`.
+- **Zkouška:** ponoření 1 m na 30 minut s papírovým indikátorem uvnitř, před osazením elektroniky.
 
 ## Servis
 
-- **Nabíjení:** USB-C (5 V, případně PD 9 V), stav ukazuje RGB LED.
-- **Flash a konzole:** stejný USB-C. ESP32-S3 má nativní USB, takže není potřeba Raspberry Pi ani PROG kabel. Ve v1 to nešlo, protože USB piny zabíral spoj ke slave.
-- **Výměna modemu nebo SIM:** povolit 4 šrouby servisního víčka ve dně, vyjmout kartu z M.2 slotu (1 pojistný šroub).
-- **Výměna lidaru nebo baterie:** 12 šroubů zespodu, sundat skořepinu. Lidary leží v kolébkách a mají konektory JST-GH.
+| Úkon | Jak |
+|---|---|
+| Nabíjení | USB-C na spodním čele, stav ukazuje kroužek tlačítka |
+| Flash, konzole | stejný USB-C (nativní USB ESP32-S3) |
+| Výměna SIM nebo modemu | sundat tělo z nohou, 4 šrouby servisního víčka. SIM je push-push, karta má 2 šrouby. |
+| Nouzový flash | tlačítka BOOT a EN pod servisním víčkem |
+| Výměna lidaru | 18 šroubů základny, 2 šrouby třmenu, konektor JST |
+| Výměna paketu | 18 šroubů základny, odpojit konektor u čela B, odlepit paket |
 
-## Jedna jednotka pro obě role
+## Rizika a otevřené body
 
-- Stejná deska, tělo i firmware. Role master / slave se nastaví přes BLE nebo USB.
-- U masteru se osadí modemová karta, u slave zůstane slot prázdný.
-- Spoj slave → master: ESP-NOW. Formát rámce zůstává podle spec. kap. 6, mění se jen transport. Master vysílá synchronizační rámec s časem.
-- **Ověřit:** ztrátovost a latence ESP-NOW přes plech vozu (jednotky na opačných bocích), za jízdy.
-
-## Kusovník v2 (orientační, jedna jednotka)
-
-| Díl | Ks | Poznámka |
-|---|---|---|
-| TFmini Plus | 4 | stejné jako v1 |
-| Horní skořepina s okny | 1 | PA12 (SLS) / ASA, sériově vstřikování |
-| Spodní vana | 1 | dtto |
-| Čelo A, čelo B | 2 | duté, s límcem |
-| Servisní víčko | 1 | s těsněním |
-| Silikonová šňůra, O-kroužky, těsnění oken | sada | |
-| Mosazné inserty M2,5 | 12 | zalisované teplem |
-| Šrouby M2,5 nerez | 12 + 6 | tělo + čela |
-| Šrouby M2 | 4 | víčko |
-| Ventil GORE (M8 / lepený) | 1 | |
-| Hlavní deska | 1 | ESP32-S3-MINI-1, BQ25895, MAX17048, TPS63070, 4× JST-GH, M.2 key E |
-| Modemová karta | 1 (master) | SIM7080G (LTE-M / NB-IoT + GNSS), nano-SIM |
-| Deska čela B | 1 | USB-C IP67, mikrospínač, RGB LED, ESD, FFC |
-| GNSS patch 25 × 25 + LNA | 1 | v čele A |
-| Flex anténa LTE / BLE | 1 | v čele A |
-| Články 21700 5 000 mAh | 3 | 1S3P |
-| BMS + NTC | 1 | |
-| Držáky článků s kontakty | 2 | |
-| Kabeláž | sada | 4× lidar, koax ×2, baterie, FFC |
-| Noha: destička, saně se západkou, dřík, kloub s aretací, přísavka s pumpou ⌀ 100 | 2 sady | |
-| Pojistné lanko s karabinou | 1 | |
+1. Skutečný odběr lidarů (určuje výdrž).
+2. ESP-NOW přes vůz.
+3. Tvar lidaru a těsnost ucpávek.
+4. LTE anténa v těle a GNSS z boku vozu.
+5. Moment kloubu a únosnost přísavek za jízdy.
+6. Teplota: tmavé tělo na slunci. Kryt je proto světlý, nabíjení hlídá čidlo teploty.
+7. Rozteč lidarů: zatím jako v1. Kratší rozteč zkrátí tělo.
+8. Výroba krytu: 516 mm se nevejde do malých tiskáren (viz návod stavby).
+9. Sériová výroba: vnitřní příruba krytu je podřez, pro vstřikování se tvar upraví. Certifikace CE / RED kvůli rádiu, přeprava Li-ion (UN 38.3).
 
 ## Postup
 
-1. **Na stole:** 2 devkity ESP32-S3, ESP-NOW spoj, měření skutečného odběru 4× TFmini Plus při 250 Hz, test výdrže na 3× 21700.
-2. **Testovací prototyp (2 kusy):** tělo z PA12 (SLS), vlastní deska, modemová karta, nohy. Zkouška těsnosti (ponoření 1 m / 30 min) a jízdní testy.
-3. **Úpravy podle testů:** rozteč lidarů (zatím jako v1), velikost přísavky, výdrž.
-4. **Produkce:** vstřikované díly, certifikace CE / RED kvůli rádiu (BLE, ESP-NOW, LTE), přeprava Li-ion (UN 38.3).
-
-## Otevřené otázky
-
-- Rozteč lidarů: je potřeba spočítat. Kratší rozteč zkrátí tělo.
-- Protokol a server: zatím neřešeno.
-- Zkouška přísavek ve smyku za jízdy.
+1. **Na stole:** dva devkity ESP32-S3, 4 lidary, měření odběru, test ESP-NOW na voze, GNSS a modem na vývojových deskách.
+2. **Mechanický prototyp:** tisk krytu, základny a nohou, osazení lidarů a maket, zkouška těsnosti a jízdní zkouška uchycení.
+3. **Desky:** schéma a návrh hlavní a napájecí desky podle rozměrů a rozmístění v modelu.
+4. **Testovací pár:** dvě kompletní jednotky, jízdní testy.
+5. **Úpravy pro sérii.**
 
 ## Kde to je v konfigurátoru
 
-- Parametry v2: `src/variants/v2/params.json`. Všechny hodnoty jsou `koncept` a dají se měnit v panelu (ukládají se v prohlížeči).
-- CAD v2: `src/cad/parts-v2.js`. Každý díl má vlastní posun pro rozložený pohled. Export STEP/STL se jménem `clearway-v2-*.step`.
-- v1: `src/variants/v1/params.json`, `src/cad/parts.js`, tagy `v1-archiv` a `v1-archiv-2`. V panelu jen pro čtení.
-- Další verze: nová složka `src/variants/vN` + builder v `src/cad/worker.js` + řádek v `VARIANTS` v `src/main.js`.
+- Parametry: `src/variants/v2/params.json` (všechny `koncept`, dají se měnit v panelu).
+- CAD: `src/cad/parts-v2.js`. Každý díl má název, specifikaci, zdroj a posun pro rozložený pohled.
+- Kusovník: záložka Díly → Kusovník, tlačítko CSV.
+- Export: STEP celé jednotky, STEP jen tištěných dílů, STL jednotlivého dílu (karta dílu nebo záložka Export).
+- v1: `src/variants/v1/params.json`, `src/cad/parts.js`. Jen pro čtení.
