@@ -1,0 +1,121 @@
+{
+  "meta": {
+    "filename": "cb3.kicad_pro",
+    "version": 1
+  },
+  "board": {
+    "design_settings": {
+      "defaults": {},
+      "rules": {
+        "min_clearance": 0.1,
+        "min_track_width": 0.1,
+        "min_via_diameter": 0.45,
+        "min_through_hole_diameter": 0.25,
+        "min_copper_edge_clearance": 0.3
+      }
+    }
+  },
+  "net_settings": {
+    "classes": [
+      {
+        "name": "Default",
+        "clearance": 0.1,
+        "track_width": 0.15,
+        "via_diameter": 0.45,
+        "via_drill": 0.25,
+        "diff_pair_width": 0.15,
+        "diff_pair_gap": 0.15,
+        "wire_width": 6,
+        "bus_width": 12,
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)"
+      },
+      {
+        "name": "Power",
+        "clearance": 0.2,
+        "track_width": 0.8,
+        "via_diameter": 0.8,
+        "via_drill": 0.4,
+        "diff_pair_width": 0.2,
+        "diff_pair_gap": 0.25,
+        "wire_width": 6,
+        "bus_width": 12,
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)"
+      },
+      {
+        "name": "HV",
+        "clearance": 0.5,
+        "track_width": 1,
+        "via_diameter": 0.8,
+        "via_drill": 0.4,
+        "diff_pair_width": 0.2,
+        "diff_pair_gap": 0.25,
+        "wire_width": 6,
+        "bus_width": 12,
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)"
+      }
+    ],
+    "meta": {
+      "version": 3
+    },
+    "net_colors": null,
+    "netclass_patterns": [
+      {
+        "netclass": "HV",
+        "pattern": "KL30"
+      },
+      {
+        "netclass": "HV",
+        "pattern": "VIN_*"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "V12*"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "V5"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "V3V*"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "GND"
+      }
+    ]
+  },
+  "sheets": [
+    [
+      "cb678053-3a53-4ca8-8119-db6f93c3c30b",
+      "Root"
+    ],
+    [
+      "78206dfd-b1c6-4d09-9277-446b7adf27e4",
+      "Napájení 9–32 V"
+    ],
+    [
+      "500eb9c1-95d2-47b3-a037-c543bd66b7b9",
+      "Počítač CM5"
+    ],
+    [
+      "5f912f56-d1df-4c43-997e-58b7af600ad4",
+      "Ethernet a porty senzorů"
+    ],
+    [
+      "4b2a739c-4054-4aa5-a375-2835675029db",
+      "GNSS, LTE, CAN"
+    ],
+    [
+      "3625bd77-4559-45f9-bba1-8be2d9dc8882",
+      "Obsluha a ladění"
+    ]
+  ],
+  "text_variables": {}
+}

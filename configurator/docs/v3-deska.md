@@ -167,15 +167,18 @@ CAN:
 
 ## Jak z toho udělat vyrobitelnou desku
 
-1. **Schéma v KiCadu 8** podle bloků výše. U každého IO převzít doporučené zapojení z datasheetu (hodnoty R, C, L).
-2. **Plošný spoj:**
-   - V KiCadu otevřít editor plošných spojů a Soubor → Import → Grafika importovat [obrys.dxf](v3-deska/obrys.dxf) do vrstvy Edge.Cuts. Otvory jsou ve vrstvě OTVORY_PTH.
-   - Součástky rozmístit podle [osazeni.csv](v3-deska/osazeni.csv). Polohy konektorů J1, J4–J6, J7 a J10 jsou svázané s otvory ve skříni a neměnit je.
-   - Pak propojit podle pravidel výše.
+**Kostra v KiCadu už je:** [hardware/cb3](../../hardware/cb3/README.md).
+
+- **Schéma:** 5 listů se všemi součástkami. Konektory a pasivní součástky jsou zapojené.
+- **Deska:** obrys, montážní otvory a pouzdra rozmístěná jako v konfigurátoru.
+- **Kontrola:** ERC i DRC proběhly přes kicad-cli. Co zbývá dokreslit, je v README projektu.
+
+1. **Doplnit schéma** v projektu: u každého IO převzít doporučené zapojení z datasheetu (hodnoty R, C, L), zástupce nahradit symboly výrobce.
+2. **Plošný spoj:** obrys a rozmístění už v projektu jsou. Nástroje → Aktualizovat DPS ze schématu (F8) přenese sítě, pak tahat spoje podle pravidel výše. Polohy konektorů J1, J4–J6, J7 a J10 jsou svázané s otvory ve skříni, neměnit je.
 3. **Kontroly:** DRC a ERC. 3D kontrola proti STEP sestavy z aplikace: export STEP sestavy obsahuje skříň, sloupky a tepelný most.
 4. **Výroba a osazení** (JLCPCB, PCBWay, nebo česká výroba, např. Gatema): Gerber + vrtání + kusovník + pick & place. CM5, modem a GNSS osadit ručně nebo dodat výrobci.
 5. **Oživení:**
    - Nejdřív bez CM5 z laboratorního zdroje s omezením proudu. Změřit napětí větví, klidový odběr a reakci na KL15.
    - Pak CM5, Ethernet ke každému portu, GNSS fix, LTE, CAN.
 
-Schéma a layout je odhadem 3–6 týdnů práce zkušeného návrháře. Můžu připravit kostru projektu v KiCadu (schéma po blocích s vybranými součástkami), ale před výrobou ji musí zkontrolovat člověk s praxí.
+Dokončení schématu a plošného spoje je odhadem 3–6 týdnů práce zkušeného návrháře. Před výrobou musí návrh zkontrolovat člověk s praxí.

@@ -14,6 +14,7 @@ npm run dev      # http://localhost:5174
 - `src/variants/v2/params.json` + `src/cad/parts-v2.js`: návrh v2 (koncept), popsaný v `docs/navrh-v2.md`.
 - `src/variants/v3/params.json` + `src/cad/parts-v3.js`: experiment v3, střešní skener, popsaný v `docs/navrh-v3.md`.
 - `src/cad/board-v3-data.js` + `src/cad/board-v3.js`: nosná deska CB3 pro v3 (tabulka součástek a 3D model). `node scripts/export-board.mjs` z ní vygeneruje obrys DXF, osazení a kusovník do `docs/v3-deska/`; popis v `docs/v3-deska.md`.
+- `scripts/kicad/`: generátor projektu KiCad desky CB3 do `../hardware/cb3` (`build.sh`; schéma po blocích, deska s obrysem a rozmístěním).
 - `src/scan.js`: ulice s překážkami a simulace průjezdu v3 (paprsky přes BVH, volná šířka, podjezdná výška).
 - `src/truck.js`: obecný popelářský vůz pro scénu „Popelář“.
 - Každý parametr má `v` (mm / °) a `stav`:

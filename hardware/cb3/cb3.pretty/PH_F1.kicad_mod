@@ -1,0 +1,92 @@
+(footprint "PH_F1"
+  (version 20240108)
+  (generator "clearway")
+  (layer "F.Cu")
+  (property "Reference" "F1"
+    (at 0 0 0)
+    (layer "F.SilkS")
+    (uuid "6adea0a0-d3ed-40b7-839f-cbac9ac44930")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Value" "5A slow"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (uuid "fb206b8b-5069-4d3a-b1a3-322424b6c56c")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Datasheet" ""
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (uuid "b80de262-8db3-443c-b6c5-cfa69c302d0a")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Description" ""
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (uuid "a8a8881b-b0bf-4a92-b769-2475c097d0df")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (duplicate_pad_numbers_are_jumpers no)
+  (fp_rect
+    (start -3.199999 -1.4)
+    (end 3.199999 1.4)
+    (stroke
+      (width 0.12)
+      (type default)
+    )
+    (fill no)
+    (layer "F.SilkS")
+    (uuid "673a9e5f-31d0-4ae1-9051-c03843ab2398")
+  )
+  (fp_rect
+    (start -3.3 -1.5)
+    (end 3.3 1.5)
+    (stroke
+      (width 0.05)
+      (type default)
+    )
+    (fill no)
+    (layer "F.CrtYd")
+    (uuid "f9e6ed70-f9ed-477e-bedf-899d36e4ab25")
+  )
+  (fp_rect
+    (start -3.05 -1.25)
+    (end 3.05 1.25)
+    (stroke
+      (width 0.1)
+      (type default)
+    )
+    (fill no)
+    (layer "F.Fab")
+    (uuid "6fd36f23-9916-4c54-97d7-c14bcfdfb02a")
+  )
+  (fp_text user "ZÁSTUPCE: Littelfuse 0456005.ER (2410, pomalá)"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (uuid "b73c248b-df82-42ac-b955-0a0b3bda1fb6")
+    (effects
+      (font
+        (size 0.6 0.6)
+      )
+    )
+  )
+  (embedded_fonts no)
+)

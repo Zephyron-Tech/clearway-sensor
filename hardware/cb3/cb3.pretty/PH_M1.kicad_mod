@@ -1,0 +1,92 @@
+(footprint "PH_M1"
+  (version 20240108)
+  (generator "clearway")
+  (layer "F.Cu")
+  (property "Reference" "M1"
+    (at 0 0 0)
+    (layer "F.SilkS")
+    (uuid "04680774-91fd-49c8-b7b2-7b5c20cb1c17")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Value" "Raspberry Pi CM5"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (uuid "dfc5d91e-62f6-490f-ba55-89a088c6f225")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Datasheet" ""
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (uuid "02946b96-d967-42e2-b1ef-3b569fa40660")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Description" ""
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (uuid "b35cbbb9-5436-4848-bd5e-42ebfb397aa4")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (duplicate_pad_numbers_are_jumpers no)
+  (fp_rect
+    (start -27.65 -20.15)
+    (end 27.65 20.15)
+    (stroke
+      (width 0.12)
+      (type default)
+    )
+    (fill no)
+    (layer "F.SilkS")
+    (uuid "141d0925-fa85-4b54-b694-3b015d379c5b")
+  )
+  (fp_rect
+    (start -27.75 -20.25)
+    (end 27.75 20.25)
+    (stroke
+      (width 0.05)
+      (type default)
+    )
+    (fill no)
+    (layer "F.CrtYd")
+    (uuid "6e87a3bf-fdfa-464a-a4ef-ca2915b92b4d")
+  )
+  (fp_rect
+    (start -27.5 -20)
+    (end 27.5 20)
+    (stroke
+      (width 0.1)
+      (type default)
+    )
+    (fill no)
+    (layer "F.Fab")
+    (uuid "8abb9152-6156-4710-a7e6-62838b2b2c80")
+  )
+  (fp_text user "ZÁSTUPCE: CM5104032 (4 GB RAM, 32 GB eMMC, bez Wi-"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (uuid "db82dd3d-367f-4edb-8101-20a63118c0e8")
+    (effects
+      (font
+        (size 0.6 0.6)
+      )
+    )
+  )
+  (embedded_fonts no)
+)

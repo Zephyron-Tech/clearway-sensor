@@ -1,0 +1,219 @@
+(kicad_sch
+  (version 20231120)
+  (generator "clearway")
+  (generator_version "8.0")
+  (uuid "cb678053-3a53-4ca8-8119-db6f93c3c30b")
+  (paper "A3")
+  (title_block
+    (title "ClearWay CB3 – přehled")
+    (rev "A")
+    (company "ClearWay")
+  )
+  (lib_symbols)
+  (text "ClearWay CB3 – nosná deska skeneru ClearWay v3 (koncept rev. A (koncept))\\n\\nDeska 242 × 162 × 1.6 mm, 4 vrstvy. Obrys, otvory a rozmístění převzaté z konfigurátoru.\\nPopis bloků, volba součástek, piny konektorů a přiřazení GPIO: configurator/docs/v3-deska.md\\nSítě mezi listy jsou globální popisky (V12, V5, V3V3, V3V8, GND, CAN_H, …)."
+    (exclude_from_sim no)
+    (at 30 25 0)
+    (effects
+      (font
+        (size 1.778 1.778)
+      )
+      (justify left top)
+    )
+    (uuid "fbbe4951-97f6-425e-9b76-3e05e6a8dd88")
+  )
+  (sheet
+    (at 30 60)
+    (size 90 40)
+    (fields_autoplaced yes)
+    (stroke
+      (width 0.1524)
+      (type solid)
+    )
+    (fill
+      (color 0 0 0 0.0000)
+    )
+    (uuid "78206dfd-b1c6-4d09-9277-446b7adf27e4")
+    (property "Sheetname" "Napájení 9–32 V"
+      (at 30 59.3 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left bottom)
+      )
+    )
+    (property "Sheetfile" "napajeni.kicad_sch"
+      (at 30 100.6 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left top)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b"
+          (page "2")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 150 60)
+    (size 90 40)
+    (fields_autoplaced yes)
+    (stroke
+      (width 0.1524)
+      (type solid)
+    )
+    (fill
+      (color 0 0 0 0.0000)
+    )
+    (uuid "500eb9c1-95d2-47b3-a037-c543bd66b7b9")
+    (property "Sheetname" "Počítač CM5"
+      (at 150 59.3 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left bottom)
+      )
+    )
+    (property "Sheetfile" "vypocet.kicad_sch"
+      (at 150 100.6 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left top)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b"
+          (page "3")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 270 60)
+    (size 90 40)
+    (fields_autoplaced yes)
+    (stroke
+      (width 0.1524)
+      (type solid)
+    )
+    (fill
+      (color 0 0 0 0.0000)
+    )
+    (uuid "5f912f56-d1df-4c43-997e-58b7af600ad4")
+    (property "Sheetname" "Ethernet a porty senzorů"
+      (at 270 59.3 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left bottom)
+      )
+    )
+    (property "Sheetfile" "site.kicad_sch"
+      (at 270 100.6 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left top)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b"
+          (page "4")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 30 130)
+    (size 90 40)
+    (fields_autoplaced yes)
+    (stroke
+      (width 0.1524)
+      (type solid)
+    )
+    (fill
+      (color 0 0 0 0.0000)
+    )
+    (uuid "4b2a739c-4054-4aa5-a375-2835675029db")
+    (property "Sheetname" "GNSS, LTE, CAN"
+      (at 30 129.3 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left bottom)
+      )
+    )
+    (property "Sheetfile" "radio.kicad_sch"
+      (at 30 170.6 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left top)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b"
+          (page "5")
+        )
+      )
+    )
+  )
+  (sheet
+    (at 150 130)
+    (size 90 40)
+    (fields_autoplaced yes)
+    (stroke
+      (width 0.1524)
+      (type solid)
+    )
+    (fill
+      (color 0 0 0 0.0000)
+    )
+    (uuid "3625bd77-4559-45f9-bba1-8be2d9dc8882")
+    (property "Sheetname" "Obsluha a ladění"
+      (at 150 129.3 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left bottom)
+      )
+    )
+    (property "Sheetfile" "obsluha.kicad_sch"
+      (at 150 170.6 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left top)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b"
+          (page "6")
+        )
+      )
+    )
+  )
+  (sheet_instances
+    (path "/"
+      (page "1")
+    )
+  )
+)

@@ -1,0 +1,92 @@
+(footprint "PH_J8"
+  (version 20240108)
+  (generator "clearway")
+  (layer "F.Cu")
+  (property "Reference" "J8"
+    (at 0 0 0)
+    (layer "F.SilkS")
+    (uuid "2e5b686b-e899-4faa-ae69-6fc5a22508df")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Value" "M.2 Key B (TE 2199230-4)"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (uuid "c0f3d491-e17f-436a-858b-88de0733cf8b")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Datasheet" ""
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (uuid "67ee9376-49ab-4fb7-87c0-bbff5c262fac")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Description" ""
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (uuid "a77981d6-b99e-498e-94fc-c8a7d32ec721")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (duplicate_pad_numbers_are_jumpers no)
+  (fp_rect
+    (start -2.9 -11.15)
+    (end 2.9 11.15)
+    (stroke
+      (width 0.12)
+      (type default)
+    )
+    (fill no)
+    (layer "F.SilkS")
+    (uuid "25156584-93bf-4506-947e-ea3884265e48")
+  )
+  (fp_rect
+    (start -3 -11.25)
+    (end 3 11.25)
+    (stroke
+      (width 0.05)
+      (type default)
+    )
+    (fill no)
+    (layer "F.CrtYd")
+    (uuid "b3730157-2b5e-46d3-8850-d0777d1a9142")
+  )
+  (fp_rect
+    (start -2.75 -11)
+    (end 2.75 11)
+    (stroke
+      (width 0.1)
+      (type default)
+    )
+    (fill no)
+    (layer "F.Fab")
+    (uuid "3c7a5d59-7e4e-42f0-b3db-ab099f7f93f9")
+  )
+  (fp_text user "ZÁSTUPCE: TE 2199230-4 (výška 4,2)"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (uuid "0c478a7d-bba3-4ad8-9e1e-6d2c470cedc4")
+    (effects
+      (font
+        (size 0.6 0.6)
+      )
+    )
+  )
+  (embedded_fonts no)
+)

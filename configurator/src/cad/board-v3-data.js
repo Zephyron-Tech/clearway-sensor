@@ -33,13 +33,13 @@ const C = (ref, block, label, mpn, x, z, w, d, h, opts = {}) => ({ ref, block, l
 
 export const PARTS = [
   // ---------------- NAPÁJENÍ ----------------
-  C('J1', 'napajeni', 'Napájecí konektor (od zásuvky Deutsch)', 'Molex 43650-0600 (Micro-Fit 3.0, 6p, svislý)', -110, -40, 10.3, 10, 9.6, { mat: 'plasticBlack', pins: '1 KL30 +12/24 V, 2 KL31 GND, 3 KL15 zapalování, 4 CAN-H, 5 CAN-L, 6 GND' }),
+  C('J1', 'napajeni', 'Napájecí konektor (od zásuvky Deutsch)', 'Molex 43045-0612 (Micro-Fit 3.0, 2×3, svislý)', -110, -40, 10.3, 10, 9.6, { mat: 'plasticBlack', pins: '1 KL30 +12/24 V, 2 KL31 GND, 3 KL15 zapalování, 4 CAN-H, 5 CAN-L, 6 GND' }),
   C('F1', 'napajeni', 'Pojistka 5 A', 'Littelfuse 0456005.ER (2410, pomalá)', -98, -48, 6.1, 2.5, 2.2, { mat: 'yellow' }),
   C('D1', 'napajeni', 'TVS proti load dump', 'Vishay SM8S36A (DO-218AB)', -97, -28, 10.2, 15.2, 4.6, { mat: 'chip' }),
   C('U1', 'napajeni', 'Ideální dioda (přepólování, zpětný proud)', 'TI LM74800QDRRRQ1 (WSON-12, AEC-Q100)', -84, -47, 3, 3, 0.8, { shape: 'ic' }),
   C('Q1', 'napajeni', 'MOSFET ideální diody', 'N-MOSFET 60 V ~3 mΩ LFPAK56 (např. Nexperia BUK7Y3R5-60E)', -84, -37, 5, 6, 1.1),
   C('Q2', 'napajeni', 'MOSFET odpojení zátěže', 'N-MOSFET 60 V ~3 mΩ LFPAK56 (např. Nexperia BUK7Y3R5-60E)', -76, -37, 5, 6, 1.1),
-  C('C1', 'napajeni', 'Vstupní kondenzátor 100 µF / 63 V', 'Panasonic EEH-ZK1J101P (hybrid polymer, 10×10)', -71, -60, 10, 10, 10.5, { shape: 'cyl', mat: 'nickel' }),
+  C('C1', 'napajeni', 'Vstupní kondenzátor 100 µF / 63 V', 'Panasonic EEH-ZK1J101P (hybrid polymer, 10×10)', -73, -60, 10, 10, 10.5, { shape: 'cyl', mat: 'nickel' }),
   C('C2', 'napajeni', 'Vstupní kondenzátor 100 µF / 63 V', 'Panasonic EEH-ZK1J101P (hybrid polymer, 10×10)', -58, -60, 10, 10, 10.5, { shape: 'cyl', mat: 'nickel' }),
   C('U2', 'napajeni', 'Řadič buck-boost 12 V / 3 A (senzory)', 'TI LM5176PWPR (HTSSOP-28, 3,5–55 V)', -70, -20, 9.7, 6.4, 1.2, { shape: 'ic' }),
   C('Q3', 'napajeni', 'MOSFET buck-boost', 'N-MOSFET 60 V LFPAK56', -86, -12, 5, 6, 1.1),
@@ -51,12 +51,14 @@ export const PARTS = [
   C('U3', 'napajeni', 'Měnič 5 V / 5 A (CM5)', 'TI TPS54560BDDAR (HSOIC-8, 4,5–60 V)', -46, -48, 4.9, 6, 1.6, { shape: 'ic' }),
   C('L2', 'napajeni', 'Tlumivka 5 V 6,8 µH', 'Coilcraft XAL7070-682MEB (7×7 mm)', -46, -64, 7.5, 7.2, 7, { mat: 'ferrite' }),
   C('C4', 'napajeni', 'Výstup 5 V 330 µF / 10 V', 'polymerový Al, ⌀8×8', -32, -64, 8, 8, 8.2, { shape: 'cyl', mat: 'nickel' }),
-  C('U4', 'napajeni', 'Měnič 3,8 V / 3 A (LTE modem)', 'TI TPS62133RGTR (VQFN-16)', -24, -6, 3, 3, 1, { shape: 'ic' }),
-  C('L3', 'napajeni', 'Tlumivka 3,8 V 1 µH', 'Coilcraft XFL4020-102MEB', -24, 4, 4, 4, 2.1, { mat: 'ferrite' }),
+  C('U4', 'napajeni', 'Měnič 3,8 V / 3 A (LTE modem)', 'TI TPS62130RGTR (VQFN-16, nastavitelný)', -24, -6, 3, 3, 1, { shape: 'ic' }),
+  C('L3', 'napajeni', 'Tlumivka 3,8 V 1 µH', 'Coilcraft XAL4020-102MEC', -24, 4, 4, 4, 2.1, { mat: 'ferrite' }),
+  C('U14', 'napajeni', 'Měnič 3,3 V / 3 A (přepínač, GNSS, CAN, logika)', 'TI TPS62130RGTR (VQFN-16, nastavitelný)', -36, -6, 3, 3, 1, { shape: 'ic' }),
+  C('L5', 'napajeni', 'Tlumivka 3,3 V 1 µH', 'Coilcraft XAL4020-102MEC', -36, 4, 4, 4, 2.1, { mat: 'ferrite' }),
   C('U5', 'napajeni', 'Spínač zapnutí (KL15 nebo udržení z CM5)', 'Nexperia 74LVC1G32 + BSS138 (diode-OR na EN měničů)', -90, -58, 3, 3, 1, { shape: 'ic' }),
   C('U6', 'napajeni', 'Nabíječ superkondenzátorů se zálohou 5 V', 'Analog Devices LTC3226EUD (QFN-16) – ověřit proud zálohy', -66, 24, 3, 3, 0.8, { shape: 'ic' }),
-  C('SC1', 'napajeni', 'Superkondenzátor 10 F / 2,7 V', 'Eaton HV1030-2R7106-R (⌀10×30)', -103, 18, 30, 10.5, 10.5, { shape: 'cylX', mat: 'blue' }),
-  C('SC2', 'napajeni', 'Superkondenzátor 10 F / 2,7 V', 'Eaton HV1030-2R7106-R (⌀10×30)', -103, 31, 30, 10.5, 10.5, { shape: 'cylX', mat: 'blue' }),
+  C('SC1', 'napajeni', 'Superkondenzátor 10 F / 2,7 V', 'Eaton HV1030-2R7106-R (⌀10×30, stojatý)', -103, 18, 10.5, 10.5, 31, { shape: 'cyl', mat: 'blue' }),
+  C('SC2', 'napajeni', 'Superkondenzátor 10 F / 2,7 V', 'Eaton HV1030-2R7106-R (⌀10×30, stojatý)', -103, 31, 10.5, 10.5, 31, { shape: 'cyl', mat: 'blue' }),
 
   // ---------------- POČÍTAČ ----------------
   C('J2', 'vypocet', 'Konektor CM5 (sběrnice A)', 'Hirose DF40C-100DS-0.4V(51)', 20, -51.5, 29.6, 4.8, 1.5, { mat: 'chip' }),
@@ -85,25 +87,25 @@ export const PARTS = [
   C('J9', 'radio', 'Držák nano-SIM', 'Molex 78723-1001 (push-push) – ověřit', 45, 54, 14.5, 12.6, 1.4, { mat: 'shield' }),
   C('D5', 'radio', 'Ochrana ESD SIM', 'TI TPD3E001DRLR', 45, 44, 1.6, 1.2, 0.6),
   C('U12', 'radio', 'Řadič CAN FD (SPI)', 'Microchip MCP2518FDT-E/QBB (VDFN-14)', -54, 46, 3, 4.5, 0.9, { shape: 'ic' }),
-  C('U13', 'radio', 'Budič CAN', 'TI TCAN1042HGVDRBRQ1 (SON-8)', -54, 58, 3, 3, 1, { shape: 'ic' }),
+  C('U13', 'radio', 'Budič CAN', 'TI TCAN1042HGVDRQ1 (SOIC-8)', -54, 58, 4.9, 6, 1.6, { shape: 'ic' }),
   C('Y2', 'radio', 'Krystal 40 MHz (CAN)', 'Abracon ABM8-40.000MHZ', -44, 46, 3.2, 2.5, 0.8, { mat: 'shield' }),
   C('D6', 'radio', 'Ochrana CAN', 'Nexperia PESD2CANFD24V (SOT-23)', -66, 58, 2.9, 1.3, 1),
 
   // ---------------- OBSLUHA ----------------
   C('J10', 'obsluha', 'Servisní USB (propojka k panelovému USB-C)', 'JST SM04B-GHS-TB (GH, 4p: VBUS, D−, D+, GND)', -112, -54, 6, 7.25, 4.25, { mat: 'jst' }),
   C('D7', 'obsluha', 'Ochrana ESD USB', 'TI TPD4E05U06DQAR', -102, -54, 2.5, 1, 0.6),
-  C('SW1', 'obsluha', 'Tlačítko nRPIBOOT (nahrání firmware)', 'C&K PTS526SK15SMTR2LFS', 55, -52, 5.2, 5.2, 1.5, { shape: 'button' }),
-  C('SW2', 'obsluha', 'Tlačítko vypnutí / reset', 'C&K PTS526SK15SMTR2LFS', 55, -42, 5.2, 5.2, 1.5, { shape: 'button' }),
-  C('LED1', 'obsluha', 'LED napájení (zelená)', 'Würth 150060VS75000 (0603)', 84, 66, 1.6, 0.8, 0.8, { mat: 'ledGreen' }),
-  C('LED2', 'obsluha', 'LED GNSS fix (modrá)', 'Würth 150060BS75000 (0603)', 84, 61, 1.6, 0.8, 0.8, { mat: 'blue' }),
-  C('LED3', 'obsluha', 'LED chyba (červená)', 'Würth 150060RS75000 (0603)', 84, 56, 1.6, 0.8, 0.8, { mat: 'led' }),
+  C('SW1', 'obsluha', 'Tlačítko nRPIBOOT (nahrání firmware)', 'C&K KMR221GLFS', 55, -52, 4.2, 2.8, 1.9, { shape: 'button' }),
+  C('SW2', 'obsluha', 'Tlačítko vypnutí / reset', 'C&K KMR221GLFS', 55, -42, 4.2, 2.8, 1.9, { shape: 'button' }),
+  C('LED1', 'obsluha', 'LED napájení (zelená)', 'Würth 150060VS75000 (0603)', 89, 69, 1.6, 0.8, 0.8, { mat: 'ledGreen' }),
+  C('LED2', 'obsluha', 'LED GNSS fix (modrá)', 'Würth 150060BS75000 (0603)', 89, 64.5, 1.6, 0.8, 0.8, { mat: 'blue' }),
+  C('LED3', 'obsluha', 'LED chyba (červená)', 'Würth 150060RS75000 (0603)', 89, 60, 1.6, 0.8, 0.8, { mat: 'led' }),
   C('J11', 'obsluha', 'Ladicí UART (3,3 V)', 'JST SM03B-GHS-TB (GH, 3p: TX, RX, GND)', 96, 64, 6, 6.25, 4.25, { mat: 'jst' }),
 ];
 
 // Rozmístění pasivních součástek (0402/0603) kolem IO – v 3D jako shluky, v kusovníku orientačně.
 export const PASSIVE_CLUSTERS = [
   { block: 'napajeni', near: 'U1', n: 10 }, { block: 'napajeni', near: 'U2', n: 24 }, { block: 'napajeni', near: 'U3', n: 14 },
-  { block: 'napajeni', near: 'U4', n: 10 }, { block: 'napajeni', near: 'U6', n: 8 }, { block: 'vypocet', near: 'J2', n: 18 },
+  { block: 'napajeni', near: 'U4', n: 10 }, { block: 'napajeni', near: 'U14', n: 10 }, { block: 'napajeni', near: 'U6', n: 8 }, { block: 'vypocet', near: 'J2', n: 18 },
   { block: 'site', near: 'U8', n: 36 }, { block: 'site', near: 'T1', n: 6 }, { block: 'site', near: 'T2', n: 6 }, { block: 'site', near: 'T3', n: 6 },
   { block: 'radio', near: 'M2', n: 12 }, { block: 'radio', near: 'J8', n: 12 }, { block: 'radio', near: 'U12', n: 10 },
 ];

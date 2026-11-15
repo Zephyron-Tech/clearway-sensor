@@ -1,0 +1,1109 @@
+(kicad_symbol_lib
+  (version 20231120)
+  (generator "clearway")
+  (generator_version "8.0")
+  (symbol "CB3:U1_TI"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "U1_TI"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: TI LM74800QDRRRQ1 (WSON-12, AEC-Q100)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "U1_TI_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:U6_Analog"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "U6_Analog"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Analog Devices LTC3226EUD (QFN-16) – ověřit proud zálohy"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "U6_Analog_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:J2_Hirose"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "J"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "J2_Hirose"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Hirose DF40C-100DS-0.4V(51)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "J2_Hirose_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:J3_Hirose"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "J"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "J3_Hirose"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Hirose DF40C-100DS-0.4V(51)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "J3_Hirose_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:M1_CM5104032"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "M"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "M1_CM5104032"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: CM5104032 (4 GB RAM, 32 GB eMMC, bez Wi-Fi)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "M1_CM5104032_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:U8_Microchip"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "U8_Microchip"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Microchip KSZ8795CLXIC (LQFP-80, průmyslový)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "U8_Microchip_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:T1_Pulse"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "T"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "T1_Pulse"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Pulse HX1188NL (10/100, SOIC-16)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "T1_Pulse_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:U9_TI"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "U9_TI"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "U9_TI_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:D2_Semtech"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "D"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "D2_Semtech"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Semtech RClamp0524P (SLP2510)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "D2_Semtech_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:T2_Pulse"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "T"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "T2_Pulse"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Pulse HX1188NL (10/100, SOIC-16)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "T2_Pulse_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:U10_TI"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "U10_TI"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "U10_TI_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:D3_Semtech"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "D"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "D3_Semtech"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Semtech RClamp0524P (SLP2510)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "D3_Semtech_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:T3_Pulse"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "T"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "T3_Pulse"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Pulse HX1188NL (10/100, SOIC-16)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "T3_Pulse_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:U11_TI"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "U11_TI"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "U11_TI_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:D4_Semtech"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "D"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "D4_Semtech"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Semtech RClamp0524P (SLP2510)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "D4_Semtech_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+  (symbol "CB3:M3_Quectel"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "M"
+      (at 0 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "M3_Quectel"
+      (at 0 -10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Quectel EM05-G (LTE Cat 4)"
+      (at 0 0 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "M3_Quectel_0_1"
+      (rectangle
+        (start -20.32 7.62)
+        (end 20.32 -7.62)
+        (stroke
+          (width 0.254)
+          (type dash)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "doplnit symbol"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+  )
+)

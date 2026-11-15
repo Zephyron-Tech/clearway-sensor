@@ -1,0 +1,2910 @@
+(kicad_sch
+  (version 20231120)
+  (generator "clearway")
+  (generator_version "8.0")
+  (uuid "5f912f56-d1df-4c43-997e-58b7af600ad4")
+  (paper "A3")
+  (title_block
+    (title "ClearWay CB3 – Ethernet a porty senzorů")
+    (rev "A")
+    (company "ClearWay")
+    (comment 1 "Koncept generovaný z board-v3-data.js")
+  )
+  (lib_symbols
+    (symbol "CB3:U8_Microchip"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "U8_Microchip"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Microchip KSZ8795CLXIC (LQFP-80, průmyslový)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "U8_Microchip_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "Device:Crystal_GND24"
+      (pin_names
+        (offset 1.016)
+        (hide yes)
+      )
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (in_pos_files yes)
+      (duplicate_pin_numbers_are_jumpers no)
+      (property "Reference" "Y"
+        (at 3.175 5.08 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left)
+        )
+      )
+      (property "Value" "Crystal_GND24"
+        (at 3.175 3.175 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left)
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Description" "Four pin crystal, GND on pins 2 and 4"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property private "KLC_S3.3" "The rectangle is not a symbol body but a graphical element"
+        (at 0 -12.7 0)
+        (show_name yes)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property private "KLC_S4.1" "Some pins are on 50mil grid to make the symbol small"
+        (at 0 -15.24 0)
+        (show_name yes)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_keywords" "quartz ceramic resonator oscillator"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_fp_filters" "Crystal*"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (symbol "Crystal_GND24_0_1"
+        (polyline
+          (pts
+            (xy -2.54 2.286)
+            (xy -2.54 3.556)
+            (xy 2.54 3.556)
+            (xy 2.54 2.286)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -2.54 0)
+            (xy -2.032 0)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -2.54 -2.286)
+            (xy -2.54 -3.556)
+            (xy 2.54 -3.556)
+            (xy 2.54 -2.286)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -2.032 -1.27)
+            (xy -2.032 1.27)
+          )
+          (stroke
+            (width 0.508)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.143 2.54)
+          (end 1.143 -2.54)
+          (stroke
+            (width 0.3048)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 0 -3.81)
+            (xy 0 -3.556)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 2.032 0)
+            (xy 2.54 0)
+          )
+          (stroke
+            (width 0)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy 2.032 -1.27)
+            (xy 2.032 1.27)
+          )
+          (stroke
+            (width 0.508)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "Crystal_GND24_1_1"
+        (pin passive line
+          (at -3.81 0 0)
+          (length 1.27)
+          (name "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 1.27)
+          (name "G"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 3.81 0 180)
+          (length 1.27)
+          (name "3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -5.08 90)
+          (length 1.27)
+          (hide yes)
+          (name "G"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+      (embedded_fonts no)
+    )
+    (symbol "CB3:T1_Pulse"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "T"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "T1_Pulse"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Pulse HX1188NL (10/100, SOIC-16)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "T1_Pulse_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "CB3:U9_TI"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "U9_TI"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "U9_TI_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "CB3:D2_Semtech"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "D"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "D2_Semtech"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Semtech RClamp0524P (SLP2510)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "D2_Semtech_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "Connector_Generic:Conn_01x08"
+      (pin_names
+        (offset 1.016)
+        (hide yes)
+      )
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (in_pos_files yes)
+      (duplicate_pin_numbers_are_jumpers no)
+      (property "Reference" "J"
+        (at 0 10.16 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "Conn_01x08"
+        (at 0 -12.7 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Description" "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_keywords" "connector"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_fp_filters" "Connector*:*_1x??_*"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (symbol "Conn_01x08_1_1"
+        (rectangle
+          (start -1.27 8.89)
+          (end 1.27 -11.43)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (rectangle
+          (start -1.27 7.747)
+          (end 0 7.493)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 5.207)
+          (end 0 4.953)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 2.667)
+          (end 0 2.413)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 0.127)
+          (end 0 -0.127)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 -2.413)
+          (end 0 -2.667)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 -4.953)
+          (end 0 -5.207)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 -7.493)
+          (end 0 -7.747)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 -10.033)
+          (end 0 -10.287)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (pin passive line
+          (at -5.08 7.62 0)
+          (length 3.81)
+          (name "Pin_1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 5.08 0)
+          (length 3.81)
+          (name "Pin_2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 2.54 0)
+          (length 3.81)
+          (name "Pin_3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 0 0)
+          (length 3.81)
+          (name "Pin_4"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "4"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 -2.54 0)
+          (length 3.81)
+          (name "Pin_5"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "5"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 -5.08 0)
+          (length 3.81)
+          (name "Pin_6"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "6"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 -7.62 0)
+          (length 3.81)
+          (name "Pin_7"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "7"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 -10.16 0)
+          (length 3.81)
+          (name "Pin_8"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "8"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+      (embedded_fonts no)
+    )
+    (symbol "CB3:T2_Pulse"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "T"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "T2_Pulse"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Pulse HX1188NL (10/100, SOIC-16)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "T2_Pulse_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "CB3:U10_TI"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "U10_TI"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "U10_TI_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "CB3:D3_Semtech"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "D"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "D3_Semtech"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Semtech RClamp0524P (SLP2510)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "D3_Semtech_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "CB3:T3_Pulse"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "T"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "T3_Pulse"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Pulse HX1188NL (10/100, SOIC-16)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "T3_Pulse_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "CB3:U11_TI"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "U11_TI"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "U11_TI_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (symbol "CB3:D4_Semtech"
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "D"
+        (at 0 10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "D4_Semtech"
+        (at 0 -10.16 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (property "Description" "ZÁSTUPCE – doplnit symbol výrobce: Semtech RClamp0524P (SLP2510)"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (hide yes)
+        )
+      )
+      (symbol "D4_Semtech_0_1"
+        (rectangle
+          (start -20.32 7.62)
+          (end 20.32 -7.62)
+          (stroke
+            (width 0.254)
+            (type dash)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (text "doplnit symbol"
+          (at 0 0 0)
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:U8_Microchip")
+    (at 58.42 50.8 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "ac001d97-97f3-4212-9da9-d575947b696e")
+    (property "Reference" "U8"
+      (at 58.42 40.18 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "KSZ8795CLX"
+      (at 58.42 61.42 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_QFP:LQFP-80_12x12mm_P0.5mm"
+      (at 58.42 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 58.42 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Přepínač Ethernet 5 portů"
+      (at 58.42 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Microchip KSZ8795CLXIC (LQFP-80, průmyslový)"
+      (at 58.42 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "U8")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "Device:Crystal_GND24")
+    (at 111.76 48.26 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "4ea0eccf-8a6f-4fb1-bd92-976763c38dff")
+    (property "Reference" "Y1"
+      (at 111.76 41.7 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "25MHz"
+      (at 111.76 56.34 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm"
+      (at 111.76 48.26 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 111.76 48.26 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Krystal 25 MHz"
+      (at 111.76 48.26 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Abracon ABM8-25.000MHZ (3,2×2,5)"
+      (at 111.76 48.26 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "249530eb-7c4f-4caa-93c0-0e245a48b0bd")
+    )
+    (pin "2"
+      (uuid "1ce5d221-d0a4-4422-8581-846e07b940d0")
+    )
+    (pin "3"
+      (uuid "b0c52541-9b1a-4015-8503-41b410041c57")
+    )
+    (pin "4"
+      (uuid "e2234303-91ee-4d2e-8727-172146a912ea")
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "Y1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:T1_Pulse")
+    (at 165.1 50.8 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "c3b85f5c-3dda-40e9-b5e9-9a1f29ff7ca7")
+    (property "Reference" "T1"
+      (at 165.1 40.18 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "HX1188NL"
+      (at 165.1 61.42 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_SO:SOIC-16W_7.5x10.3mm_P1.27mm"
+      (at 165.1 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 165.1 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Oddělovací transformátor (skener L)"
+      (at 165.1 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Pulse HX1188NL (10/100, SOIC-16)"
+      (at 165.1 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "T1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:U9_TI")
+    (at 236.22 50.8 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "2a24dfaa-4778-465c-aa64-3b48cbee42bb")
+    (property "Reference" "U9"
+      (at 236.22 40.18 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "TPS1H100-Q1"
+      (at 236.22 61.42 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_SO:Texas_HTSSOP-14-1EP_4.4x5mm_P0.65mm_EP3.4x5mm_Mask2.94x3.34mm"
+      (at 236.22 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 236.22 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Spínač 12 V s omezením proudu (skener L)"
+      (at 236.22 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+      (at 236.22 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "U9")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:D2_Semtech")
+    (at 307.34 50.8 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "929699fa-2d9a-4b19-99ab-4585dbdea630")
+    (property "Reference" "D2"
+      (at 307.34 40.18 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "RClamp0524P"
+      (at 307.34 61.42 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_DFN_QFN:Diodes_UDFN-10_1x2.5mm_P0.5mm"
+      (at 307.34 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 307.34 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Ochrana ESD Ethernet (L)"
+      (at 307.34 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Semtech RClamp0524P (SLP2510)"
+      (at 307.34 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "D2")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x08")
+    (at 363.22 53.34 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "8a0b0152-6a89-4226-8877-02d3e8fbacc5")
+    (property "Reference" "J4"
+      (at 363.22 41.45 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "Port L"
+      (at 363.22 67.77 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal"
+      (at 363.22 53.34 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 363.22 53.34 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Konektor portu skener L (propojka k M12)"
+      (at 363.22 53.34 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "JST SM08B-GHS-TB (GH 1,25 mm, 8p, ležatý)"
+      (at 363.22 53.34 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "3b724737-e6f2-4e72-b743-0edc96f83289")
+    )
+    (pin "2"
+      (uuid "26a6f099-5dcf-49c0-92a5-c8992d6c49ef")
+    )
+    (pin "3"
+      (uuid "cb6c03b0-fcc3-48fe-b6c0-b96469279d80")
+    )
+    (pin "4"
+      (uuid "9a4a4a00-814a-4a91-ab74-8631e6eb9dec")
+    )
+    (pin "5"
+      (uuid "19f26e6f-5052-4961-a9dd-2a0465e1e0e9")
+    )
+    (pin "6"
+      (uuid "90dec24e-c1d9-4325-ae96-aad4fe037911")
+    )
+    (pin "7"
+      (uuid "9885ac0d-33af-4b40-9fe9-37cf6c7a0dbb")
+    )
+    (pin "8"
+      (uuid "82c4e13a-bf66-4d60-8dce-ab79420de8be")
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "J4")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "V12_PL"
+    (shape passive)
+    (at 358.14 45.72 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "66ee2670-17c3-4084-a6cd-917199f8628e")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 358.14 45.72 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "V12_PL"
+    (shape passive)
+    (at 358.14 48.26 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "93adf17d-466f-4785-869e-8d090e965903")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 358.14 48.26 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 358.14 50.8 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "2574505a-ddd5-4967-b75c-74b2627ba3bb")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 358.14 50.8 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 358.14 53.34 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "a8c89bce-8778-4adb-8a50-ea32988e3302")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 358.14 53.34 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETHL_TX_P"
+    (shape passive)
+    (at 358.14 55.88 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "bea922f8-b813-4f9d-aee9-0f256abe03b7")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 358.14 55.88 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETHL_TX_N"
+    (shape passive)
+    (at 358.14 58.42 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "4e16ea44-2153-4eb2-b8e8-15551fdb9861")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 358.14 58.42 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETHL_RX_P"
+    (shape passive)
+    (at 358.14 60.96 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "7b49fa39-eafa-4947-8a4d-28b76b85abfb")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 358.14 60.96 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETHL_RX_N"
+    (shape passive)
+    (at 358.14 63.5 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "e9e2008b-5f25-4387-90dd-db9235bb4fd5")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 358.14 63.5 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:T2_Pulse")
+    (at 58.42 91.44 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "43e44e95-70dd-46be-a7e2-b3d4a5820564")
+    (property "Reference" "T2"
+      (at 58.42 80.82 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "HX1188NL"
+      (at 58.42 102.06 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_SO:SOIC-16W_7.5x10.3mm_P1.27mm"
+      (at 58.42 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 58.42 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Oddělovací transformátor (3D lidar)"
+      (at 58.42 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Pulse HX1188NL (10/100, SOIC-16)"
+      (at 58.42 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "T2")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:U10_TI")
+    (at 129.54 91.44 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "8b3b59b1-e7a2-4926-919e-d1fc9d4c780f")
+    (property "Reference" "U10"
+      (at 129.54 80.82 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "TPS1H100-Q1"
+      (at 129.54 102.06 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_SO:Texas_HTSSOP-14-1EP_4.4x5mm_P0.65mm_EP3.4x5mm_Mask2.94x3.34mm"
+      (at 129.54 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 129.54 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Spínač 12 V s omezením proudu (3D lidar)"
+      (at 129.54 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+      (at 129.54 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "U10")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:D3_Semtech")
+    (at 198.12 91.44 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "702f6304-f7a8-4f43-8252-851fdcca2db2")
+    (property "Reference" "D3"
+      (at 198.12 80.82 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "RClamp0524P"
+      (at 198.12 102.06 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_DFN_QFN:Diodes_UDFN-10_1x2.5mm_P0.5mm"
+      (at 198.12 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 198.12 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Ochrana ESD Ethernet (3D)"
+      (at 198.12 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Semtech RClamp0524P (SLP2510)"
+      (at 198.12 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "D3")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x08")
+    (at 254 93.98 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "5bdad8c9-21af-4e7d-98f1-4e414e5a619c")
+    (property "Reference" "J5"
+      (at 254 82.09 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "Port 3D"
+      (at 254 108.41 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal"
+      (at 254 93.98 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 254 93.98 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Konektor portu 3D lidar (propojka k M12)"
+      (at 254 93.98 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "JST SM08B-GHS-TB (GH 1,25 mm, 8p, ležatý)"
+      (at 254 93.98 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "692a3d2e-9fdb-4ca4-869c-df46827ad9b5")
+    )
+    (pin "2"
+      (uuid "4c9cc139-5596-4808-a24a-b30ade4bd584")
+    )
+    (pin "3"
+      (uuid "34625dc5-705b-44e1-8c23-026a155a4624")
+    )
+    (pin "4"
+      (uuid "60bdbeea-9bca-404c-a590-26c20eae6171")
+    )
+    (pin "5"
+      (uuid "8fa72521-540d-4017-a6cf-d3c994774feb")
+    )
+    (pin "6"
+      (uuid "bec2d468-4c4c-4b19-b9ee-5d353b707e1c")
+    )
+    (pin "7"
+      (uuid "74d2768f-48d0-4417-9c24-7481781735a8")
+    )
+    (pin "8"
+      (uuid "3ac32500-9d8a-4835-8120-7908ee1d4187")
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "J5")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "V12_P3D"
+    (shape passive)
+    (at 248.92 86.36 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "6c679644-0561-4995-86f4-e457647d9e51")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 248.92 86.36 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "V12_P3D"
+    (shape passive)
+    (at 248.92 88.9 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "61bb7b35-174b-458f-bfca-4b8dd75a3b00")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 248.92 88.9 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 248.92 91.44 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "7ab9823f-01cf-4fb1-960d-b597f4623724")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 248.92 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 248.92 93.98 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "f11a133d-a0ea-4bbc-b97f-df62e155de31")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 248.92 93.98 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETH3D_TX_P"
+    (shape passive)
+    (at 248.92 96.52 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "06ea2f55-f3a7-4832-b69f-0491b87f4840")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 248.92 96.52 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETH3D_TX_N"
+    (shape passive)
+    (at 248.92 99.06 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "d31184d2-c60f-4da9-90ac-c3886ccdf46e")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 248.92 99.06 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETH3D_RX_P"
+    (shape passive)
+    (at 248.92 101.6 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "95273290-de08-4f4b-adfc-da089e10c0bd")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 248.92 101.6 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETH3D_RX_N"
+    (shape passive)
+    (at 248.92 104.14 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "0fd3e1dd-bcb8-4a2b-9e72-7719c989733c")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 248.92 104.14 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:T3_Pulse")
+    (at 304.8 91.44 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "41643267-a4f1-4c73-aa5d-e90d7be1d77d")
+    (property "Reference" "T3"
+      (at 304.8 80.82 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "HX1188NL"
+      (at 304.8 102.06 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_SO:SOIC-16W_7.5x10.3mm_P1.27mm"
+      (at 304.8 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 304.8 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Oddělovací transformátor (skener P)"
+      (at 304.8 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Pulse HX1188NL (10/100, SOIC-16)"
+      (at 304.8 91.44 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "T3")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:U11_TI")
+    (at 58.42 132.08 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "487327b6-6dd4-489b-a53a-f7faeadf0dd5")
+    (property "Reference" "U11"
+      (at 58.42 121.46 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "TPS1H100-Q1"
+      (at 58.42 142.7 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_SO:Texas_HTSSOP-14-1EP_4.4x5mm_P0.65mm_EP3.4x5mm_Mask2.94x3.34mm"
+      (at 58.42 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 58.42 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Spínač 12 V s omezením proudu (skener P)"
+      (at 58.42 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "TI TPS1H100BQPWPRQ1 (HTSSOP-14, 40 V)"
+      (at 58.42 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "U11")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "CB3:D4_Semtech")
+    (at 129.54 132.08 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "37eb02bc-622a-46f9-8373-a3f1de995fda")
+    (property "Reference" "D4"
+      (at 129.54 121.46 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "RClamp0524P"
+      (at 129.54 142.7 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Package_DFN_QFN:Diodes_UDFN-10_1x2.5mm_P0.5mm"
+      (at 129.54 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 129.54 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Ochrana ESD Ethernet (P)"
+      (at 129.54 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Semtech RClamp0524P (SLP2510)"
+      (at 129.54 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "D4")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol
+    (lib_id "Connector_Generic:Conn_01x08")
+    (at 182.88 132.08 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "be3c3b90-f5aa-435c-8b29-4a035c68ffc5")
+    (property "Reference" "J6"
+      (at 182.88 120.19 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "Port P"
+      (at 182.88 146.51 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal"
+      (at 182.88 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 182.88 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "Konektor portu skener P (propojka k M12)"
+      (at 182.88 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "JST SM08B-GHS-TB (GH 1,25 mm, 8p, ležatý)"
+      (at 182.88 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "744ed83f-e95d-4dd5-a6cc-2360988c5d16")
+    )
+    (pin "2"
+      (uuid "51fd161d-3248-48a9-a93d-8cbefdf9e435")
+    )
+    (pin "3"
+      (uuid "a9951322-799f-45be-a050-65eab5218092")
+    )
+    (pin "4"
+      (uuid "d9b7d6ef-0f8d-4fc4-8837-24b5b0844a46")
+    )
+    (pin "5"
+      (uuid "2c8cf486-e581-465d-bb62-e831a96b82de")
+    )
+    (pin "6"
+      (uuid "6ff79f73-0e28-473a-a362-068931de6149")
+    )
+    (pin "7"
+      (uuid "1443f5ed-1721-4cc6-9714-f6c899dfc0dd")
+    )
+    (pin "8"
+      (uuid "c3db886f-f816-42b4-a9a9-def04c3b40f7")
+    )
+    (instances
+      (project "cb3"
+        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/5f912f56-d1df-4c43-997e-58b7af600ad4"
+          (reference "J6")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "V12_PP"
+    (shape passive)
+    (at 177.8 124.46 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "2ebfbfd0-eb21-4a56-a5bc-04e9a557309e")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 177.8 124.46 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "V12_PP"
+    (shape passive)
+    (at 177.8 127 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "b983db5f-4368-4942-9fae-cc5e87f25b75")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 177.8 127 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 177.8 129.54 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "b7f0a267-83e1-4644-ac0a-f5173458546c")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 177.8 129.54 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 177.8 132.08 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "ddfcd81e-d48b-43f1-83ab-94d80ec3ec87")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 177.8 132.08 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETHP_TX_P"
+    (shape passive)
+    (at 177.8 134.62 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "d105c38c-be83-4184-9074-91e0baa18a1f")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 177.8 134.62 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETHP_TX_N"
+    (shape passive)
+    (at 177.8 137.16 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "5a037512-f085-456a-9529-5d898bfd015d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 177.8 137.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETHP_RX_P"
+    (shape passive)
+    (at 177.8 139.7 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "2b126ae4-9870-4585-9cec-07285bf2c605")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 177.8 139.7 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "ETHP_RX_N"
+    (shape passive)
+    (at 177.8 142.24 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "2fd44bff-4805-454f-aeee-e85eea2f95ec")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 177.8 142.24 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (text "Ethernet a porty senzorů – KOSTRA (koncept rev. A)\\n\\n• U8 KSZ8795: porty 1–3 → T1–T3 → J4–J6 (skener L, 3D lidar, skener P). Port 4 → Ethernet CM5 kapacitní vazbou PHY–PHY (ověřit v aplikační poznámce Microchip), port 5 nepoužit.\\n• U9–U11 TPS1H100-Q1: V12 → V12_PORTx, EN z CM5, ST (diagnostika) do CM5. Omezení proudu nastavit na ~1,5 A.\\n• Diferenciální páry 100 Ω, symetrické délky, transformátory u konektorů.\\n\\nZapojené jsou jen konektory, pasivní součástky a jednoduché IO. Ostatní vývody doplnit podle doporučeného zapojení v datasheetech.\\nČárkované obdélníky = zástupci: nahradit symbolem výrobce (SnapEDA / Ultra Librarian / web výrobce) se stejným designátorem."
+    (exclude_from_sim no)
+    (at 25.4 15.24 0)
+    (effects
+      (font
+        (size 1.524 1.524)
+      )
+      (justify left top)
+    )
+    (uuid "4eba7df3-0de9-4195-b5cd-3eba5ae50cc6")
+  )
+)

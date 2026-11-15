@@ -1,0 +1,92 @@
+(footprint "PH_M3"
+  (version 20240108)
+  (generator "clearway")
+  (layer "F.Cu")
+  (property "Reference" "M3"
+    (at 0 0 0)
+    (layer "F.SilkS")
+    (uuid "8b05a63d-7333-4c20-b42b-77dd913d1b4d")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Value" "Quectel EM05-G (do slotu J8)"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (uuid "65b08b3e-ff18-4f24-8dd8-38b1e62bd2be")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Datasheet" ""
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (uuid "cca381fb-8de8-47c3-9b2d-a91d15f5d809")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (property "Description" ""
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (uuid "398d9230-f64e-46d6-9ed9-289502363ed9")
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+  )
+  (duplicate_pad_numbers_are_jumpers no)
+  (fp_rect
+    (start -21.15 -15.15)
+    (end 21.15 15.15)
+    (stroke
+      (width 0.12)
+      (type default)
+    )
+    (fill no)
+    (layer "F.SilkS")
+    (uuid "88a8616b-9e93-4e00-bbe2-a05dfa8cd450")
+  )
+  (fp_rect
+    (start -21.25 -15.25)
+    (end 21.25 15.25)
+    (stroke
+      (width 0.05)
+      (type default)
+    )
+    (fill no)
+    (layer "F.CrtYd")
+    (uuid "62ece60b-28d1-4efa-ad42-ff25fdca287a")
+  )
+  (fp_rect
+    (start -21 -15)
+    (end 21 15)
+    (stroke
+      (width 0.1)
+      (type default)
+    )
+    (fill no)
+    (layer "F.Fab")
+    (uuid "5060dfcb-0596-4ffe-8432-0e0b19ece347")
+  )
+  (fp_text user "ZÁSTUPCE: Quectel EM05-G (LTE Cat 4)"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (uuid "7fa8c8e8-7f60-43bc-bcfc-f995be39b131")
+    (effects
+      (font
+        (size 0.6 0.6)
+      )
+    )
+  )
+  (embedded_fonts no)
+)
