@@ -2,13 +2,13 @@
   (version 20231120)
   (generator "clearway")
   (generator_version "8.0")
-  (uuid "3625bd77-4559-45f9-bba1-8be2d9dc8882")
-  (paper "A3")
+  (uuid "de55d6c5-d832-45b4-b82e-92f4d3e8311d")
+  (paper "A2")
   (title_block
     (title "ClearWay CB3 – Obsluha a ladění")
-    (rev "A")
+    (rev "B")
     (company "ClearWay")
-    (comment 1 "Koncept generovaný z board-v3-data.js")
+    (comment 1 "Generováno z configurator/scripts/kicad/cb3-design.mjs")
   )
   (lib_symbols
     (symbol "Connector_Generic:Conn_01x04"
@@ -1018,6 +1018,163 @@
       )
       (embedded_fonts no)
     )
+    (symbol "Device:C"
+      (pin_numbers
+        (hide yes)
+      )
+      (pin_names
+        (offset 0.254)
+      )
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (in_pos_files yes)
+      (duplicate_pin_numbers_are_jumpers no)
+      (property "Reference" "C"
+        (at 0.635 2.54 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left)
+        )
+      )
+      (property "Value" "C"
+        (at 0.635 -2.54 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+          (justify left)
+        )
+      )
+      (property "Footprint" ""
+        (at 0.9652 -3.81 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Description" "Unpolarized capacitor"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_keywords" "cap capacitor"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_fp_filters" "C_*"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (symbol "C_0_1"
+        (polyline
+          (pts
+            (xy -2.032 0.762)
+            (xy 2.032 0.762)
+          )
+          (stroke
+            (width 0.508)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (polyline
+          (pts
+            (xy -2.032 -0.762)
+            (xy 2.032 -0.762)
+          )
+          (stroke
+            (width 0.508)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "C_1_1"
+        (pin passive line
+          (at 0 3.81 270)
+          (length 2.794)
+          (name ""
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -3.81 90)
+          (length 2.794)
+          (name ""
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+      (embedded_fonts no)
+    )
     (symbol "Switch:SW_Push"
       (pin_numbers
         (hide yes)
@@ -1174,6 +1331,193 @@
             )
           )
           (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+      (embedded_fonts no)
+    )
+    (symbol "Connector_Generic:Conn_01x03"
+      (pin_names
+        (offset 1.016)
+        (hide yes)
+      )
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (in_pos_files yes)
+      (duplicate_pin_numbers_are_jumpers no)
+      (property "Reference" "J"
+        (at 0 5.08 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "Conn_01x03"
+        (at 0 -5.08 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_keywords" "connector"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_fp_filters" "Connector*:*_1x??_*"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (symbol "Conn_01x03_1_1"
+        (rectangle
+          (start -1.27 3.81)
+          (end 1.27 -3.81)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type background)
+          )
+        )
+        (rectangle
+          (start -1.27 2.667)
+          (end 0 2.413)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 0.127)
+          (end 0 -0.127)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (rectangle
+          (start -1.27 -2.413)
+          (end 0 -2.667)
+          (stroke
+            (width 0.1524)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+        (pin passive line
+          (at -5.08 2.54 0)
+          (length 3.81)
+          (name "Pin_1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 0 0)
+          (length 3.81)
+          (name "Pin_2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at -5.08 -2.54 0)
+          (length 3.81)
+          (name "Pin_3"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "3"
             (effects
               (font
                 (size 1.27 1.27)
@@ -1398,18 +1742,20 @@
       )
       (embedded_fonts no)
     )
-    (symbol "Connector_Generic:Conn_01x03"
-      (pin_names
-        (offset 1.016)
+    (symbol "Device:R"
+      (pin_numbers
         (hide yes)
+      )
+      (pin_names
+        (offset 0)
       )
       (exclude_from_sim no)
       (in_bom yes)
       (on_board yes)
       (in_pos_files yes)
       (duplicate_pin_numbers_are_jumpers no)
-      (property "Reference" "J"
-        (at 0 5.08 0)
+      (property "Reference" "R"
+        (at 2.032 0 90)
         (show_name no)
         (do_not_autoplace no)
         (effects
@@ -1418,8 +1764,149 @@
           )
         )
       )
-      (property "Value" "Conn_01x03"
-        (at 0 -5.08 0)
+      (property "Value" "R"
+        (at 0 0 90)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Footprint" ""
+        (at -1.778 0 90)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Description" "Resistor"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_keywords" "R res resistor"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "ki_fp_filters" "R_*"
+        (at 0 0 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (hide yes)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (symbol "R_0_1"
+        (rectangle
+          (start -1.016 -2.54)
+          (end 1.016 2.54)
+          (stroke
+            (width 0.254)
+            (type default)
+          )
+          (fill
+            (type none)
+          )
+        )
+      )
+      (symbol "R_1_1"
+        (pin passive line
+          (at 0 3.81 270)
+          (length 1.27)
+          (name ""
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "1"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+        (pin passive line
+          (at 0 -3.81 90)
+          (length 1.27)
+          (name ""
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+          (number "2"
+            (effects
+              (font
+                (size 1.27 1.27)
+              )
+            )
+          )
+        )
+      )
+      (embedded_fonts no)
+    )
+    (symbol "Mechanical:MountingHole_Pad"
+      (pin_numbers
+        (hide yes)
+      )
+      (pin_names
+        (offset 1.016)
+        (hide yes)
+      )
+      (exclude_from_sim no)
+      (in_bom no)
+      (on_board yes)
+      (in_pos_files yes)
+      (duplicate_pin_numbers_are_jumpers no)
+      (property "Reference" "H"
+        (at 0 6.35 0)
+        (show_name no)
+        (do_not_autoplace no)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (property "Value" "MountingHole_Pad"
+        (at 0 4.445 0)
         (show_name no)
         (do_not_autoplace no)
         (effects
@@ -1450,7 +1937,7 @@
           )
         )
       )
-      (property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+      (property "Description" "Mounting Hole with connection"
         (at 0 0 0)
         (show_name no)
         (do_not_autoplace no)
@@ -1461,7 +1948,7 @@
           )
         )
       )
-      (property "ki_keywords" "connector"
+      (property "ki_keywords" "mounting hole"
         (at 0 0 0)
         (show_name no)
         (do_not_autoplace no)
@@ -1472,7 +1959,7 @@
           )
         )
       )
-      (property "ki_fp_filters" "Connector*:*_1x??_*"
+      (property "ki_fp_filters" "MountingHole*Pad*"
         (at 0 0 0)
         (show_name no)
         (do_not_autoplace no)
@@ -1483,55 +1970,24 @@
           )
         )
       )
-      (symbol "Conn_01x03_1_1"
-        (rectangle
-          (start -1.27 3.81)
-          (end 1.27 -3.81)
+      (symbol "MountingHole_Pad_0_1"
+        (circle
+          (center 0 1.27)
+          (radius 1.27)
           (stroke
-            (width 0.254)
-            (type default)
-          )
-          (fill
-            (type background)
-          )
-        )
-        (rectangle
-          (start -1.27 2.667)
-          (end 0 2.413)
-          (stroke
-            (width 0.1524)
+            (width 1.27)
             (type default)
           )
           (fill
             (type none)
           )
         )
-        (rectangle
-          (start -1.27 0.127)
-          (end 0 -0.127)
-          (stroke
-            (width 0.1524)
-            (type default)
-          )
-          (fill
-            (type none)
-          )
-        )
-        (rectangle
-          (start -1.27 -2.413)
-          (end 0 -2.667)
-          (stroke
-            (width 0.1524)
-            (type default)
-          )
-          (fill
-            (type none)
-          )
-        )
-        (pin passive line
-          (at -5.08 2.54 0)
-          (length 3.81)
-          (name "Pin_1"
+      )
+      (symbol "MountingHole_Pad_1_1"
+        (pin input line
+          (at 0 -2.54 90)
+          (length 2.54)
+          (name "1"
             (effects
               (font
                 (size 1.27 1.27)
@@ -1546,57 +2002,21 @@
             )
           )
         )
-        (pin passive line
-          (at -5.08 0 0)
-          (length 3.81)
-          (name "Pin_2"
-            (effects
-              (font
-                (size 1.27 1.27)
-              )
-            )
-          )
-          (number "2"
-            (effects
-              (font
-                (size 1.27 1.27)
-              )
-            )
-          )
-        )
-        (pin passive line
-          (at -5.08 -2.54 0)
-          (length 3.81)
-          (name "Pin_3"
-            (effects
-              (font
-                (size 1.27 1.27)
-              )
-            )
-          )
-          (number "3"
-            (effects
-              (font
-                (size 1.27 1.27)
-              )
-            )
-          )
-        )
       )
       (embedded_fonts no)
     )
   )
   (symbol
     (lib_id "Connector_Generic:Conn_01x04")
-    (at 43.18 48.26 0)
+    (at 48.26 40.64 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
     (on_board yes)
     (dnp no)
-    (uuid "e6e7c143-0ab2-4bfa-ba36-739842b0faec")
+    (uuid "13bd500d-ff53-4506-8cb2-2d6e01464592")
     (property "Reference" "J10"
-      (at 43.18 41.45 0)
+      (at 48.26 34.29 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1604,7 +2024,7 @@
       )
     )
     (property "Value" "USB servis"
-      (at 43.18 57.61 0)
+      (at 48.26 49.53 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1612,7 +2032,7 @@
       )
     )
     (property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal"
-      (at 43.18 48.26 0)
+      (at 48.26 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1621,7 +2041,7 @@
       )
     )
     (property "Datasheet" ""
-      (at 43.18 48.26 0)
+      (at 48.26 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1629,8 +2049,8 @@
         (hide yes)
       )
     )
-    (property "Description" "Servisní USB (propojka k panelovému USB-C)"
-      (at 43.18 48.26 0)
+    (property "Description" ""
+      (at 48.26 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1638,8 +2058,8 @@
         (hide yes)
       )
     )
-    (property "MPN" "JST SM04B-GHS-TB (GH, 4p: VBUS, D−, D+, GND)"
-      (at 43.18 48.26 0)
+    (property "MPN" "JST SM04B-GHS-TB"
+      (at 48.26 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1648,20 +2068,20 @@
       )
     )
     (pin "1"
-      (uuid "cf9992ea-9489-4765-9850-f91667c7ad27")
+      (uuid "44e55649-dbc7-4f5b-99a9-22fed20018c5")
     )
     (pin "2"
-      (uuid "3c37e9fb-663a-425d-9251-5b90dc7d3ab0")
+      (uuid "8761089c-a9a8-4d34-833f-5d797b771b44")
     )
     (pin "3"
-      (uuid "bc490ba4-354d-4329-8191-51f5284051ee")
+      (uuid "2f98cb16-b33d-46fb-a2e3-30d6895e3c49")
     )
     (pin "4"
-      (uuid "b1f7e524-b270-4129-940f-59942041af1d")
+      (uuid "3e99b7fc-2f76-43bf-a12e-afff3f1c1af4")
     )
     (instances
       (project "cb3"
-        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/3625bd77-4559-45f9-bba1-8be2d9dc8882"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
           (reference "J10")
           (unit 1)
         )
@@ -1670,7 +2090,7 @@
   )
   (global_label "VBUS_SERV"
     (shape passive)
-    (at 38.1 45.72 180)
+    (at 43.18 38.1 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -1678,9 +2098,9 @@
       )
       (justify right)
     )
-    (uuid "ad89f76a-10f6-4448-a64c-4ce60eb3420d")
+    (uuid "bc8e553f-b1a5-4c85-8c27-718068fe2452")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 38.1 45.72 0)
+      (at 43.18 38.1 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1691,7 +2111,7 @@
   )
   (global_label "USB_SERV_N"
     (shape passive)
-    (at 38.1 48.26 180)
+    (at 43.18 40.64 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -1699,9 +2119,9 @@
       )
       (justify right)
     )
-    (uuid "2616ee5c-34f3-485f-95fc-93b1caa07508")
+    (uuid "d09fc871-cdac-49a2-8769-141227a14e4d")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 38.1 48.26 0)
+      (at 43.18 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1712,7 +2132,7 @@
   )
   (global_label "USB_SERV_P"
     (shape passive)
-    (at 38.1 50.8 180)
+    (at 43.18 43.18 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -1720,9 +2140,9 @@
       )
       (justify right)
     )
-    (uuid "fc8981c1-ba5d-4b15-b27f-99af289c4880")
+    (uuid "2001f145-f0a9-4d16-9f26-25bb8ba2bad3")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 38.1 50.8 0)
+      (at 43.18 43.18 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1733,7 +2153,7 @@
   )
   (global_label "GND"
     (shape passive)
-    (at 38.1 53.34 180)
+    (at 43.18 45.72 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -1741,9 +2161,9 @@
       )
       (justify right)
     )
-    (uuid "36c7162d-30b3-4003-a407-17b8813e6397")
+    (uuid "f29d0a22-c980-4d14-abdf-f80d7299022f")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 38.1 53.34 0)
+      (at 43.18 45.72 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1754,15 +2174,15 @@
   )
   (symbol
     (lib_id "Power_Protection:TPD4E05U06DQA")
-    (at 86.36 50.8 0)
+    (at 127 43.18 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
     (on_board yes)
     (dnp no)
-    (uuid "c2f7a580-9f83-4684-8bde-e64d5c0b5080")
-    (property "Reference" "D7"
-      (at 86.36 40.18 0)
+    (uuid "56ea43a7-5be8-486a-b6e3-5d41a19062f6")
+    (property "Reference" "D8"
+      (at 127 33.02 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1770,7 +2190,7 @@
       )
     )
     (property "Value" "TPD4E05U06"
-      (at 86.36 66.5 0)
+      (at 127 58.42 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1778,7 +2198,7 @@
       )
     )
     (property "Footprint" "Package_SON:USON-10_2.5x1.0mm_P0.5mm"
-      (at 86.36 50.8 0)
+      (at 127 43.18 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1787,7 +2207,7 @@
       )
     )
     (property "Datasheet" ""
-      (at 86.36 50.8 0)
+      (at 127 43.18 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1795,8 +2215,8 @@
         (hide yes)
       )
     )
-    (property "Description" "Ochrana ESD USB"
-      (at 86.36 50.8 0)
+    (property "Description" ""
+      (at 127 43.18 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1805,7 +2225,7 @@
       )
     )
     (property "MPN" "TI TPD4E05U06DQAR"
-      (at 86.36 50.8 0)
+      (at 127 43.18 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1814,71 +2234,177 @@
       )
     )
     (pin "1"
-      (uuid "3fecc217-a374-43dc-951f-0842257bcb2c")
+      (uuid "b0ef98d0-138f-42cf-a6e9-f3d5b57aa8de")
     )
     (pin "2"
-      (uuid "ba1300e8-b7bb-4a28-864d-b7fadb410342")
+      (uuid "d3945eba-9a34-49ff-8349-f9a2b5422724")
     )
     (pin "3"
-      (uuid "137c2e18-9699-4f2c-900a-89396fb4e076")
+      (uuid "64ea9249-912c-4455-894f-b358a0e18b85")
     )
     (pin "4"
-      (uuid "6866f200-f81d-4c54-85a2-608db210779d")
+      (uuid "4f3bad16-45ba-4783-aa49-8f702db545ff")
     )
     (pin "5"
-      (uuid "5f827849-858e-454a-93bf-f22119419f64")
+      (uuid "1054d722-e199-40ae-9adc-dc50d874959f")
     )
     (pin "6"
-      (uuid "62350cc6-2219-4346-b38e-4c284a509b9e")
+      (uuid "17d37796-1576-47f9-a530-a8d1b0533a5c")
     )
     (pin "7"
-      (uuid "224c61e4-c600-42e2-9710-19211d95c127")
+      (uuid "42eaa5bd-b40e-4881-9623-283e782b0674")
     )
     (pin "8"
-      (uuid "1968f396-375b-4cd4-a737-9af4519253d1")
+      (uuid "51609b69-c26c-44e8-954d-f118037b5813")
     )
     (pin "9"
-      (uuid "51eaf366-e435-41b6-b710-71ebaa8a8571")
+      (uuid "7c18a03d-7d8d-4203-aeb5-7da3e33b8476")
     )
     (pin "10"
-      (uuid "93392df5-3988-4dc8-a522-c19499b4c42d")
+      (uuid "a732990d-a90a-4651-a129-b434720a63c0")
     )
     (instances
       (project "cb3"
-        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/3625bd77-4559-45f9-bba1-8be2d9dc8882"
-          (reference "D7")
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "D8")
           (unit 1)
         )
       )
     )
   )
+  (global_label "USB_SERV_P"
+    (shape passive)
+    (at 114.3 40.64 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "909683f1-224a-4e17-90a4-89ebaed374a6")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 114.3 40.64 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "USB_SERV_N"
+    (shape passive)
+    (at 114.3 45.72 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "5065c8c0-750a-486c-bcf5-8eadbc0351ca")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 114.3 45.72 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 127 55.88 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "f76fb7eb-57f8-4179-841a-068590c24aac")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 127 55.88 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (no_connect
+    (at 139.7 40.64)
+    (uuid "ddb0430c-42df-4115-9af8-569befe3fe5f")
+  )
+  (no_connect
+    (at 139.7 45.72)
+    (uuid "eaf028eb-897c-4b7a-b2ca-514f73bca285")
+  )
+  (no_connect
+    (at 139.7 50.8)
+    (uuid "0d91b08c-fc2a-4897-a4a9-a1a949967ee9")
+  )
+  (no_connect
+    (at 139.7 35.56)
+    (uuid "51c2c6d2-330a-4a89-bdd8-b7e3cb50cca2")
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 127 55.88 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "8dca4e35-6e80-49ca-8ad9-08e9ff3191a8")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 127 55.88 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (no_connect
+    (at 114.3 50.8)
+    (uuid "ffa3ef8f-810d-4652-a67f-f0ad6c787b38")
+  )
+  (no_connect
+    (at 114.3 35.56)
+    (uuid "093a12b0-8560-494d-836d-5e568adf662f")
+  )
   (symbol
-    (lib_id "Switch:SW_Push")
-    (at 134.62 45.72 0)
+    (lib_id "Device:C")
+    (at 203.2 40.64 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
     (on_board yes)
     (dnp no)
-    (uuid "26f67f69-980f-465e-8d65-ddb742e5c419")
-    (property "Reference" "SW1"
-      (at 134.62 39.67 0)
+    (uuid "ac4acf44-ad80-4fdc-a5d4-a6d946946c5a")
+    (property "Reference" "C90"
+      (at 203.2 34.29 0)
       (effects
         (font
           (size 1.27 1.27)
         )
       )
     )
-    (property "Value" "nRPIBOOT"
-      (at 134.62 48.72 0)
+    (property "Value" "100n"
+      (at 203.2 46.99 0)
       (effects
         (font
           (size 1.27 1.27)
         )
       )
     )
-    (property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_NO_CK_KMR2"
-      (at 134.62 45.72 0)
+    (property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+      (at 203.2 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1887,7 +2413,7 @@
       )
     )
     (property "Datasheet" ""
-      (at 134.62 45.72 0)
+      (at 203.2 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1895,8 +2421,8 @@
         (hide yes)
       )
     )
-    (property "Description" "Tlačítko nRPIBOOT (nahrání firmware)"
-      (at 134.62 45.72 0)
+    (property "Description" ""
+      (at 203.2 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1904,8 +2430,8 @@
         (hide yes)
       )
     )
-    (property "MPN" "C&K KMR221GLFS"
-      (at 134.62 45.72 0)
+    (property "MPN" "keramický kondenzátor 100n X7R"
+      (at 203.2 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1914,14 +2440,130 @@
       )
     )
     (pin "1"
-      (uuid "9b4c59f4-24ff-4c45-9b95-7d69ea5ea674")
+      (uuid "5cbe9c5b-d873-46a7-af52-3cc296aa37b5")
     )
     (pin "2"
-      (uuid "dffecfbf-75a3-4378-89ef-e0285e3d041e")
+      (uuid "35eba746-17a2-4ec5-9f0c-6344feb07ea8")
     )
     (instances
       (project "cb3"
-        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/3625bd77-4559-45f9-bba1-8be2d9dc8882"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "C90")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "VBUS_SERV"
+    (shape passive)
+    (at 203.2 36.83 90)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "e41d318b-2905-405a-8eff-da05811cb836")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 203.2 36.83 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 203.2 44.45 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "6f0ffef6-f52a-4cc3-962d-4ceacde82396")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 203.2 44.45 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Switch:SW_Push")
+    (at 271.78 35.56 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "1a756d67-1d1f-440f-8747-d052335da851")
+    (property "Reference" "SW1"
+      (at 271.78 33.02 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "nRPIBOOT"
+      (at 271.78 38.1 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_NO_CK_KMR2"
+      (at 271.78 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 271.78 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 271.78 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "C&K KMR221GLFS"
+      (at 271.78 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "3b3e0172-9c7a-4d4c-acaf-b1d7abdef654")
+    )
+    (pin "2"
+      (uuid "1be4c154-8fcc-41e8-9a0c-69c16d0ef371")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
           (reference "SW1")
           (unit 1)
         )
@@ -1930,7 +2572,7 @@
   )
   (global_label "nRPIBOOT"
     (shape passive)
-    (at 129.54 45.72 180)
+    (at 266.7 35.56 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -1938,9 +2580,9 @@
       )
       (justify right)
     )
-    (uuid "64f825b6-bf13-4949-863a-e94d0ff859f2")
+    (uuid "496e3646-736c-4f3d-93ca-2222030caba2")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 129.54 45.72 0)
+      (at 266.7 35.56 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1951,7 +2593,7 @@
   )
   (global_label "GND"
     (shape passive)
-    (at 139.7 45.72 0)
+    (at 276.86 35.56 0)
     (fields_autoplaced yes)
     (effects
       (font
@@ -1959,9 +2601,9 @@
       )
       (justify left)
     )
-    (uuid "c55c02f3-7613-4536-9d4f-b2ef5120a2a5")
+    (uuid "0d29d617-f247-44d6-8d7e-014a3f0a618f")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 139.7 45.72 0)
+      (at 276.86 35.56 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1972,15 +2614,15 @@
   )
   (symbol
     (lib_id "Switch:SW_Push")
-    (at 175.26 45.72 0)
+    (at 345.44 35.56 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
     (on_board yes)
     (dnp no)
-    (uuid "a70cef85-ba53-4e13-9ed6-d9f38036decf")
+    (uuid "d4a13523-b5fb-4144-8f28-d9fb53bb4124")
     (property "Reference" "SW2"
-      (at 175.26 39.67 0)
+      (at 345.44 33.02 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1988,7 +2630,7 @@
       )
     )
     (property "Value" "PWR_BTN"
-      (at 175.26 48.72 0)
+      (at 345.44 38.1 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -1996,7 +2638,7 @@
       )
     )
     (property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_NO_CK_KMR2"
-      (at 175.26 45.72 0)
+      (at 345.44 35.56 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2005,7 +2647,7 @@
       )
     )
     (property "Datasheet" ""
-      (at 175.26 45.72 0)
+      (at 345.44 35.56 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2013,8 +2655,8 @@
         (hide yes)
       )
     )
-    (property "Description" "Tlačítko vypnutí / reset"
-      (at 175.26 45.72 0)
+    (property "Description" ""
+      (at 345.44 35.56 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2023,7 +2665,7 @@
       )
     )
     (property "MPN" "C&K KMR221GLFS"
-      (at 175.26 45.72 0)
+      (at 345.44 35.56 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2032,14 +2674,14 @@
       )
     )
     (pin "1"
-      (uuid "e8d44ce8-0a58-436a-9069-5f19f2ef7c63")
+      (uuid "04538501-1597-4b57-b73c-02b355196841")
     )
     (pin "2"
-      (uuid "a76c95eb-b91b-40fb-855b-ac893bb3364b")
+      (uuid "eca725e4-14bd-4dc1-a9bf-e6623d6a0a54")
     )
     (instances
       (project "cb3"
-        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/3625bd77-4559-45f9-bba1-8be2d9dc8882"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
           (reference "SW2")
           (unit 1)
         )
@@ -2048,7 +2690,7 @@
   )
   (global_label "PWR_BTN"
     (shape passive)
-    (at 170.18 45.72 180)
+    (at 340.36 35.56 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -2056,9 +2698,9 @@
       )
       (justify right)
     )
-    (uuid "d125613a-519e-482d-b045-09a363362a34")
+    (uuid "7d1318a9-2339-45ec-88b0-75ffae363db6")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 170.18 45.72 0)
+      (at 340.36 35.56 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2069,7 +2711,7 @@
   )
   (global_label "GND"
     (shape passive)
-    (at 180.34 45.72 0)
+    (at 350.52 35.56 0)
     (fields_autoplaced yes)
     (effects
       (font
@@ -2077,363 +2719,9 @@
       )
       (justify left)
     )
-    (uuid "d07a2a3b-0e07-4c8d-a3e0-32e00a5a57bc")
+    (uuid "f70ba4f5-f465-4b8d-a392-9f8acf058389")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 180.34 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-  )
-  (symbol
-    (lib_id "Device:LED")
-    (at 213.36 45.72 0)
-    (unit 1)
-    (exclude_from_sim no)
-    (in_bom yes)
-    (on_board yes)
-    (dnp no)
-    (uuid "8221a284-ee93-4a1f-bcf5-8233fec585e6")
-    (property "Reference" "LED1"
-      (at 213.36 41.45 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-      )
-    )
-    (property "Value" "zelená"
-      (at 213.36 51.01 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-      )
-    )
-    (property "Footprint" "LED_SMD:LED_0603_1608Metric"
-      (at 213.36 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "Datasheet" ""
-      (at 213.36 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "Description" "LED napájení (zelená)"
-      (at 213.36 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "MPN" "Würth 150060VS75000 (0603)"
-      (at 213.36 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (pin "1"
-      (uuid "c5465e51-bf1e-4388-a70c-fd714e35630c")
-    )
-    (pin "2"
-      (uuid "5a25f59a-5c26-45b1-acf2-8ba432486c85")
-    )
-    (instances
-      (project "cb3"
-        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/3625bd77-4559-45f9-bba1-8be2d9dc8882"
-          (reference "LED1")
-          (unit 1)
-        )
-      )
-    )
-  )
-  (global_label "GND"
-    (shape passive)
-    (at 209.55 45.72 180)
-    (fields_autoplaced yes)
-    (effects
-      (font
-        (size 1.27 1.27)
-      )
-      (justify right)
-    )
-    (uuid "fbf8756f-948c-44e8-b65a-fb19cf772aa3")
-    (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 209.55 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-  )
-  (global_label "LED_PWR"
-    (shape passive)
-    (at 217.17 45.72 0)
-    (fields_autoplaced yes)
-    (effects
-      (font
-        (size 1.27 1.27)
-      )
-      (justify left)
-    )
-    (uuid "7e494e32-1c06-4c68-9959-efbaf4481b28")
-    (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 217.17 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-  )
-  (symbol
-    (lib_id "Device:LED")
-    (at 251.46 45.72 0)
-    (unit 1)
-    (exclude_from_sim no)
-    (in_bom yes)
-    (on_board yes)
-    (dnp no)
-    (uuid "46334045-1ebd-433e-8edb-e2bc769cff71")
-    (property "Reference" "LED2"
-      (at 251.46 41.45 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-      )
-    )
-    (property "Value" "modrá"
-      (at 251.46 51.01 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-      )
-    )
-    (property "Footprint" "LED_SMD:LED_0603_1608Metric"
-      (at 251.46 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "Datasheet" ""
-      (at 251.46 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "Description" "LED GNSS fix (modrá)"
-      (at 251.46 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "MPN" "Würth 150060BS75000 (0603)"
-      (at 251.46 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (pin "1"
-      (uuid "7dfec623-7f48-4a77-9146-1da0082e1663")
-    )
-    (pin "2"
-      (uuid "e1b072c0-6999-48a4-88c6-68c8144841ad")
-    )
-    (instances
-      (project "cb3"
-        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/3625bd77-4559-45f9-bba1-8be2d9dc8882"
-          (reference "LED2")
-          (unit 1)
-        )
-      )
-    )
-  )
-  (global_label "GND"
-    (shape passive)
-    (at 247.65 45.72 180)
-    (fields_autoplaced yes)
-    (effects
-      (font
-        (size 1.27 1.27)
-      )
-      (justify right)
-    )
-    (uuid "7246d76c-c59f-4ce7-88f3-5b68a8d52f33")
-    (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 247.65 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-  )
-  (global_label "LED_GNSS"
-    (shape passive)
-    (at 255.27 45.72 0)
-    (fields_autoplaced yes)
-    (effects
-      (font
-        (size 1.27 1.27)
-      )
-      (justify left)
-    )
-    (uuid "c2ad8ef4-b7a1-447d-a0ac-24fc29b72306")
-    (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 255.27 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-  )
-  (symbol
-    (lib_id "Device:LED")
-    (at 289.56 45.72 0)
-    (unit 1)
-    (exclude_from_sim no)
-    (in_bom yes)
-    (on_board yes)
-    (dnp no)
-    (uuid "4169d5d2-8b74-4040-8cb2-82b89bf6a194")
-    (property "Reference" "LED3"
-      (at 289.56 41.45 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-      )
-    )
-    (property "Value" "červená"
-      (at 289.56 51.01 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-      )
-    )
-    (property "Footprint" "LED_SMD:LED_0603_1608Metric"
-      (at 289.56 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "Datasheet" ""
-      (at 289.56 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "Description" "LED chyba (červená)"
-      (at 289.56 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (property "MPN" "Würth 150060RS75000 (0603)"
-      (at 289.56 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-    (pin "1"
-      (uuid "037e70b9-452c-41c2-9102-41d77d1a8fbb")
-    )
-    (pin "2"
-      (uuid "f462a74b-6f14-443e-ab77-833d9dcc7f72")
-    )
-    (instances
-      (project "cb3"
-        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/3625bd77-4559-45f9-bba1-8be2d9dc8882"
-          (reference "LED3")
-          (unit 1)
-        )
-      )
-    )
-  )
-  (global_label "GND"
-    (shape passive)
-    (at 285.75 45.72 180)
-    (fields_autoplaced yes)
-    (effects
-      (font
-        (size 1.27 1.27)
-      )
-      (justify right)
-    )
-    (uuid "436049f4-b9ee-4806-99e2-b27a1ff6d5ee")
-    (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 285.75 45.72 0)
-      (effects
-        (font
-          (size 1.27 1.27)
-        )
-        (hide yes)
-      )
-    )
-  )
-  (global_label "LED_ERR"
-    (shape passive)
-    (at 293.37 45.72 0)
-    (fields_autoplaced yes)
-    (effects
-      (font
-        (size 1.27 1.27)
-      )
-      (justify left)
-    )
-    (uuid "2d58f9e0-a1ef-479f-9f06-b9cf233f26b7")
-    (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 293.37 45.72 0)
+      (at 350.52 35.56 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2444,15 +2732,15 @@
   )
   (symbol
     (lib_id "Connector_Generic:Conn_01x03")
-    (at 330.2 48.26 0)
+    (at 419.1 40.64 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
     (on_board yes)
     (dnp no)
-    (uuid "6b4cc0e7-155d-47f7-9086-70e48e7740b3")
+    (uuid "ef9d8ab4-4d2c-4eef-8c78-3d74bffe8ed4")
     (property "Reference" "J11"
-      (at 330.2 41.45 0)
+      (at 419.1 34.29 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2460,7 +2748,7 @@
       )
     )
     (property "Value" "UART debug"
-      (at 330.2 55.07 0)
+      (at 419.1 46.99 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2468,7 +2756,7 @@
       )
     )
     (property "Footprint" "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal"
-      (at 330.2 48.26 0)
+      (at 419.1 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2477,7 +2765,7 @@
       )
     )
     (property "Datasheet" ""
-      (at 330.2 48.26 0)
+      (at 419.1 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2485,8 +2773,8 @@
         (hide yes)
       )
     )
-    (property "Description" "Ladicí UART (3,3 V)"
-      (at 330.2 48.26 0)
+    (property "Description" ""
+      (at 419.1 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2494,8 +2782,8 @@
         (hide yes)
       )
     )
-    (property "MPN" "JST SM03B-GHS-TB (GH, 3p: TX, RX, GND)"
-      (at 330.2 48.26 0)
+    (property "MPN" "JST SM03B-GHS-TB"
+      (at 419.1 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2504,17 +2792,17 @@
       )
     )
     (pin "1"
-      (uuid "255b7da0-c1d5-40e0-9846-ec14713f3744")
+      (uuid "06415a72-a776-4465-9664-96e348688951")
     )
     (pin "2"
-      (uuid "3ef07684-dbef-454b-bcd8-c9b242aac67b")
+      (uuid "592a1f1c-561e-4ac7-8cb7-9c30fa806ced")
     )
     (pin "3"
-      (uuid "e6aa1b79-3d2b-4ba3-ac69-94a6761a6767")
+      (uuid "4a3e70ed-acaa-4f2f-b82b-0fd151a73c90")
     )
     (instances
       (project "cb3"
-        (path "/cb678053-3a53-4ca8-8119-db6f93c3c30b/3625bd77-4559-45f9-bba1-8be2d9dc8882"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
           (reference "J11")
           (unit 1)
         )
@@ -2523,7 +2811,7 @@
   )
   (global_label "DBG_TX"
     (shape passive)
-    (at 325.12 45.72 180)
+    (at 414.02 38.1 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -2531,9 +2819,9 @@
       )
       (justify right)
     )
-    (uuid "5127da08-3b91-47c0-9a46-984bcd62ac7f")
+    (uuid "3b07c16c-27ce-4c67-b10d-338a06fc0679")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 325.12 45.72 0)
+      (at 414.02 38.1 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2544,7 +2832,7 @@
   )
   (global_label "DBG_RX"
     (shape passive)
-    (at 325.12 48.26 180)
+    (at 414.02 40.64 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -2552,9 +2840,9 @@
       )
       (justify right)
     )
-    (uuid "74aae3de-9d7c-43a6-8ce7-49b911c4d0de")
+    (uuid "48fefebd-952c-4af9-98ca-34393f4dbd0e")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 325.12 48.26 0)
+      (at 414.02 40.64 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2565,7 +2853,7 @@
   )
   (global_label "GND"
     (shape passive)
-    (at 325.12 50.8 180)
+    (at 414.02 43.18 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -2573,9 +2861,9 @@
       )
       (justify right)
     )
-    (uuid "099afb3b-4947-4c1f-8546-1b5b8106b99f")
+    (uuid "1b7f9458-02b4-4f82-a334-78361f628a28")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 325.12 50.8 0)
+      (at 414.02 43.18 0)
       (effects
         (font
           (size 1.27 1.27)
@@ -2584,15 +2872,1078 @@
       )
     )
   )
-  (text "Obsluha a ladění – KOSTRA (koncept rev. A)\\n\\n• J10: servisní USB 2.0 z panelového USB-C → USB OTG CM5 (rpiboot), ochrana D7.\\n• SW1 nRPIBOOT, SW2 vypnutí. LED1–3 přes odpory 1 kΩ z GPIO. J11 ladicí UART (3,3 V).\\n\\nZapojené jsou jen konektory, pasivní součástky a jednoduché IO. Ostatní vývody doplnit podle doporučeného zapojení v datasheetech.\\nČárkované obdélníky = zástupci: nahradit symbolem výrobce (SnapEDA / Ultra Librarian / web výrobce) se stejným designátorem."
+  (symbol
+    (lib_id "Device:LED")
+    (at 490.22 35.56 0)
+    (unit 1)
     (exclude_from_sim no)
-    (at 25.4 15.24 0)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "73cbd138-d18b-4e57-8fd2-497620450d34")
+    (property "Reference" "LED1"
+      (at 490.22 33.02 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "zelená"
+      (at 490.22 38.1 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "LED_SMD:LED_0603_1608Metric"
+      (at 490.22 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 490.22 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 490.22 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Würth 150060VS75000"
+      (at 490.22 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "3614feb4-8bce-4def-8e5a-cd8eab8bc5e5")
+    )
+    (pin "2"
+      (uuid "96bdd4ec-1dd0-44ff-b55b-e6ecc0fdf170")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "LED1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 486.41 35.56 180)
+    (fields_autoplaced yes)
     (effects
       (font
-        (size 1.524 1.524)
+        (size 1.27 1.27)
       )
-      (justify left top)
+      (justify right)
     )
-    (uuid "0c7efcec-35cc-4781-ba13-07c85e164f56")
+    (uuid "318b9354-3068-4f12-9572-9f60cb672ac7")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 486.41 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "LED1_A"
+    (shape passive)
+    (at 494.03 35.56 0)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify left)
+    )
+    (uuid "62b08220-a374-45b4-8d72-ca7b90c27529")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 494.03 35.56 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Device:R")
+    (at 43.18 78.74 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "74f47b79-5e2a-4c1a-9f22-b325dcd8b8fb")
+    (property "Reference" "R49"
+      (at 43.18 72.39 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "1k"
+      (at 43.18 85.09 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+      (at 43.18 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 43.18 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 43.18 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "rezistor 1k 1 % 0402"
+      (at 43.18 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "656eac16-2f88-4227-b469-b7e65f560224")
+    )
+    (pin "2"
+      (uuid "bc7c1854-d0cf-456f-add8-8c0e2eff02ad")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "R49")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "V3V3"
+    (shape passive)
+    (at 43.18 74.93 90)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "1ef4824d-9e5f-416c-aaf8-06b58e973e05")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 43.18 74.93 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "LED1_A"
+    (shape passive)
+    (at 43.18 82.55 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "f1078563-595f-4947-a9ad-e59d6934f69e")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 43.18 82.55 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Device:LED")
+    (at 111.76 73.66 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "71335464-d187-4f4b-bf80-71b289c7711f")
+    (property "Reference" "LED2"
+      (at 111.76 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "žlutá"
+      (at 111.76 76.2 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "LED_SMD:LED_0603_1608Metric"
+      (at 111.76 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 111.76 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 111.76 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Würth 150060YS75000"
+      (at 111.76 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "f8b64583-7338-41cf-bd8e-0e81ad93dee4")
+    )
+    (pin "2"
+      (uuid "6103ec4d-ee8e-415c-bcd7-1ee3437a6660")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "LED2")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "LED_nACT"
+    (shape passive)
+    (at 107.95 73.66 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "487248c8-fa28-478d-ab74-88ea804e2219")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 107.95 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "LED2_A"
+    (shape passive)
+    (at 115.57 73.66 0)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify left)
+    )
+    (uuid "15dad70c-1879-4307-83c6-b6e777cc7e2a")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 115.57 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Device:R")
+    (at 182.88 78.74 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "fded91cf-4936-43b6-908a-91ebba4449e2")
+    (property "Reference" "R50"
+      (at 182.88 72.39 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "1k"
+      (at 182.88 85.09 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+      (at 182.88 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 182.88 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 182.88 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "rezistor 1k 1 % 0402"
+      (at 182.88 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "ec47cf0a-f52d-4220-bcc4-3097b2b515fd")
+    )
+    (pin "2"
+      (uuid "85aca0c0-80d6-42cd-a4ae-cd82dd4158ba")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "R50")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "CM5_3V3"
+    (shape passive)
+    (at 182.88 74.93 90)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "468a55d7-7bcd-4d2b-94d4-118b653bcb1d")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 182.88 74.93 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "LED2_A"
+    (shape passive)
+    (at 182.88 82.55 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "c54ff40d-0979-4309-b881-28dd2a81405f")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 182.88 82.55 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Device:LED")
+    (at 251.46 73.66 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "2f050758-8e06-42e5-8d46-6bc8e8efea73")
+    (property "Reference" "LED3"
+      (at 251.46 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "červená"
+      (at 251.46 76.2 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "LED_SMD:LED_0603_1608Metric"
+      (at 251.46 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 251.46 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 251.46 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "Würth 150060RS75000"
+      (at 251.46 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "45201436-b30e-464c-b330-a212d156e882")
+    )
+    (pin "2"
+      (uuid "add2095d-46c8-4a5e-8f95-2fa0ff4b4d0a")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "LED3")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 247.65 73.66 180)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify right)
+    )
+    (uuid "acf9e4f9-4f24-4c19-8144-cae38e33c335")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 247.65 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "LED3_A"
+    (shape passive)
+    (at 255.27 73.66 0)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+      (justify left)
+    )
+    (uuid "419cb77f-9fa6-4628-8ae0-48eea203517b")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 255.27 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Device:R")
+    (at 320.04 78.74 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "a5d3a832-2e2d-4b07-99bd-d9aae5f3220c")
+    (property "Reference" "R51"
+      (at 320.04 72.39 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "1k"
+      (at 320.04 85.09 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+      (at 320.04 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 320.04 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 320.04 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "rezistor 1k 1 % 0402"
+      (at 320.04 78.74 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "3e256f1b-0276-477c-9ba7-aa25f09e4105")
+    )
+    (pin "2"
+      (uuid "b526e217-bc02-4405-85f7-678d694cbc56")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "R51")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "LED_STAT"
+    (shape passive)
+    (at 320.04 74.93 90)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "76d1ba43-04f3-4529-88cf-484f924006c5")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 320.04 74.93 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (global_label "LED3_A"
+    (shape passive)
+    (at 320.04 82.55 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "dc7381e6-36b0-40e7-ac88-a468cc5f40f3")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 320.04 82.55 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Mechanical:MountingHole_Pad")
+    (at 383.54 71.12 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom no)
+    (on_board yes)
+    (dnp no)
+    (uuid "9ae0077c-bc0d-45ec-a89c-836639c4491c")
+    (property "Reference" "MH1"
+      (at 383.54 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "M3"
+      (at 383.54 76.2 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad_Via"
+      (at 383.54 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 383.54 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 383.54 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "otvor M3"
+      (at 383.54 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "28d85f81-1da4-460f-8bab-859f56055e96")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "MH1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 383.54 73.66 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "e2c58861-fd39-4dd5-a792-3e6ddbf4b4fd")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 383.54 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Mechanical:MountingHole_Pad")
+    (at 449.58 71.12 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom no)
+    (on_board yes)
+    (dnp no)
+    (uuid "bb899f13-3526-489a-8ff8-6d4ef029cfb6")
+    (property "Reference" "MH2"
+      (at 449.58 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "M3"
+      (at 449.58 76.2 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad_Via"
+      (at 449.58 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 449.58 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 449.58 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "otvor M3"
+      (at 449.58 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "22e1aea1-16b8-4ffb-ac42-adbc090fca55")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "MH2")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 449.58 73.66 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "951e1034-359e-4056-bf3c-9712192d23f7")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 449.58 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Mechanical:MountingHole_Pad")
+    (at 513.08 71.12 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom no)
+    (on_board yes)
+    (dnp no)
+    (uuid "615913ee-809e-42c0-b392-dd1ac4b7005b")
+    (property "Reference" "MH3"
+      (at 513.08 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "M3"
+      (at 513.08 76.2 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad_Via"
+      (at 513.08 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 513.08 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 513.08 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "otvor M3"
+      (at 513.08 71.12 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "7f796959-7f31-4dd1-a357-a5c9a22dff1b")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "MH3")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 513.08 73.66 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "a4e11931-0371-496f-9ee6-dda2b6ef3d9c")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 513.08 73.66 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+  )
+  (symbol
+    (lib_id "Mechanical:MountingHole_Pad")
+    (at 43.18 96.52 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom no)
+    (on_board yes)
+    (dnp no)
+    (uuid "4726f289-1905-43b6-a4ab-e26858fe708a")
+    (property "Reference" "MH4"
+      (at 43.18 96.52 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "M3"
+      (at 43.18 101.6 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad_Via"
+      (at 43.18 96.52 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" ""
+      (at 43.18 96.52 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" ""
+      (at 43.18 96.52 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "MPN" "otvor M3"
+      (at 43.18 96.52 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (pin "1"
+      (uuid "8e7090fb-61ed-4f53-aded-2c39e25b5f05")
+    )
+    (instances
+      (project "cb3"
+        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b/de55d6c5-d832-45b4-b82e-92f4d3e8311d"
+          (reference "MH4")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (global_label "GND"
+    (shape passive)
+    (at 43.18 99.06 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27)
+      )
+    )
+    (uuid "3c019613-a3d8-43ee-a8cc-d106614a5193")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 43.18 99.06 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
   )
 )

@@ -1,0 +1,2711 @@
+{
+ "J1": {
+  "fp": "Connector_Molex:Molex_Micro-Fit_3.0_43045-0612_2x03_P3.00mm_Vertical",
+  "value": "NAPÁJENÍ",
+  "mpn": "Molex 43045-0612",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "KL30",
+   "2": "GND",
+   "3": "KL15",
+   "4": "CAN_H",
+   "5": "CAN_L",
+   "6": "GND"
+  }
+ },
+ "F1": {
+  "fp": "Fuse:Fuse_1206_3216Metric",
+  "value": "5A",
+  "mpn": "Littelfuse 0466005.NR (5 A, 1206) – ověřit jmenovité napětí ≥ 32 V",
+  "sheet": "napajeni",
+  "anchor": "J1",
+  "pads": {
+   "1": "KL30",
+   "2": "VIN_F"
+  }
+ },
+ "D1": {
+  "fp": "Diode_SMD:D_SMC",
+  "value": "SMCJ33CA",
+  "mpn": "Littelfuse SMCJ33CA (obousměrný, 1500 W)",
+  "sheet": "napajeni",
+  "anchor": "J1",
+  "pads": {
+   "1": "VIN_F",
+   "2": "GND"
+  }
+ },
+ "U1": {
+  "fp": "Package_TO_SOT_SMD:SOT-23-6",
+  "value": "LM74700-Q1",
+  "mpn": "TI LM74700QDBVRQ1",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "IDEAL_VCAP",
+   "2": "GND",
+   "3": "VIN_F",
+   "4": "VIN_P",
+   "5": "IDEAL_G",
+   "6": "VIN_F"
+  }
+ },
+ "C1": {
+  "fp": "Capacitor_SMD:CP_Elec_10x10.5",
+  "value": "100u 63V",
+  "mpn": "Panasonic EEH-ZK1J101P (hybridní polymer)",
+  "sheet": "napajeni",
+  "anchor": "U1",
+  "pads": {
+   "1": "VIN_P",
+   "2": "GND"
+  }
+ },
+ "Q1": {
+  "fp": "Package_TO_SOT_SMD:TDSON-8-1",
+  "value": "BSC028N06LS3",
+  "mpn": "Infineon BSC028N06LS3 (60 V, 2,8 mΩ)",
+  "sheet": "napajeni",
+  "anchor": "U1",
+  "pads": {
+   "1": "VIN_F",
+   "2": "VIN_F",
+   "3": "VIN_F",
+   "4": "IDEAL_G",
+   "5": "VIN_P"
+  }
+ },
+ "C2": {
+  "fp": "Capacitor_SMD:CP_Elec_10x10.5",
+  "value": "100u 63V",
+  "mpn": "Panasonic EEH-ZK1J101P (hybridní polymer)",
+  "sheet": "napajeni",
+  "anchor": "U1",
+  "pads": {
+   "1": "VIN_P",
+   "2": "GND"
+  }
+ },
+ "R1": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "442k",
+  "mpn": "rezistor 442k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "VIN_P",
+   "2": "EN_MAIN"
+  }
+ },
+ "R2": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "90.9k",
+  "mpn": "rezistor 90.9k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "EN_MAIN",
+   "2": "GND"
+  }
+ },
+ "Q2": {
+  "fp": "Package_TO_SOT_SMD:SOT-23",
+  "value": "BSS138",
+  "mpn": "onsemi BSS138",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "OFF_G",
+   "2": "GND",
+   "3": "EN_MAIN"
+  }
+ },
+ "R3": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "VIN_P",
+   "2": "OFF_G"
+  }
+ },
+ "D2": {
+  "fp": "Package_TO_SOT_SMD:SOT-23",
+  "value": "BZX84C10",
+  "mpn": "Nexperia BZX84-C10",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "GND",
+   "3": "OFF_G"
+  }
+ },
+ "Q3": {
+  "fp": "Package_TO_SOT_SMD:SOT-23",
+  "value": "BSS138",
+  "mpn": "onsemi BSS138",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "ON_G",
+   "2": "GND",
+   "3": "OFF_G"
+  }
+ },
+ "R4": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "ON_G",
+   "2": "GND"
+  }
+ },
+ "D3": {
+  "fp": "Package_TO_SOT_SMD:SOT-23",
+  "value": "BAT54C",
+  "mpn": "Nexperia BAT54C",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "KL15_DIV",
+   "2": "PWR_HOLD",
+   "3": "ON_G"
+  }
+ },
+ "R5": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "KL15",
+   "2": "KL15_DIV"
+  }
+ },
+ "R6": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "33k",
+  "mpn": "rezistor 33k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "KL15_DIV",
+   "2": "GND"
+  }
+ },
+ "C3": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "KL15_DIV",
+   "2": "GND"
+  }
+ },
+ "Q4": {
+  "fp": "Package_TO_SOT_SMD:SOT-23",
+  "value": "BSS138",
+  "mpn": "onsemi BSS138",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "KL15_DIV",
+   "2": "GND",
+   "3": "nKL15"
+  }
+ },
+ "R7": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "Q2",
+  "pads": {
+   "1": "V3V3",
+   "2": "nKL15"
+  }
+ },
+ "U2": {
+  "fp": "Package_SO:Texas_R-PDSO-G8_EP2.95x4.9mm_Mask2.4x3.1mm_ThermalVias",
+  "value": "TPS54560B 12V",
+  "mpn": "TI TPS54560BDDAR",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "U2_BOOT",
+   "2": "VIN_P",
+   "3": "EN_MAIN",
+   "4": "U2_RT",
+   "5": "U2_FB",
+   "6": "U2_COMP",
+   "7": "GND",
+   "8": "U2_SW",
+   "9": "GND"
+  }
+ },
+ "C4": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "2.2u",
+  "mpn": "kondenzátor 2,2 µF 100 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "VIN_P",
+   "2": "GND"
+  }
+ },
+ "C5": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "2.2u",
+  "mpn": "kondenzátor 2,2 µF 100 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "VIN_P",
+   "2": "GND"
+  }
+ },
+ "C6": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "U2_BOOT",
+   "2": "U2_SW"
+  }
+ },
+ "R8": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "243k",
+  "mpn": "rezistor 243k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "U2_RT",
+   "2": "GND"
+  }
+ },
+ "R9": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "143k",
+  "mpn": "rezistor 143k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "V12",
+   "2": "U2_FB"
+  }
+ },
+ "R10": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10.2k",
+  "mpn": "rezistor 10.2k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "U2_FB",
+   "2": "GND"
+  }
+ },
+ "R11": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "19.1k",
+  "mpn": "rezistor 19.1k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "U2_COMP",
+   "2": "U2_CZ"
+  }
+ },
+ "C7": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "4.7n",
+  "mpn": "keramický kondenzátor 4.7n X7R",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "U2_CZ",
+   "2": "GND"
+  }
+ },
+ "C8": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "47p",
+  "mpn": "kondenzátor 47 pF C0G",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "U2_COMP",
+   "2": "GND"
+  }
+ },
+ "D4": {
+  "fp": "Diode_SMD:D_SMC",
+  "value": "B560C",
+  "mpn": "Diodes B560C-13-F (60 V, 5 A)",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "U2_SW",
+   "2": "GND"
+  }
+ },
+ "L1": {
+  "fp": "Inductor_SMD:L_Coilcraft_XAL1010-XXX",
+  "value": "22u",
+  "mpn": "Coilcraft XAL1010-223MEB",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "U2_SW",
+   "2": "V12"
+  }
+ },
+ "C9": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "22u",
+  "mpn": "kondenzátor 22 µF 25 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "V12",
+   "2": "GND"
+  }
+ },
+ "C10": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "22u",
+  "mpn": "kondenzátor 22 µF 25 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "V12",
+   "2": "GND"
+  }
+ },
+ "C11": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "22u",
+  "mpn": "kondenzátor 22 µF 25 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U2",
+  "pads": {
+   "1": "V12",
+   "2": "GND"
+  }
+ },
+ "U3": {
+  "fp": "Package_SO:Texas_R-PDSO-G8_EP2.95x4.9mm_Mask2.4x3.1mm_ThermalVias",
+  "value": "TPS54560B 5V",
+  "mpn": "TI TPS54560BDDAR",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "U3_BOOT",
+   "2": "VIN_P",
+   "3": "EN_MAIN",
+   "4": "U3_RT",
+   "5": "U3_FB",
+   "6": "U3_COMP",
+   "7": "GND",
+   "8": "U3_SW",
+   "9": "GND"
+  }
+ },
+ "C12": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "2.2u",
+  "mpn": "kondenzátor 2,2 µF 100 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "VIN_P",
+   "2": "GND"
+  }
+ },
+ "C13": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "2.2u",
+  "mpn": "kondenzátor 2,2 µF 100 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "VIN_P",
+   "2": "GND"
+  }
+ },
+ "C14": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "U3_BOOT",
+   "2": "U3_SW"
+  }
+ },
+ "R12": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "243k",
+  "mpn": "rezistor 243k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "U3_RT",
+   "2": "GND"
+  }
+ },
+ "R13": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "53.6k",
+  "mpn": "rezistor 53.6k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "V5",
+   "2": "U3_FB"
+  }
+ },
+ "R14": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10.2k",
+  "mpn": "rezistor 10.2k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "U3_FB",
+   "2": "GND"
+  }
+ },
+ "R15": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "16.9k",
+  "mpn": "rezistor 16.9k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "U3_COMP",
+   "2": "U3_CZ"
+  }
+ },
+ "C15": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "4.7n",
+  "mpn": "keramický kondenzátor 4.7n X7R",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "U3_CZ",
+   "2": "GND"
+  }
+ },
+ "C16": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "47p",
+  "mpn": "kondenzátor 47 pF C0G",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "U3_COMP",
+   "2": "GND"
+  }
+ },
+ "D5": {
+  "fp": "Diode_SMD:D_SMC",
+  "value": "B560C",
+  "mpn": "Diodes B560C-13-F (60 V, 5 A)",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "U3_SW",
+   "2": "GND"
+  }
+ },
+ "L2": {
+  "fp": "Inductor_SMD:L_Coilcraft_XAL1010-XXX",
+  "value": "6.8u",
+  "mpn": "Coilcraft XAL1010-682MEB",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "U3_SW",
+   "2": "V5"
+  }
+ },
+ "C17": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "47u",
+  "mpn": "kondenzátor 47 µF 10 V X5R 1210",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C18": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "47u",
+  "mpn": "kondenzátor 47 µF 10 V X5R 1210",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C19": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "47u",
+  "mpn": "kondenzátor 47 µF 10 V X5R 1210",
+  "sheet": "napajeni",
+  "anchor": "U3",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "U14": {
+  "fp": "Package_DFN_QFN:VQFN-16-1EP_3x3mm_P0.5mm_EP1.68x1.68mm_ThermalVias",
+  "value": "TPS62130 3V3",
+  "mpn": "TI TPS62130RGTR",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "U14_SW",
+   "2": "U14_SW",
+   "3": "U14_SW",
+   "4": "PG_3V3",
+   "5": "U14_FB",
+   "6": "GND",
+   "7": "GND",
+   "8": "GND",
+   "9": "U14_SS",
+   "10": "V5",
+   "11": "V5",
+   "12": "V5",
+   "13": "V5",
+   "14": "V3V3",
+   "15": "GND",
+   "16": "GND",
+   "17": "GND"
+  }
+ },
+ "C20": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "10u",
+  "mpn": "kondenzátor 10 µF 25 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C21": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C22": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "3.3n",
+  "mpn": "keramický kondenzátor 3.3n X7R",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "U14_SS",
+   "2": "GND"
+  }
+ },
+ "R16": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "316k",
+  "mpn": "rezistor 316k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "V3V3",
+   "2": "U14_FB"
+  }
+ },
+ "R17": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "U14_FB",
+   "2": "GND"
+  }
+ },
+ "R18": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "V3V3",
+   "2": "PG_3V3"
+  }
+ },
+ "L3": {
+  "fp": "Inductor_SMD:L_Coilcraft_XAL4020-XXX",
+  "value": "2.2u",
+  "mpn": "Coilcraft XAL4020-222MEC",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "U14_SW",
+   "2": "V3V3"
+  }
+ },
+ "C23": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "22u",
+  "mpn": "kondenzátor 22 µF 10 V X5R 0805",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "C24": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "22u",
+  "mpn": "kondenzátor 22 µF 10 V X5R 0805",
+  "sheet": "napajeni",
+  "anchor": "U14",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "U4": {
+  "fp": "Package_DFN_QFN:VQFN-16-1EP_3x3mm_P0.5mm_EP1.68x1.68mm_ThermalVias",
+  "value": "TPS62130 3V8",
+  "mpn": "TI TPS62130RGTR",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "U4_SW",
+   "2": "U4_SW",
+   "3": "U4_SW",
+   "4": "PG_3V8",
+   "5": "U4_FB",
+   "6": "GND",
+   "7": "GND",
+   "8": "GND",
+   "9": "U4_SS",
+   "10": "V5",
+   "11": "V5",
+   "12": "V5",
+   "13": "MODEM_PWR_EN",
+   "14": "V3V8",
+   "15": "GND",
+   "16": "GND",
+   "17": "GND"
+  }
+ },
+ "C25": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "10u",
+  "mpn": "kondenzátor 10 µF 25 V X7R 1210",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C26": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C27": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "3.3n",
+  "mpn": "keramický kondenzátor 3.3n X7R",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "U4_SS",
+   "2": "GND"
+  }
+ },
+ "R19": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "374k",
+  "mpn": "rezistor 374k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "V3V8",
+   "2": "U4_FB"
+  }
+ },
+ "R20": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "U4_FB",
+   "2": "GND"
+  }
+ },
+ "R21": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "V3V8",
+   "2": "PG_3V8"
+  }
+ },
+ "R22": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "MODEM_PWR_EN",
+   "2": "GND"
+  }
+ },
+ "L4": {
+  "fp": "Inductor_SMD:L_Coilcraft_XAL4020-XXX",
+  "value": "2.2u",
+  "mpn": "Coilcraft XAL4020-222MEC",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "U4_SW",
+   "2": "V3V8"
+  }
+ },
+ "C28": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "22u",
+  "mpn": "kondenzátor 22 µF 10 V X5R 0805",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "V3V8",
+   "2": "GND"
+  }
+ },
+ "C29": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "22u",
+  "mpn": "kondenzátor 22 µF 10 V X5R 0805",
+  "sheet": "napajeni",
+  "anchor": "U4",
+  "pads": {
+   "1": "V3V8",
+   "2": "GND"
+  }
+ },
+ "U15": {
+  "fp": "Package_TO_SOT_SMD:SOT-23-5",
+  "value": "AP2112K-1.2",
+  "mpn": "Diodes AP2112K-1.2TRG1",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "V3V3",
+   "2": "GND",
+   "3": "V3V3",
+   "5": "V1V2"
+  }
+ },
+ "C30": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "1u",
+  "mpn": "keramický kondenzátor 1u X7R",
+  "sheet": "napajeni",
+  "anchor": "U15",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "C31": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "1u",
+  "mpn": "keramický kondenzátor 1u X7R",
+  "sheet": "napajeni",
+  "anchor": "U15",
+  "pads": {
+   "1": "V1V2",
+   "2": "GND"
+  }
+ },
+ "C32": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "10u",
+  "mpn": "kondenzátor 10 µF 10 V X5R 0805",
+  "sheet": "napajeni",
+  "anchor": "U15",
+  "pads": {
+   "1": "V1V2",
+   "2": "GND"
+  }
+ },
+ "TP1": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "VIN_P",
+  "mpn": "testovací ploška",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "VIN_P"
+  }
+ },
+ "TP2": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "V12",
+  "mpn": "testovací ploška",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "V12"
+  }
+ },
+ "TP3": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "V5",
+  "mpn": "testovací ploška",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "V5"
+  }
+ },
+ "TP4": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "V3V3",
+  "mpn": "testovací ploška",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "V3V3"
+  }
+ },
+ "TP5": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "V3V8",
+  "mpn": "testovací ploška",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "V3V8"
+  }
+ },
+ "TP6": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "V1V2",
+  "mpn": "testovací ploška",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "V1V2"
+  }
+ },
+ "TP7": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "GND",
+  "mpn": "testovací ploška",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "GND"
+  }
+ },
+ "TP8": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "GND",
+  "mpn": "testovací ploška",
+  "sheet": "napajeni",
+  "anchor": null,
+  "pads": {
+   "1": "GND"
+  }
+ },
+ "M1": {
+  "fp": "CB3:Raspberry-Pi-5-Compute-Module",
+  "value": "CM5",
+  "mpn": "Raspberry Pi CM5104032 (CM5, 4 GB, 32 GB eMMC, bez Wi-Fi) + 2× Hirose DF40C-100DS-0.4V(51)",
+  "sheet": "vypocet",
+  "anchor": null,
+  "pads": {
+   "1": "GND",
+   "2": "GND",
+   "4": "ETHC_TRD1_P",
+   "6": "ETHC_TRD1_N",
+   "7": "GND",
+   "8": "GND",
+   "10": "ETHC_TRD0_N",
+   "12": "ETHC_TRD0_P",
+   "13": "GND",
+   "14": "GND",
+   "21": "LED_nACT",
+   "22": "GND",
+   "23": "GND",
+   "24": "PORT_ST_3D",
+   "25": "PORT_EN_P",
+   "26": "PORT_ST_L",
+   "27": "PORT_EN_3D",
+   "28": "GNSS_TXD",
+   "29": "PORT_EN_L",
+   "30": "CAN_STB",
+   "31": "GNSS_RXD",
+   "32": "GND",
+   "33": "GND",
+   "34": "LED_STAT",
+   "37": "MODEM_PWR_EN",
+   "38": "CAN_SCK",
+   "39": "CAN_CS",
+   "40": "CAN_SDO",
+   "41": "CAN_INT",
+   "42": "GND",
+   "43": "GND",
+   "44": "CAN_SDI",
+   "45": "PORT_ST_P",
+   "46": "MODEM_RESET",
+   "47": "GNSS_RESET_N",
+   "48": "PWR_HOLD",
+   "49": "GNSS_PPS",
+   "50": "nKL15",
+   "51": "DBG_RX",
+   "52": "GND",
+   "53": "GND",
+   "54": "KSZ_RST_N",
+   "55": "DBG_TX",
+   "56": "I2C_SCL",
+   "58": "I2C_SDA",
+   "59": "GND",
+   "60": "GND",
+   "65": "GND",
+   "66": "GND",
+   "71": "GND",
+   "74": "GND",
+   "76": "RTC_BAT",
+   "77": "V5",
+   "78": "CM5_3V3",
+   "79": "V5",
+   "81": "V5",
+   "83": "V5",
+   "84": "CM5_3V3",
+   "85": "V5",
+   "86": "CM5_3V3",
+   "87": "V5",
+   "92": "PWR_BTN",
+   "93": "nRPIBOOT",
+   "98": "GND",
+   "103": "USB_SERV_N",
+   "105": "USB_SERV_P",
+   "107": "GND",
+   "108": "GND",
+   "113": "GND",
+   "114": "GND",
+   "119": "GND",
+   "120": "GND",
+   "125": "GND",
+   "126": "GND",
+   "131": "GND",
+   "132": "GND",
+   "134": "MODEM_USB_P",
+   "136": "MODEM_USB_N",
+   "137": "GND",
+   "138": "GND",
+   "144": "GND",
+   "150": "GND",
+   "155": "GND",
+   "156": "GND",
+   "161": "GND",
+   "162": "GND",
+   "167": "GND",
+   "168": "GND",
+   "173": "GND",
+   "174": "GND",
+   "179": "GND",
+   "180": "GND",
+   "185": "GND",
+   "186": "GND",
+   "191": "GND",
+   "192": "GND",
+   "197": "GND",
+   "198": "GND"
+  }
+ },
+ "C33": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "47u",
+  "mpn": "kondenzátor 47 µF 10 V X5R 1210",
+  "sheet": "vypocet",
+  "anchor": "M1",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C34": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "47u",
+  "mpn": "kondenzátor 47 µF 10 V X5R 1210",
+  "sheet": "vypocet",
+  "anchor": "M1",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C35": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "vypocet",
+  "anchor": "M1",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C36": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "vypocet",
+  "anchor": "M1",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C37": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "vypocet",
+  "anchor": "M1",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C38": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "vypocet",
+  "anchor": "M1",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C39": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "vypocet",
+  "anchor": "M1",
+  "pads": {
+   "1": "CM5_3V3",
+   "2": "GND"
+  }
+ },
+ "BT1": {
+  "fp": "Battery:BatteryHolder_Keystone_3034_1x20mm",
+  "value": "ML2032",
+  "mpn": "Keystone 3034 + Maxell ML2032 (dobíjecí)",
+  "sheet": "vypocet",
+  "anchor": "M1",
+  "pads": {
+   "1": "RTC_BAT",
+   "2": "GND"
+  }
+ },
+ "U7": {
+  "fp": "Package_SON:Texas_DSG0008A_WSON-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm_ThermalVias",
+  "value": "TMP1075",
+  "mpn": "TI TMP1075DSGR",
+  "sheet": "vypocet",
+  "anchor": null,
+  "pads": {
+   "1": "I2C_SDA",
+   "2": "I2C_SCL",
+   "4": "GND",
+   "5": "GND",
+   "6": "GND",
+   "7": "GND",
+   "8": "V3V3",
+   "9": "GND"
+  }
+ },
+ "C40": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "vypocet",
+  "anchor": "U7",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "R23": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "4.7k",
+  "mpn": "rezistor 4.7k 1 % 0402",
+  "sheet": "vypocet",
+  "anchor": "U7",
+  "pads": {
+   "1": "V3V3",
+   "2": "I2C_SDA"
+  }
+ },
+ "R24": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "4.7k",
+  "mpn": "rezistor 4.7k 1 % 0402",
+  "sheet": "vypocet",
+  "anchor": "U7",
+  "pads": {
+   "1": "V3V3",
+   "2": "I2C_SCL"
+  }
+ },
+ "U8": {
+  "fp": "Package_QFP:LQFP-80_12x12mm_P0.5mm",
+  "value": "KSZ8795CLX",
+  "mpn": "Microchip KSZ8795CLXIC",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "V1V2_A",
+   "2": "V3V3_A",
+   "3": "GND",
+   "4": "SW1_RXP",
+   "5": "SW1_RXM",
+   "6": "SW1_TXP",
+   "7": "SW1_TXM",
+   "8": "SW2_RXP",
+   "9": "SW2_RXM",
+   "10": "SW2_TXP",
+   "11": "SW2_TXM",
+   "12": "V3V3_A",
+   "13": "SW3_RXP",
+   "14": "SW3_RXM",
+   "15": "SW3_TXP",
+   "16": "SW3_TXM",
+   "17": "SW4_RXP",
+   "18": "SW4_RXM",
+   "19": "SW4_TXP",
+   "20": "SW4_TXM",
+   "21": "GND",
+   "26": "V1V2",
+   "27": "GND",
+   "33": "GND",
+   "34": "V3V3",
+   "42": "V1V2",
+   "47": "GND",
+   "48": "V3V3",
+   "61": "GND",
+   "66": "KSZ_SPIQ",
+   "70": "V3V3",
+   "71": "GND",
+   "72": "KSZ_RST_N",
+   "73": "V1V2",
+   "76": "V3V3_A",
+   "77": "KSZ_ISET",
+   "78": "GND",
+   "79": "KSZ_XI",
+   "80": "KSZ_XO"
+  }
+ },
+ "FB1": {
+  "fp": "Inductor_SMD:L_0603_1608Metric",
+  "value": "600R@100MHz",
+  "mpn": "Murata BLM18PG601SN1D",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V1V2",
+   "2": "V1V2_A"
+  }
+ },
+ "FB2": {
+  "fp": "Inductor_SMD:L_0603_1608Metric",
+  "value": "600R@100MHz",
+  "mpn": "Murata BLM18PG601SN1D",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3",
+   "2": "V3V3_A"
+  }
+ },
+ "C41": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "10u",
+  "mpn": "kondenzátor 10 µF 10 V X5R 0805",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V1V2",
+   "2": "GND"
+  }
+ },
+ "C42": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "10u",
+  "mpn": "kondenzátor 10 µF 10 V X5R 0805",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3_A",
+   "2": "GND"
+  }
+ },
+ "C43": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "10u",
+  "mpn": "kondenzátor 10 µF 10 V X5R 0805",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "C44": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V1V2_A",
+   "2": "GND"
+  }
+ },
+ "C45": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V1V2",
+   "2": "GND"
+  }
+ },
+ "C46": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V1V2",
+   "2": "GND"
+  }
+ },
+ "C47": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V1V2",
+   "2": "GND"
+  }
+ },
+ "C48": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3_A",
+   "2": "GND"
+  }
+ },
+ "C49": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3_A",
+   "2": "GND"
+  }
+ },
+ "C50": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3_A",
+   "2": "GND"
+  }
+ },
+ "C51": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "C52": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "C53": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "R25": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "12.4k",
+  "mpn": "rezistor 12,4 kΩ 1 % 0402 (ISET)",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "KSZ_ISET",
+   "2": "GND"
+  }
+ },
+ "R26": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "4.7k",
+  "mpn": "rezistor 4,7 kΩ 0402 (strap: SPI klient)",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "KSZ_SPIQ",
+   "2": "GND"
+  }
+ },
+ "R27": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10k 1 % 0402",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "V3V3",
+   "2": "KSZ_RST_N"
+  }
+ },
+ "C54": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "KSZ_RST_N",
+   "2": "GND"
+  }
+ },
+ "Y1": {
+  "fp": "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm",
+  "value": "25MHz",
+  "mpn": "Abracon ABM8-25.000MHZ-B2-T (18 pF, ±30 ppm)",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "KSZ_XI",
+   "2": "GND",
+   "3": "KSZ_XO",
+   "4": "GND"
+  }
+ },
+ "C55": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "27p",
+  "mpn": "kondenzátor 27 pF C0G",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "KSZ_XI",
+   "2": "GND"
+  }
+ },
+ "C56": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "27p",
+  "mpn": "kondenzátor 27 pF C0G",
+  "sheet": "site",
+  "anchor": "U8",
+  "pads": {
+   "1": "KSZ_XO",
+   "2": "GND"
+  }
+ },
+ "T1": {
+  "fp": "Transformer_SMD:Transformer_Ethernet_Bourns_PT61017PEL",
+  "value": "PT61017PEL",
+  "mpn": "Bourns PT61017PEL (10/100, 1:1)",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "SW1_TXP",
+   "2": "T1_CTD",
+   "3": "SW1_TXM",
+   "6": "SW1_RXP",
+   "7": "T1_CTR",
+   "8": "SW1_RXM",
+   "9": "ETHL_RX_N",
+   "10": "T1_CMR",
+   "11": "ETHL_RX_P",
+   "14": "ETHL_TX_N",
+   "15": "T1_CMT",
+   "16": "ETHL_TX_P"
+  }
+ },
+ "C57": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T1",
+  "pads": {
+   "1": "T1_CTD",
+   "2": "GND"
+  }
+ },
+ "C58": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T1",
+  "pads": {
+   "1": "T1_CTR",
+   "2": "GND"
+  }
+ },
+ "R28": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "75",
+  "mpn": "rezistor 75 1 % 0402",
+  "sheet": "site",
+  "anchor": "T1",
+  "pads": {
+   "1": "T1_CMT",
+   "2": "T1_BS"
+  }
+ },
+ "R29": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "75",
+  "mpn": "rezistor 75 1 % 0402",
+  "sheet": "site",
+  "anchor": "T1",
+  "pads": {
+   "1": "T1_CMR",
+   "2": "T1_BS"
+  }
+ },
+ "C59": {
+  "fp": "Capacitor_SMD:C_1206_3216Metric",
+  "value": "1n 2kV",
+  "mpn": "kondenzátor 1 nF 2 kV X7R 1206",
+  "sheet": "site",
+  "anchor": "T1",
+  "pads": {
+   "1": "T1_BS",
+   "2": "GND"
+  }
+ },
+ "U9": {
+  "fp": "Package_SO:TSSOP-14-1EP_4.4x5mm_P0.65mm",
+  "value": "TPS1H100A-Q1",
+  "mpn": "TI TPS1H100AQPWPRQ1 (verze A, výstup ST)",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "2": "GND",
+   "3": "PORT_EN_L",
+   "5": "V12_PL",
+   "6": "V12_PL",
+   "7": "V12_PL",
+   "8": "V12",
+   "9": "V12",
+   "10": "V12",
+   "12": "DIAG_EN",
+   "13": "U9_CL",
+   "14": "PORT_ST_L",
+   "15": "GND"
+  }
+ },
+ "R30": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "1.65k",
+  "mpn": "rezistor 1,65 kΩ 1 % 0402 (omezení proudu ~1,5 A)",
+  "sheet": "site",
+  "anchor": "U9",
+  "pads": {
+   "1": "U9_CL",
+   "2": "GND"
+  }
+ },
+ "R31": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10k 1 % 0402",
+  "sheet": "site",
+  "anchor": "U9",
+  "pads": {
+   "1": "V3V3",
+   "2": "PORT_ST_L"
+  }
+ },
+ "R32": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "site",
+  "anchor": "U9",
+  "pads": {
+   "1": "PORT_EN_L",
+   "2": "GND"
+  }
+ },
+ "C60": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "100n",
+  "mpn": "kondenzátor 100 nF 50 V X7R 0603",
+  "sheet": "site",
+  "anchor": "U9",
+  "pads": {
+   "1": "V12",
+   "2": "GND"
+  }
+ },
+ "C61": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "1u",
+  "mpn": "kondenzátor 1 µF 50 V X7R 0805",
+  "sheet": "site",
+  "anchor": "U9",
+  "pads": {
+   "1": "V12_PL",
+   "2": "GND"
+  }
+ },
+ "J4": {
+  "fp": "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal",
+  "value": "PORT L",
+  "mpn": "JST SM08B-GHS-TB",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "V12_PL",
+   "2": "V12_PL",
+   "3": "GND",
+   "4": "GND",
+   "5": "ETHL_TX_P",
+   "6": "ETHL_TX_N",
+   "7": "ETHL_RX_P",
+   "8": "ETHL_RX_N",
+   "MP": "GND"
+  }
+ },
+ "T2": {
+  "fp": "Transformer_SMD:Transformer_Ethernet_Bourns_PT61017PEL",
+  "value": "PT61017PEL",
+  "mpn": "Bourns PT61017PEL (10/100, 1:1)",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "SW2_TXP",
+   "2": "T2_CTD",
+   "3": "SW2_TXM",
+   "6": "SW2_RXP",
+   "7": "T2_CTR",
+   "8": "SW2_RXM",
+   "9": "ETH3D_RX_N",
+   "10": "T2_CMR",
+   "11": "ETH3D_RX_P",
+   "14": "ETH3D_TX_N",
+   "15": "T2_CMT",
+   "16": "ETH3D_TX_P"
+  }
+ },
+ "C62": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T2",
+  "pads": {
+   "1": "T2_CTD",
+   "2": "GND"
+  }
+ },
+ "C63": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T2",
+  "pads": {
+   "1": "T2_CTR",
+   "2": "GND"
+  }
+ },
+ "R33": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "75",
+  "mpn": "rezistor 75 1 % 0402",
+  "sheet": "site",
+  "anchor": "T2",
+  "pads": {
+   "1": "T2_CMT",
+   "2": "T2_BS"
+  }
+ },
+ "R34": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "75",
+  "mpn": "rezistor 75 1 % 0402",
+  "sheet": "site",
+  "anchor": "T2",
+  "pads": {
+   "1": "T2_CMR",
+   "2": "T2_BS"
+  }
+ },
+ "C64": {
+  "fp": "Capacitor_SMD:C_1206_3216Metric",
+  "value": "1n 2kV",
+  "mpn": "kondenzátor 1 nF 2 kV X7R 1206",
+  "sheet": "site",
+  "anchor": "T2",
+  "pads": {
+   "1": "T2_BS",
+   "2": "GND"
+  }
+ },
+ "U10": {
+  "fp": "Package_SO:TSSOP-14-1EP_4.4x5mm_P0.65mm",
+  "value": "TPS1H100A-Q1",
+  "mpn": "TI TPS1H100AQPWPRQ1 (verze A, výstup ST)",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "2": "GND",
+   "3": "PORT_EN_3D",
+   "5": "V12_P3D",
+   "6": "V12_P3D",
+   "7": "V12_P3D",
+   "8": "V12",
+   "9": "V12",
+   "10": "V12",
+   "12": "DIAG_EN",
+   "13": "U10_CL",
+   "14": "PORT_ST_3D",
+   "15": "GND"
+  }
+ },
+ "R35": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "1.65k",
+  "mpn": "rezistor 1,65 kΩ 1 % 0402 (omezení proudu ~1,5 A)",
+  "sheet": "site",
+  "anchor": "U10",
+  "pads": {
+   "1": "U10_CL",
+   "2": "GND"
+  }
+ },
+ "R36": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10k 1 % 0402",
+  "sheet": "site",
+  "anchor": "U10",
+  "pads": {
+   "1": "V3V3",
+   "2": "PORT_ST_3D"
+  }
+ },
+ "R37": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "site",
+  "anchor": "U10",
+  "pads": {
+   "1": "PORT_EN_3D",
+   "2": "GND"
+  }
+ },
+ "C65": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "100n",
+  "mpn": "kondenzátor 100 nF 50 V X7R 0603",
+  "sheet": "site",
+  "anchor": "U10",
+  "pads": {
+   "1": "V12",
+   "2": "GND"
+  }
+ },
+ "C66": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "1u",
+  "mpn": "kondenzátor 1 µF 50 V X7R 0805",
+  "sheet": "site",
+  "anchor": "U10",
+  "pads": {
+   "1": "V12_P3D",
+   "2": "GND"
+  }
+ },
+ "J5": {
+  "fp": "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal",
+  "value": "PORT 3D",
+  "mpn": "JST SM08B-GHS-TB",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "V12_P3D",
+   "2": "V12_P3D",
+   "3": "GND",
+   "4": "GND",
+   "5": "ETH3D_TX_P",
+   "6": "ETH3D_TX_N",
+   "7": "ETH3D_RX_P",
+   "8": "ETH3D_RX_N",
+   "MP": "GND"
+  }
+ },
+ "T3": {
+  "fp": "Transformer_SMD:Transformer_Ethernet_Bourns_PT61017PEL",
+  "value": "PT61017PEL",
+  "mpn": "Bourns PT61017PEL (10/100, 1:1)",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "SW3_TXP",
+   "2": "T3_CTD",
+   "3": "SW3_TXM",
+   "6": "SW3_RXP",
+   "7": "T3_CTR",
+   "8": "SW3_RXM",
+   "9": "ETHP_RX_N",
+   "10": "T3_CMR",
+   "11": "ETHP_RX_P",
+   "14": "ETHP_TX_N",
+   "15": "T3_CMT",
+   "16": "ETHP_TX_P"
+  }
+ },
+ "C67": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T3",
+  "pads": {
+   "1": "T3_CTD",
+   "2": "GND"
+  }
+ },
+ "C68": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T3",
+  "pads": {
+   "1": "T3_CTR",
+   "2": "GND"
+  }
+ },
+ "R38": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "75",
+  "mpn": "rezistor 75 1 % 0402",
+  "sheet": "site",
+  "anchor": "T3",
+  "pads": {
+   "1": "T3_CMT",
+   "2": "T3_BS"
+  }
+ },
+ "R39": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "75",
+  "mpn": "rezistor 75 1 % 0402",
+  "sheet": "site",
+  "anchor": "T3",
+  "pads": {
+   "1": "T3_CMR",
+   "2": "T3_BS"
+  }
+ },
+ "C69": {
+  "fp": "Capacitor_SMD:C_1206_3216Metric",
+  "value": "1n 2kV",
+  "mpn": "kondenzátor 1 nF 2 kV X7R 1206",
+  "sheet": "site",
+  "anchor": "T3",
+  "pads": {
+   "1": "T3_BS",
+   "2": "GND"
+  }
+ },
+ "U11": {
+  "fp": "Package_SO:TSSOP-14-1EP_4.4x5mm_P0.65mm",
+  "value": "TPS1H100A-Q1",
+  "mpn": "TI TPS1H100AQPWPRQ1 (verze A, výstup ST)",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "2": "GND",
+   "3": "PORT_EN_P",
+   "5": "V12_PP",
+   "6": "V12_PP",
+   "7": "V12_PP",
+   "8": "V12",
+   "9": "V12",
+   "10": "V12",
+   "12": "DIAG_EN",
+   "13": "U11_CL",
+   "14": "PORT_ST_P",
+   "15": "GND"
+  }
+ },
+ "R40": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "1.65k",
+  "mpn": "rezistor 1,65 kΩ 1 % 0402 (omezení proudu ~1,5 A)",
+  "sheet": "site",
+  "anchor": "U11",
+  "pads": {
+   "1": "U11_CL",
+   "2": "GND"
+  }
+ },
+ "R41": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10k 1 % 0402",
+  "sheet": "site",
+  "anchor": "U11",
+  "pads": {
+   "1": "V3V3",
+   "2": "PORT_ST_P"
+  }
+ },
+ "R42": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "site",
+  "anchor": "U11",
+  "pads": {
+   "1": "PORT_EN_P",
+   "2": "GND"
+  }
+ },
+ "C70": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "100n",
+  "mpn": "kondenzátor 100 nF 50 V X7R 0603",
+  "sheet": "site",
+  "anchor": "U11",
+  "pads": {
+   "1": "V12",
+   "2": "GND"
+  }
+ },
+ "C71": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "1u",
+  "mpn": "kondenzátor 1 µF 50 V X7R 0805",
+  "sheet": "site",
+  "anchor": "U11",
+  "pads": {
+   "1": "V12_PP",
+   "2": "GND"
+  }
+ },
+ "J6": {
+  "fp": "Connector_JST:JST_GH_SM08B-GHS-TB_1x08-1MP_P1.25mm_Horizontal",
+  "value": "PORT P",
+  "mpn": "JST SM08B-GHS-TB",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "V12_PP",
+   "2": "V12_PP",
+   "3": "GND",
+   "4": "GND",
+   "5": "ETHP_TX_P",
+   "6": "ETHP_TX_N",
+   "7": "ETHP_RX_P",
+   "8": "ETHP_RX_N",
+   "MP": "GND"
+  }
+ },
+ "R43": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10k 1 % 0402",
+  "sheet": "site",
+  "anchor": "U9",
+  "pads": {
+   "1": "V3V3",
+   "2": "DIAG_EN"
+  }
+ },
+ "T5": {
+  "fp": "Transformer_SMD:Transformer_Ethernet_Bourns_PT61017PEL",
+  "value": "PT61017PEL",
+  "mpn": "Bourns PT61017PEL (10/100, 1:1)",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "SW4_TXP",
+   "2": "T5_CTD",
+   "3": "SW4_TXM",
+   "6": "SW4_RXP",
+   "7": "T5_CTR",
+   "8": "SW4_RXM",
+   "9": "LINK_B_N",
+   "10": "LINK_CMB",
+   "11": "LINK_B_P",
+   "14": "LINK_A_N",
+   "15": "LINK_CMA",
+   "16": "LINK_A_P"
+  }
+ },
+ "C72": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T5",
+  "pads": {
+   "1": "T5_CTD",
+   "2": "GND"
+  }
+ },
+ "C73": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T5",
+  "pads": {
+   "1": "T5_CTR",
+   "2": "GND"
+  }
+ },
+ "C74": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "10n",
+  "mpn": "keramický kondenzátor 10n X7R",
+  "sheet": "site",
+  "anchor": "T5",
+  "pads": {
+   "1": "LINK_CMA",
+   "2": "GND"
+  }
+ },
+ "C75": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "10n",
+  "mpn": "keramický kondenzátor 10n X7R",
+  "sheet": "site",
+  "anchor": "T5",
+  "pads": {
+   "1": "LINK_CMB",
+   "2": "GND"
+  }
+ },
+ "T4": {
+  "fp": "Transformer_SMD:Transformer_Ethernet_Bourns_PT61017PEL",
+  "value": "PT61017PEL",
+  "mpn": "Bourns PT61017PEL (10/100, 1:1)",
+  "sheet": "site",
+  "anchor": null,
+  "pads": {
+   "1": "ETHC_TRD0_P",
+   "2": "T4_CTD",
+   "3": "ETHC_TRD0_N",
+   "6": "ETHC_TRD1_P",
+   "7": "T4_CTR",
+   "8": "ETHC_TRD1_N",
+   "9": "LINK_B_N",
+   "10": "LINK_CMB",
+   "11": "LINK_B_P",
+   "14": "LINK_A_N",
+   "15": "LINK_CMA",
+   "16": "LINK_A_P"
+  }
+ },
+ "C76": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T4",
+  "pads": {
+   "1": "T4_CTD",
+   "2": "GND"
+  }
+ },
+ "C77": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "site",
+  "anchor": "T4",
+  "pads": {
+   "1": "T4_CTR",
+   "2": "GND"
+  }
+ },
+ "M2": {
+  "fp": "RF_GPS:ublox_ZED",
+  "value": "ZED-F9R",
+  "mpn": "u-blox ZED-F9R-02B",
+  "sheet": "radio",
+  "anchor": null,
+  "pads": {
+   "1": "GND",
+   "2": "GNSS_RF_IN",
+   "3": "GND",
+   "7": "GNSS_VCC_RF",
+   "12": "GND",
+   "14": "GND",
+   "32": "GND",
+   "33": "V3V3_GNSS",
+   "34": "V3V3_GNSS",
+   "36": "V3V3_GNSS",
+   "37": "GND",
+   "38": "GND",
+   "41": "GND",
+   "42": "GNSS_TXD",
+   "43": "GNSS_RXD",
+   "48": "GND",
+   "49": "GNSS_RESET_N",
+   "50": "GNSS_SAFEBOOT",
+   "53": "GNSS_PPS"
+  }
+ },
+ "FB3": {
+  "fp": "Inductor_SMD:L_0603_1608Metric",
+  "value": "600R@100MHz",
+  "mpn": "Murata BLM18PG601SN1D",
+  "sheet": "radio",
+  "anchor": "M2",
+  "pads": {
+   "1": "V3V3",
+   "2": "V3V3_GNSS"
+  }
+ },
+ "C78": {
+  "fp": "Capacitor_SMD:C_0805_2012Metric",
+  "value": "10u",
+  "mpn": "kondenzátor 10 µF 10 V X5R 0805",
+  "sheet": "radio",
+  "anchor": "M2",
+  "pads": {
+   "1": "V3V3_GNSS",
+   "2": "GND"
+  }
+ },
+ "C79": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "radio",
+  "anchor": "M2",
+  "pads": {
+   "1": "V3V3_GNSS",
+   "2": "GND"
+  }
+ },
+ "R44": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10",
+  "mpn": "rezistor 10 Ω 0402",
+  "sheet": "radio",
+  "anchor": "M2",
+  "pads": {
+   "1": "GNSS_VCC_RF",
+   "2": "GNSS_ANT_DC"
+  }
+ },
+ "L5": {
+  "fp": "Inductor_SMD:L_0402_1005Metric",
+  "value": "47n",
+  "mpn": "Murata LQG15HS47NJ02 (47 nH)",
+  "sheet": "radio",
+  "anchor": "M2",
+  "pads": {
+   "1": "GNSS_ANT_DC",
+   "2": "GNSS_RF"
+  }
+ },
+ "C80": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100p",
+  "mpn": "kondenzátor 100 pF C0G 0402 (oddělení DC)",
+  "sheet": "radio",
+  "anchor": "M2",
+  "pads": {
+   "1": "GNSS_RF",
+   "2": "GNSS_RF_IN"
+  }
+ },
+ "J7": {
+  "fp": "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical",
+  "value": "GNSS",
+  "mpn": "Hirose U.FL-R-SMT-1(10)",
+  "sheet": "radio",
+  "anchor": "M2",
+  "pads": {
+   "1": "GNSS_RF",
+   "2": "GND"
+  }
+ },
+ "TP9": {
+  "fp": "TestPoint:TestPoint_Pad_D1.5mm",
+  "value": "GNSS_SAFEBOOT",
+  "mpn": "testovací ploška",
+  "sheet": "radio",
+  "anchor": "M2",
+  "pads": {
+   "1": "GNSS_SAFEBOOT"
+  }
+ },
+ "J8": {
+  "fp": "CB3:M.2_Socket_KeyB_TopMount_H4.2",
+  "value": "M.2 Key B",
+  "mpn": "TE 2199230-3 (M.2 Key B, 4,2 mm) – ověřit klíč na výkresu",
+  "sheet": "radio",
+  "anchor": null,
+  "pads": {
+   "2": "V3V8",
+   "3": "GND",
+   "4": "V3V8",
+   "5": "GND",
+   "6": "MODEM_ON",
+   "7": "MODEM_USB_P",
+   "9": "MODEM_USB_N",
+   "11": "GND",
+   "27": "GND",
+   "30": "SIM_RST",
+   "32": "SIM_CLK",
+   "33": "GND",
+   "34": "SIM_IO",
+   "36": "SIM_VCC",
+   "39": "GND",
+   "45": "GND",
+   "51": "GND",
+   "57": "GND",
+   "67": "MODEM_RESET_N",
+   "70": "V3V8",
+   "71": "GND",
+   "72": "V3V8",
+   "73": "GND",
+   "74": "V3V8",
+   "M2": "GND",
+   "S1": "GND",
+   "S2": "GND"
+  }
+ },
+ "R45": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10 kΩ 0402 (FULL_CARD_POWER_OFF# = zapnuto)",
+  "sheet": "radio",
+  "anchor": "J8",
+  "pads": {
+   "1": "V3V8",
+   "2": "MODEM_ON"
+  }
+ },
+ "C81": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "47u",
+  "mpn": "kondenzátor 47 µF 10 V X5R 1210",
+  "sheet": "radio",
+  "anchor": "J8",
+  "pads": {
+   "1": "V3V8",
+   "2": "GND"
+  }
+ },
+ "C82": {
+  "fp": "Capacitor_SMD:C_1210_3225Metric",
+  "value": "47u",
+  "mpn": "kondenzátor 47 µF 10 V X5R 1210",
+  "sheet": "radio",
+  "anchor": "J8",
+  "pads": {
+   "1": "V3V8",
+   "2": "GND"
+  }
+ },
+ "C83": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "radio",
+  "anchor": "J8",
+  "pads": {
+   "1": "V3V8",
+   "2": "GND"
+  }
+ },
+ "Q5": {
+  "fp": "Package_TO_SOT_SMD:SOT-23",
+  "value": "BSS138",
+  "mpn": "onsemi BSS138",
+  "sheet": "radio",
+  "anchor": "J8",
+  "pads": {
+   "1": "MODEM_RESET",
+   "2": "GND",
+   "3": "MODEM_RESET_N"
+  }
+ },
+ "R46": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "100k",
+  "mpn": "rezistor 100k 1 % 0402",
+  "sheet": "radio",
+  "anchor": "J8",
+  "pads": {
+   "1": "MODEM_RESET",
+   "2": "GND"
+  }
+ },
+ "J9": {
+  "fp": "Connector_Card:nanoSIM_GCT_SIM8060-6-0-14-00",
+  "value": "nano-SIM",
+  "mpn": "GCT SIM8060-6-0-14-00",
+  "sheet": "radio",
+  "anchor": null,
+  "pads": {
+   "1": "SIM_VCC",
+   "2": "SIM_RST",
+   "3": "SIM_CLK",
+   "5": "GND",
+   "7": "SIM_IO",
+   "SH": "GND"
+  }
+ },
+ "C84": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "radio",
+  "anchor": "J9",
+  "pads": {
+   "1": "SIM_VCC",
+   "2": "GND"
+  }
+ },
+ "D6": {
+  "fp": "Package_TO_SOT_SMD:SOT-553",
+  "value": "TPD3E001",
+  "mpn": "TI TPD3E001DRLR",
+  "sheet": "radio",
+  "anchor": "J9",
+  "pads": {
+   "1": "SIM_RST",
+   "2": "SIM_CLK",
+   "3": "GND",
+   "4": "SIM_IO",
+   "5": "SIM_VCC"
+  }
+ },
+ "U12": {
+  "fp": "Package_DFN_QFN:DFN-14-1EP_3x4.5mm_P0.65mm_EP1.65x4.25mm",
+  "value": "MCP2518FD",
+  "mpn": "Microchip MCP2518FDT-E/QBB",
+  "sheet": "radio",
+  "anchor": null,
+  "pads": {
+   "1": "CAN_TXD",
+   "2": "CAN_RXD",
+   "4": "CAN_INT",
+   "5": "CAN_OSC2",
+   "6": "CAN_OSC1",
+   "7": "GND",
+   "10": "CAN_SCK",
+   "11": "CAN_SDI",
+   "12": "CAN_SDO",
+   "13": "CAN_CS",
+   "14": "V3V3",
+   "15": "GND"
+  }
+ },
+ "C85": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "radio",
+  "anchor": "U12",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "R47": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10k 1 % 0402",
+  "sheet": "radio",
+  "anchor": "U12",
+  "pads": {
+   "1": "V3V3",
+   "2": "CAN_INT"
+  }
+ },
+ "Y2": {
+  "fp": "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm",
+  "value": "40MHz",
+  "mpn": "Abracon ABM8-40.000MHZ-B2-T (18 pF)",
+  "sheet": "radio",
+  "anchor": "U12",
+  "pads": {
+   "1": "CAN_OSC1",
+   "2": "GND",
+   "3": "CAN_OSC2",
+   "4": "GND"
+  }
+ },
+ "C86": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "27p",
+  "mpn": "kondenzátor 27 pF C0G",
+  "sheet": "radio",
+  "anchor": "U12",
+  "pads": {
+   "1": "CAN_OSC1",
+   "2": "GND"
+  }
+ },
+ "C87": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "27p",
+  "mpn": "kondenzátor 27 pF C0G",
+  "sheet": "radio",
+  "anchor": "U12",
+  "pads": {
+   "1": "CAN_OSC2",
+   "2": "GND"
+  }
+ },
+ "U13": {
+  "fp": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+  "value": "TCAN1042V",
+  "mpn": "TI TCAN1042VDRQ1 (pin 5 = VIO)",
+  "sheet": "radio",
+  "anchor": null,
+  "pads": {
+   "1": "CAN_TXD",
+   "2": "GND",
+   "3": "V5",
+   "4": "CAN_RXD",
+   "5": "V3V3",
+   "6": "CAN_L",
+   "7": "CAN_H",
+   "8": "CAN_STB"
+  }
+ },
+ "C88": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "radio",
+  "anchor": "U13",
+  "pads": {
+   "1": "V5",
+   "2": "GND"
+  }
+ },
+ "C89": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "radio",
+  "anchor": "U13",
+  "pads": {
+   "1": "V3V3",
+   "2": "GND"
+  }
+ },
+ "R48": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "10k",
+  "mpn": "rezistor 10k 1 % 0402",
+  "sheet": "radio",
+  "anchor": "U13",
+  "pads": {
+   "1": "CAN_STB",
+   "2": "GND"
+  }
+ },
+ "D7": {
+  "fp": "Package_TO_SOT_SMD:SOT-23",
+  "value": "PESD2CANFD24V",
+  "mpn": "Nexperia PESD2CANFD24V-T (SOT-23)",
+  "sheet": "radio",
+  "anchor": "U13",
+  "pads": {
+   "1": "CAN_L",
+   "2": "CAN_H",
+   "3": "GND"
+  }
+ },
+ "J10": {
+  "fp": "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal",
+  "value": "USB servis",
+  "mpn": "JST SM04B-GHS-TB",
+  "sheet": "obsluha",
+  "anchor": null,
+  "pads": {
+   "1": "VBUS_SERV",
+   "2": "USB_SERV_N",
+   "3": "USB_SERV_P",
+   "4": "GND",
+   "MP": "GND"
+  }
+ },
+ "D8": {
+  "fp": "Package_SON:USON-10_2.5x1.0mm_P0.5mm",
+  "value": "TPD4E05U06",
+  "mpn": "TI TPD4E05U06DQAR",
+  "sheet": "obsluha",
+  "anchor": "J10",
+  "pads": {
+   "1": "USB_SERV_P",
+   "2": "USB_SERV_N",
+   "3": "GND",
+   "8": "GND"
+  }
+ },
+ "C90": {
+  "fp": "Capacitor_SMD:C_0402_1005Metric",
+  "value": "100n",
+  "mpn": "keramický kondenzátor 100n X7R",
+  "sheet": "obsluha",
+  "anchor": "J10",
+  "pads": {
+   "1": "VBUS_SERV",
+   "2": "GND"
+  }
+ },
+ "SW1": {
+  "fp": "Button_Switch_SMD:SW_Push_1P1T_NO_CK_KMR2",
+  "value": "nRPIBOOT",
+  "mpn": "C&K KMR221GLFS",
+  "sheet": "obsluha",
+  "anchor": "J10",
+  "pads": {
+   "1": "nRPIBOOT",
+   "2": "GND"
+  }
+ },
+ "SW2": {
+  "fp": "Button_Switch_SMD:SW_Push_1P1T_NO_CK_KMR2",
+  "value": "PWR_BTN",
+  "mpn": "C&K KMR221GLFS",
+  "sheet": "obsluha",
+  "anchor": "J10",
+  "pads": {
+   "1": "PWR_BTN",
+   "2": "GND"
+  }
+ },
+ "J11": {
+  "fp": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+  "value": "UART debug",
+  "mpn": "JST SM03B-GHS-TB",
+  "sheet": "obsluha",
+  "anchor": null,
+  "pads": {
+   "1": "DBG_TX",
+   "2": "DBG_RX",
+   "3": "GND",
+   "MP": "GND"
+  }
+ },
+ "LED1": {
+  "fp": "LED_SMD:LED_0603_1608Metric",
+  "value": "zelená",
+  "mpn": "Würth 150060VS75000",
+  "sheet": "obsluha",
+  "anchor": "J11",
+  "pads": {
+   "1": "GND",
+   "2": "LED1_A"
+  }
+ },
+ "R49": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "1k",
+  "mpn": "rezistor 1k 1 % 0402",
+  "sheet": "obsluha",
+  "anchor": "J11",
+  "pads": {
+   "1": "V3V3",
+   "2": "LED1_A"
+  }
+ },
+ "LED2": {
+  "fp": "LED_SMD:LED_0603_1608Metric",
+  "value": "žlutá",
+  "mpn": "Würth 150060YS75000",
+  "sheet": "obsluha",
+  "anchor": "J11",
+  "pads": {
+   "1": "LED_nACT",
+   "2": "LED2_A"
+  }
+ },
+ "R50": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "1k",
+  "mpn": "rezistor 1k 1 % 0402",
+  "sheet": "obsluha",
+  "anchor": "J11",
+  "pads": {
+   "1": "CM5_3V3",
+   "2": "LED2_A"
+  }
+ },
+ "LED3": {
+  "fp": "LED_SMD:LED_0603_1608Metric",
+  "value": "červená",
+  "mpn": "Würth 150060RS75000",
+  "sheet": "obsluha",
+  "anchor": "J11",
+  "pads": {
+   "1": "GND",
+   "2": "LED3_A"
+  }
+ },
+ "R51": {
+  "fp": "Resistor_SMD:R_0402_1005Metric",
+  "value": "1k",
+  "mpn": "rezistor 1k 1 % 0402",
+  "sheet": "obsluha",
+  "anchor": "J11",
+  "pads": {
+   "1": "LED_STAT",
+   "2": "LED3_A"
+  }
+ },
+ "MH1": {
+  "fp": "MountingHole:MountingHole_3.2mm_M3_Pad_Via",
+  "value": "M3",
+  "mpn": "otvor M3",
+  "sheet": "obsluha",
+  "anchor": null,
+  "pads": {
+   "1": "GND"
+  }
+ },
+ "MH2": {
+  "fp": "MountingHole:MountingHole_3.2mm_M3_Pad_Via",
+  "value": "M3",
+  "mpn": "otvor M3",
+  "sheet": "obsluha",
+  "anchor": null,
+  "pads": {
+   "1": "GND"
+  }
+ },
+ "MH3": {
+  "fp": "MountingHole:MountingHole_3.2mm_M3_Pad_Via",
+  "value": "M3",
+  "mpn": "otvor M3",
+  "sheet": "obsluha",
+  "anchor": null,
+  "pads": {
+   "1": "GND"
+  }
+ },
+ "MH4": {
+  "fp": "MountingHole:MountingHole_3.2mm_M3_Pad_Via",
+  "value": "M3",
+  "mpn": "otvor M3",
+  "sheet": "obsluha",
+  "anchor": null,
+  "pads": {
+   "1": "GND"
+  }
+ }
+}

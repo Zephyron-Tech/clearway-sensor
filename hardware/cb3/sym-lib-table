@@ -1,4 +1,4 @@
 (sym_lib_table
   (version 7)
-  (lib (name "CB3")(type "KiCad")(uri "${KIPRJMOD}/cb3.kicad_sym")(options "")(descr "Zástupné symboly desky CB3"))
+  (lib (name "CB3")(type "KiCad")(uri "${KIPRJMOD}/cb3.kicad_sym")(options "")(descr "Symboly desky CB3"))
 )

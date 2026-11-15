@@ -7,11 +7,13 @@
     "design_settings": {
       "defaults": {},
       "rules": {
-        "min_clearance": 0.1,
-        "min_track_width": 0.1,
+        "min_clearance": 0.127,
+        "min_track_width": 0.127,
         "min_via_diameter": 0.45,
         "min_through_hole_diameter": 0.25,
-        "min_copper_edge_clearance": 0.3
+        "min_copper_edge_clearance": 0.3,
+        "min_hole_clearance": 0.25,
+        "min_hole_to_hole": 0.25
       }
     }
   },
@@ -19,51 +21,116 @@
     "classes": [
       {
         "name": "Default",
-        "clearance": 0.1,
+        "clearance": 0.127,
         "track_width": 0.15,
-        "via_diameter": 0.45,
+        "via_diameter": 0.5,
         "via_drill": 0.25,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
         "diff_pair_width": 0.15,
         "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
         "wire_width": 6,
         "bus_width": 12,
         "line_style": 0,
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "schematic_color": "rgba(0, 0, 0, 0.000)"
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 2147483647
       },
       {
         "name": "Power",
         "clearance": 0.2,
-        "track_width": 0.8,
-        "via_diameter": 0.8,
-        "via_drill": 0.4,
-        "diff_pair_width": 0.2,
-        "diff_pair_gap": 0.25,
+        "track_width": 0.5,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_width": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
         "wire_width": 6,
         "bus_width": 12,
         "line_style": 0,
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "schematic_color": "rgba(0, 0, 0, 0.000)"
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 0
+      },
+      {
+        "name": "Power12",
+        "clearance": 0.25,
+        "track_width": 1.2,
+        "via_diameter": 0.8,
+        "via_drill": 0.4,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_width": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "wire_width": 6,
+        "bus_width": 12,
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 0
       },
       {
         "name": "HV",
         "clearance": 0.5,
-        "track_width": 1,
+        "track_width": 1.5,
         "via_diameter": 0.8,
         "via_drill": 0.4,
-        "diff_pair_width": 0.2,
-        "diff_pair_gap": 0.25,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_width": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
         "wire_width": 6,
         "bus_width": 12,
         "line_style": 0,
         "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "schematic_color": "rgba(0, 0, 0, 0.000)"
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 0
+      },
+      {
+        "name": "Switch",
+        "clearance": 0.25,
+        "track_width": 1.0,
+        "via_diameter": 0.8,
+        "via_drill": 0.4,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_width": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "wire_width": 6,
+        "bus_width": 12,
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 0
+      },
+      {
+        "name": "Diff",
+        "clearance": 0.127,
+        "track_width": 0.2,
+        "via_diameter": 0.5,
+        "via_drill": 0.25,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_width": 0.2,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "wire_width": 6,
+        "bus_width": 12,
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 0
       }
     ],
     "meta": {
-      "version": 3
+      "version": 4
     },
-    "net_colors": null,
     "netclass_patterns": [
       {
         "netclass": "HV",
@@ -71,11 +138,19 @@
       },
       {
         "netclass": "HV",
-        "pattern": "VIN_*"
+        "pattern": "VIN_F"
       },
       {
-        "netclass": "Power",
-        "pattern": "V12*"
+        "netclass": "HV",
+        "pattern": "VIN_P"
+      },
+      {
+        "netclass": "Power12",
+        "pattern": "V12"
+      },
+      {
+        "netclass": "Power12",
+        "pattern": "V12_P*"
       },
       {
         "netclass": "Power",
@@ -83,38 +158,90 @@
       },
       {
         "netclass": "Power",
-        "pattern": "V3V*"
+        "pattern": "V3V3*"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "V3V8"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "V1V2*"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "CM5_3V3"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "SIM_VCC"
+      },
+      {
+        "netclass": "Switch",
+        "pattern": "U2_SW"
+      },
+      {
+        "netclass": "Switch",
+        "pattern": "U3_SW"
+      },
+      {
+        "netclass": "Switch",
+        "pattern": "U4_SW"
+      },
+      {
+        "netclass": "Switch",
+        "pattern": "U14_SW"
       },
       {
         "netclass": "Power",
         "pattern": "GND"
+      },
+      {
+        "netclass": "Diff",
+        "pattern": "SW?_*"
+      },
+      {
+        "netclass": "Diff",
+        "pattern": "ETH*"
+      },
+      {
+        "netclass": "Diff",
+        "pattern": "LINK_*"
+      },
+      {
+        "netclass": "Diff",
+        "pattern": "MODEM_USB_*"
+      },
+      {
+        "netclass": "Diff",
+        "pattern": "USB_SERV_*"
       }
     ]
   },
   "sheets": [
     [
-      "cb678053-3a53-4ca8-8119-db6f93c3c30b",
+      "b50de4ed-e84e-4678-bba5-e12c3d9f8a3b",
       "Root"
     ],
     [
-      "78206dfd-b1c6-4d09-9277-446b7adf27e4",
-      "Napájení 9–32 V"
+      "9e5505bc-89a9-48b2-9d23-de2da46a4170",
+      "Nap\u00e1jen\u00ed 9\u201332 V"
     ],
     [
-      "500eb9c1-95d2-47b3-a037-c543bd66b7b9",
-      "Počítač CM5"
+      "17d417e3-3d08-457f-ab74-c261180c4910",
+      "Po\u010d\u00edta\u010d CM5"
     ],
     [
-      "5f912f56-d1df-4c43-997e-58b7af600ad4",
-      "Ethernet a porty senzorů"
+      "8af1c67d-b672-432a-afbc-931046730646",
+      "Ethernet a porty senzor\u016f"
     ],
     [
-      "4b2a739c-4054-4aa5-a375-2835675029db",
+      "54875a85-6acb-4e36-b614-f39d3f9e5131",
       "GNSS, LTE, CAN"
     ],
     [
-      "3625bd77-4559-45f9-bba1-8be2d9dc8882",
-      "Obsluha a ladění"
+      "de55d6c5-d832-45b4-b82e-92f4d3e8311d",
+      "Obsluha a lad\u011bn\u00ed"
     ]
   ],
   "text_variables": {}
