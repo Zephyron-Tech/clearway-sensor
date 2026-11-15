@@ -10,6 +10,7 @@ import { cadBuild, cadStep, cadStl, cadStepOnly, cadStlPart, cadToGroup, setCadO
 import { buildCar, buildRoad, loadCar, CAR_CREDIT } from './car.js';
 import { buildTruck, loadTruck, loadVan, TRUCK_CREDIT } from './truck.js';
 import { buildStreet, simulate, drawScan } from './scan.js';
+import { BLOCKS as BOARD_BLOCKS, PARTS as BOARD_PARTS, BOARD } from './cad/board-v3-data.js';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { makeLabel, makeDim, makeCable } from './overlay.js';
 import { PHOTOS } from './photos.js';
@@ -343,6 +344,7 @@ const CATS = {
   telo: 'Tělo a kryty', tesneni: 'Těsnění', spoj: 'Šrouby a závitové vložky', lidar: 'Lidary', elektronika: 'Elektronika',
   baterie: 'Baterie', kabely: 'Kabeláž', konektory: 'Konektory, anténa, libela', noha: 'Nohy s přísavkami',
   nosic: 'Nosič a rám', senzory: 'Skenery a 3D lidar', skrin: 'Skříň elektroniky',
+  ...Object.fromEntries(Object.entries(BOARD_BLOCKS).map(([k, t]) => [`deska_${k}`, `Deska: ${t}`])),
 };
 const SRC_LABEL = { tisk: '3D tisk', nakup: 'nákup', pcb: 'osazená deska', kabel: 'kabeláž', tesneni: 'těsnění', obrabeni: 'řezání / CNC' };
 
@@ -436,7 +438,7 @@ function buildUnitGroup(role, vr = state.variant, ghost = false) {
     u.add(b);
   }
   if (ghost) makeGhost(u, vr);
-  withParams(PV[vr], () => (isRoof(vr) ? addRoofOverlays(u, vr, ghost) : addOverlays(u, role, vr, ghost)));
+  withParams(PV[vr], () => (isRoof(vr) ? (role === 'slave' ? addBoardOverlays(u, ghost) : addRoofOverlays(u, vr, ghost)) : addOverlays(u, role, vr, ghost)));
   return u;
 }
 
@@ -512,6 +514,35 @@ function partCenter(u, name) {
 }
 const fanTableMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.2, depthWrite: false, side: THREE.DoubleSide });
 const ringTableMat = new THREE.MeshBasicMaterial({ color: 0xe879f9, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide });
+
+/** v3, samostatná nosná deska: název, popisky bloků a hlavních součástek, kóty obrysu. */
+function addBoardOverlays(u, ghost) {
+  if (ghost || !state.labels) return;
+  const lift = 1 + 1.4 * state.explode;
+  const t = makeLabel(`NOSNÁ DESKA ${BOARD.name} · 1:1`, { size: 1.0, tone: 'dark', strong: true });
+  t.position.set(0, 60 * lift, -BOARD.width / 2 - 30);
+  u.add(t);
+  // bloky: popisek nad těžištěm součástek bloku
+  for (const [k, name] of Object.entries(BOARD_BLOCKS)) {
+    const ps = BOARD_PARTS.filter(p => p.block === k);
+    const cx = ps.reduce((a, p) => a + p.x, 0) / ps.length, cz = ps.reduce((a, p) => a + p.z, 0) / ps.length;
+    const l = makeLabel(name, { size: 0.8, tone: 'dark' });
+    l.position.set(cx, 34 * lift, cz);
+    u.add(l);
+  }
+  for (const [ref, text] of [['M1', 'CM5'], ['U8', 'přepínač Ethernet'], ['M2', 'GNSS ZED-F9R'], ['M3', 'LTE modem'], ['J1', 'napájení'], ['U2', '12 V'], ['U3', '5 V']]) {
+    const p = BOARD_PARTS.find(q => q.ref === ref);
+    if (!p) continue;
+    const l = makeLabel(`${ref} · ${text}`, { size: 0.65 });
+    l.position.set(p.x, (p.h + 10) * lift, p.z);
+    u.add(l);
+  }
+  if (state.dims) {
+    const L = BOARD.length, W = BOARD.width;
+    u.add(makeDim([-L / 2, 0, W / 2], [L / 2, 0, W / 2], [0, 0, 26], `${fmt(L)} mm`));
+    u.add(makeDim([L / 2, 0, -W / 2], [L / 2, 0, W / 2], [26, 0, 0], `${fmt(W)} mm`));
+  }
+}
 
 /** v3: popisky, naznačené zorné pole skenerů a 3D lidaru (na stole), kóty. */
 function addRoofOverlays(u, vr, ghost) {
@@ -692,7 +723,8 @@ function rebuild(resetCamera = false, askCad = true) {
   const vr = state.variant;
   const overlay = state.compareMode === 'overlay';
   // jednotky k zobrazení: obě, nebo jen master / slave (druhá se vůbec nestaví); v3 je jediná jednotka
-  const want = (id, role) => (isRoof(id) ? role === 'master' : state.unit === 'both' || state.unit === role);
+  // v3: master = sestava na střeše, slave = samostatná nosná deska (jen na stole, vedle sestavy)
+  const want = (id, role) => (isRoof(id) ? role === 'master' || state.scene === 'stul' : state.unit === 'both' || state.unit === role);
   const mk = (id, ghost) => [id, want(id, 'master') ? buildUnitGroup('master', id, ghost) : null, want(id, 'slave') ? buildUnitGroup('slave', id, ghost) : null];
   const pairs = [mk(vr, false)];
   for (const id of compared()) pairs.push(mk(id, overlay));
@@ -767,9 +799,11 @@ function refreshStats(master = null, slave = null) {
 /** Rozmístí pár jednotek. slot 0 = zvolená verze, slot 1+ = další verze při porovnání; dz = posun na stole. */
 function placePair(vr, master, slave, slot, dz = -1000 * slot) {
   if (isRoof(vr)) {
-    if (!master) return;
-    if (state.scene === 'stul') master.position.set(0, maxDown(vr) * state.explode, dz);
-    else mountOnRoof(master, vehicle());
+    if (state.scene === 'stul') {
+      master?.position.set(0, maxDown(vr) * state.explode, dz);
+      // deska leží před sestavou (ve směru jízdy), aby nebyla schovaná za nosníkem
+      slave?.position.set(900, 0, dz);
+    } else if (master) mountOnRoof(master, vehicle());
     return;
   }
   withParams(PV[vr], () => {
@@ -1223,7 +1257,7 @@ function showCard(mesh, pinned) {
   const moved = ui3d.moved.has(ud.key);
   const meta = [CATS[ud.cat] ?? ud.cat, SRC_LABEL[ud.src], ud.mass >= 0.05 ? `~${fmt(ud.mass)} g` : null].filter(Boolean).join(' · ');
   card.innerHTML = `
-    <div class="pc-role ${ud.role}">${ud.role}</div>
+    <div class="pc-role ${ud.role}">${isRoof(ud.vr) ? (ud.role === 'master' ? 'sestava' : 'deska') : ud.role}</div>
     <div class="pc-name">${partLabel(ud)}</div>
     <div class="pc-meta">${meta}</div>
     ${ud.spec ? `<div class="pc-spec">${ud.spec}</div>` : ''}
@@ -1438,7 +1472,7 @@ const openCats = new Set(['telo']);
 function renderPartsTab() {
   const root = $('#partsTree');
   if (!cad.data) { root.innerHTML = '<p class="empty">Čekám na CAD model…</p>'; $('#bomBox').hidden = true; return; }
-  const vr = state.variant, role = isRoof(vr) ? 'master' : ui3d.listRole;
+  const vr = state.variant, role = ui3d.listRole;
   const q = ($('#partSearch').value || '').trim().toLowerCase();
   const cats = new Map();
   cad.data[role].parts.forEach((p, idx) => {
@@ -1517,7 +1551,7 @@ function flashKeys(keys, on) {
 const BOM_GROUPS = [['tisk', 'Tištěné díly'], ['obrabeni', 'Řezané a obráběné díly'], ['nakup', 'Nakupované díly'], ['tesneni', 'Těsnění'], ['pcb', 'Desky a hlavní součástky'], ['kabel', 'Kabeláž']];
 function bomRows() {
   const rows = new Map();
-  for (const role of ['master', 'slave']) {
+  for (const role of isRoof(state.variant) ? ['master'] : ['master', 'slave']) {
     for (const p of cad.data?.[role].parts ?? []) {
       if (!p.src || (p.spec || '').startsWith('součást')) continue;
       // stejné díly na různých místech (lidar J1–J4, paket B/C) patří do jednoho řádku
@@ -1641,9 +1675,12 @@ function syncControls() {
   // v3 je jediná jednotka: přepínače master / slave nemají smysl
   const roof = isRoof(state.variant);
   $('.seg-unit').style.display = roof ? 'none' : '';
-  $('[data-prole]').parentElement.style.display = roof ? 'none' : '';
-  $$('[data-export^="slave"]').forEach(b => { b.style.display = roof ? 'none' : ''; });
-  $$('[data-export^="master"]').forEach(b => { b.textContent = b.dataset.export.endsWith('step') ? (roof ? 'STEP sestavy' : 'STEP master') : (roof ? 'STL sestavy' : 'STL master'); });
+  $('[data-prole="master"]').textContent = roof ? 'Sestava' : 'Master';
+  $('[data-prole="slave"]').textContent = roof ? 'Deska' : 'Slave';
+  $$('[data-export]').forEach(b => {
+    const [r, f] = b.dataset.export.split(':');
+    b.textContent = `${f.toUpperCase()} ${roof ? (r === 'master' ? 'sestavy' : 'desky') : r}`;
+  });
   syncTools();
 }
 function syncTools() {
@@ -1735,7 +1772,7 @@ async function cadExport(btn, fn, role, ext, type) {
   const label = btn.innerHTML;
   btn.disabled = true; btn.textContent = 'Exportuji…';
   try {
-    const name = `clearway-${state.variant}-${role}.${ext}`;
+    const name = `clearway-${state.variant}-${isRoof(state.variant) ? (role === 'master' ? 'sestava' : 'deska-CB3') : role}.${ext}`;
     download(name, await fn(clone(P), role, state.variant), type);
     toast(`Staženo ${name}`);
   } catch (err) { toast('Export selhal: ' + err.message, true); }
@@ -1765,7 +1802,7 @@ function toast(text, err = false) {
 }
 
 window.addEventListener('keydown', (e) => {
-  if (e.target.closest('input, textarea, select')) return;
+  if (e.target.closest?.('input, textarea, select')) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (e.key === 'Escape') {
     if (lb.classList.contains('on')) return closeLightbox();

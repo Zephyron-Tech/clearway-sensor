@@ -17,6 +17,8 @@
 //
 // Každý díl nese `ex` (posun v rozloženém pohledu), `label`, `spec` a `src`.
 import { makeBox, makeCylinder, makeSphere, makeCompound, Sketcher } from 'replicad';
+import { boardParts, partXZ } from './board-v3.js';
+import { BOARD, LINKS } from './board-v3-data.js';
 
 const v = (P, g, k) => P[g][k].v;
 
@@ -25,6 +27,7 @@ const COLORS = {
   lens: '#1f2f42', white: '#f2f1ec', pcb: '#1c4a2c', chip: '#202124', shield: '#c8c8c0', copper: '#c26e3a',
   plasticBlack: '#232427', silicone: '#cf4a32', brass: '#c9a35a', blue: '#1f5fd1', green: '#2f9e55', ledRing: '#33d17a',
   yellow: '#f3d227', jst: '#f0eee4', red: '#d23a2e', ferrite: '#3a3b3e', nickel: '#c3c6ca',
+  ceramic: '#b98a5e', ledGreen: '#33d17a', led: '#ff4b3a',
 };
 
 const X = [1, 0, 0], Y = [0, 1, 0], Z = [0, 0, 1];
@@ -86,8 +89,11 @@ function extrusion(axis, a0, a1, c1, c2, s1, s2) {
 
 export function buildUnitCad(P, role) {
   const out = [];
-  // v3 je jedna jednotka; „slave“ nemá žádné díly
-  if (role !== 'master') return { parts: out, total: v(P, 'ram', 'sirka') };
+  // v3 je jedna jednotka; role „slave“ = samostatná nosná deska (náhled vedle sestavy, STEP pro návrháře DPS)
+  if (role !== 'master') {
+    for (const bp of boardParts({ y0: 0, ex0: [0, 0, 0], lift: 1 })) out.push({ ...bp, color: COLORS[bp.mat] || '#888888' });
+    return { parts: out, total: BOARD.length };
+  }
   const add = (name, cat, mat, shape, ex = [0, 0, 0], meta = {}) => {
     if (shape) out.push({ name, cat, mat, color: COLORS[mat] || '#888888', shape, ex, ...meta });
   };
@@ -288,9 +294,9 @@ export function buildUnitCad(P, role) {
   });
   add('deutsch_zasuvka', 'konektory', 'plasticBlack',
     cbox(xRr - 9, yConn, -40, 18, 20, 24).fuse(cbox(xRr - 1, yConn, -40, 2, 26, 30)), [-90, 40, 0],
-    { label: 'Napájecí zásuvka Deutsch DT04-4P', src: 'nakup', spec: 'automobilová, IP68: 1 = +12/24 V (KL30), 2 = kostra (KL31), 3 = zapalování (KL15), 4 = rezerva' });
+    { label: 'Napájecí zásuvka Deutsch DT04-6P', src: 'nakup', spec: 'automobilová, IP68: 1 = +12/24 V (KL30), 2 = kostra (KL31), 3 = zapalování (KL15), 4 = CAN-H, 5 = CAN-L, 6 = rezerva' });
   add('deutsch_vidlice', 'kabely', 'plasticBlack', cbox(xRr - 27, yConn, -40, 18, 22, 26).fuse(cbox(xRr - 40, yConn, -40, 8, 14, 14)), [-130, 40, 0],
-    { label: 'Napájecí vidlice Deutsch DT06-4S', src: 'kabel', spec: 's pryžovými ucpávkami vodičů a zámkem W4S' });
+    { label: 'Napájecí vidlice Deutsch DT06-6S', src: 'kabel', spec: 's pryžovými ucpávkami vodičů a zámkem W6S' });
   add('membrana', 'konektory', 'plasticBlack', cyl(6, 4, [xRr, yConn, 10], [-1, 0, 0]).fuse(cyl(8, 3, [xRr - 4, yConn, 10], [-1, 0, 0])), [-90, 40, 0],
     { label: 'Odvzdušňovací ventil', src: 'nakup', spec: 'ePTFE membrána M12×1,5 (Gore PolyVent), proti kondenzaci při změnách teploty' });
   add('vyvodka_antena', 'konektory', 'plasticBlack', cyl(6.5, 4, [xRr, yConn, 48], [-1, 0, 0]).fuse(cyl(7.5, 9, [xRr - 4, yConn, 48], [-1, 0, 0])), [-90, 40, 0],
@@ -299,63 +305,39 @@ export function buildUnitCad(P, role) {
     { label: 'Servisní USB-C se šroubovací krytkou', src: 'nakup', spec: 'IP67 panelový USB-C; jen pro servis, běžně se data posílají přes LTE' });
 
   // ============================== ELEKTRONIKA ==============================
-  const yP = yB0 + 12, pt = 1.6;          // nosná deska: spodní a horní plocha
+  // Nosná deska CB3: celá z tabulky board-v3-data.js (stejná jako samostatný náhled desky)
+  const yP = yB0 + 12, pt = BOARD.thickness;  // spodní plocha DPS na sloupcích dna
   const yPt = yP + pt;
-  const pcbL = BL - 2 * bt - 12, pcbW = BW - 2 * bt - 12;
-  let pcb = box(-pcbL / 2, yP, -pcbW / 2, pcbL / 2, yPt, pcbW / 2);
-  pcb = filletDir(pcb, 3, 'Y').cut(group([...pcbPost.map(([x, z]) => cyl(1.7, 3, [x, yP - 0.5, z])), ...lidScrews.map(([x, z]) => cyl(7.5, 3, [x, yP - 0.5, z]))]));
   const E = (k) => [0, 110 + 18 * k, 0];
-  add('nosna_deska', 'elektronika', 'pcb', pcb, E(0),
-    { label: 'Nosná deska (vlastní návrh)', src: 'pcb', spec: `${Math.round(pcbL)}×${Math.round(pcbW)} mm, 4 vrstvy: konektory CM5, přepínač Ethernet, GNSS, slot M.2, napájení 12/24 V` });
+  for (const bp of boardParts({ y0: yP, ex0: E(0), lift: 1.2 })) out.push({ ...bp, color: COLORS[bp.mat] || '#888888' });
   const m3 = capScrew(3, 6);
-  for (const [x, z] of pcbPost) add('sroub_M3_deska', 'spoj', 'steel', at(m3, x, yPt, z), E(3), { label: 'Šroub M3×6 (deska)', src: 'nakup', spec: 'ISO 7380 A2' });
-  // CM5 + tepelný most do víka
-  const cm = { x: 34, z: -22 };
-  const yCm = yPt + 1.5;
-  add('cm5_konektory', 'elektronika', 'chip', group([cbox(cm.x - 14, yPt + 0.75, cm.z, 6, 1.5, 34), cbox(cm.x + 14, yPt + 0.75, cm.z, 6, 1.5, 34)]), E(1),
-    { label: 'Konektory CM5 (2× 100 pin)', src: 'nakup', spec: 'Hirose DF40C-100DS-0.4V, výška 1,5 mm' });
-  add('cm5', 'elektronika', 'pcb', cbox(cm.x, yCm + 0.5, cm.z, 55, 1, 40), E(2),
-    { label: 'Raspberry Pi Compute Module 5', src: 'nakup', spec: 'CM5 4 GB RAM, 32 GB eMMC, bez Wi-Fi; Linux, zpracování skenů, ukládání a odesílání' });
-  add('cm5_soc', 'elektronika', 'chip', cbox(cm.x + 6, yCm + 1.7, cm.z, 15, 1.4, 15), E(2), { label: 'Procesor BCM2712', src: 'nakup', spec: 'součást CM5' });
-  add('cm5_ram', 'elektronika', 'chip', cbox(cm.x - 12, yCm + 1.6, cm.z - 6, 12, 1.2, 10), E(2), { label: 'Paměť LPDDR4X', src: 'nakup', spec: 'součást CM5' });
-  add('cm5_emmc', 'elektronika', 'chip', cbox(cm.x - 12, yCm + 1.6, cm.z + 9, 11.5, 1.2, 13), E(2), { label: 'eMMC', src: 'nakup', spec: 'součást CM5' });
+  for (const h of BOARD.holes) add('sroub_M3_deska', 'spoj', 'steel', at(m3, h.x, yPt, h.z), E(3), { label: 'Šroub M3×6 (deska)', src: 'nakup', spec: 'ISO 7380 A2, s podložkou' });
+  // tepelný most z procesoru CM5 do víka
+  const cm = partXZ(LINKS.cm5);
+  const ySoc = yPt + cm.z0 + 1 + 1.4;     // vršek procesoru
   const yLidIn = yTop - 5;
-  add('tepelny_most', 'elektronika', 'copper', cbox(cm.x + 6, (yCm + 2.4 + 1 + yLidIn - 1) / 2, cm.z, 20, yLidIn - 1 - (yCm + 3.4), 20), E(5),
+  const sx = cm.x + LINKS.soc.dx, sz = cm.z + LINKS.soc.dz;
+  add('tepelny_most', 'elektronika', 'copper', cbox(sx, (ySoc + 1 + yLidIn - 1) / 2, sz, 20, yLidIn - 1 - (ySoc + 1), 20), E(5),
     { label: 'Tepelný most CM5 → víko', src: 'obrabeni', spec: 'měď 20×20 mm, teplovodivé podložky 1 mm na obou koncích; teplo jde do žeber víka' });
-  add('tepelna_podlozka', 'elektronika', 'blue', group([cbox(cm.x + 6, yCm + 2.9, cm.z, 18, 1, 18), cbox(cm.x + 6, yLidIn - 0.5, cm.z, 18, 1, 18)]), E(4),
+  add('tepelna_podlozka', 'elektronika', 'blue', group([cbox(sx, ySoc + 0.5, sz, 18, 1, 18), cbox(sx, yLidIn - 0.5, sz, 18, 1, 18)]), E(4),
     { label: 'Teplovodivá podložka 1 mm', src: 'nakup', spec: '≥ 6 W/m·K, 20×20 mm' });
-  // GNSS s dead reckoningem (vlastní IMU) – pevně ke skříni, osy podle vozu
-  const gn = { x: -72, z: 50 };
-  add('gnss_modul', 'elektronika', 'shield', cbox(gn.x, yPt + 1.2, gn.z, 22, 2.4, 17), E(1),
-    { label: 'GNSS u-blox ZED-F9R', src: 'nakup', spec: 'L1/L5, RTK, dead reckoning s IMU: drží polohu i v úzkých ulicích a pod stromy; volitelně rychlost z vozu po CAN' });
-  add('gnss_ufl', 'elektronika', 'brass', cyl(1.3, 1.2, [gn.x - 8, yPt + 2.4, gn.z - 11]), E(1), { label: 'Konektor U.FL', src: 'nakup', spec: 'součást desky' });
-  // modem M.2 + SIM
-  const md = { x: -40, z: -48 };
-  add('m2_slot', 'elektronika', 'chip', cbox(md.x - 21 - 3, yPt + 2, md.z, 6, 4, 22), E(1), { label: 'Slot M.2 Key B', src: 'nakup', spec: 'TE 2199230-4, výška 4,2 mm' });
-  add('modem', 'elektronika', 'pcb', cbox(md.x, yPt + 3.2, md.z, 42, 0.8, 30), E(2),
-    { label: 'LTE modem M.2', src: 'nakup', spec: 'Quectel EM05-G (LTE Cat 4, M.2 3042); vyměnitelný, 1 šroub' });
-  add('modem_stineni', 'elektronika', 'shield', cbox(md.x + 2, yPt + 4.3, md.z, 30, 1.4, 24), E(2), { label: 'Stínění modemu', src: 'nakup', spec: 'součást modemu' });
-  add('sim', 'elektronika', 'shield', cbox(-BL / 2 + 30, yPt + 0.8, md.z - 16, 15, 1.6, 13), E(1), { label: 'Držák nano-SIM', src: 'nakup', spec: 'push-push; SIM přístupná po sejmutí víka' });
-  // přepínač Ethernet + oddělovací transformátory u zásuvek M12
-  add('ethernet_switch', 'elektronika', 'chip', cbox(48, yPt + 0.5, 46, 10, 1, 10), E(1),
-    { label: 'Přepínač Ethernet 5 portů', src: 'nakup', spec: 'Microchip KSZ8795 (nebo LAN9375): 2 skenery + 3D lidar + CM5' });
-  for (const z of frontZ) {
-    add('ethernet_trafo', 'elektronika', 'ferrite', cbox(xF - 34, yPt + 3, z, 12, 6, 10), E(1), { label: 'Oddělovací transformátor Ethernet', src: 'nakup', spec: 'SMD 10/100, 1500 V' });
-    add('vodice_m12', 'kabely', 'plasticBlack', tube([[xF - bt - 12, yConn, z], [xF - 26, yConn - 4, z], [xF - 26, yPt + 4, z]], 2.2), E(2), { label: 'Propojka M12 → deska', src: 'kabel', spec: 'součást panelové zásuvky, JST GH 8p' });
+  // propojky od stěn skříně ke konektorům desky
+  LINKS.ports.forEach((ref, i) => {
+    const j = partXZ(ref), z = frontZ[i];
+    add('vodice_m12', 'kabely', 'plasticBlack', tube([[xF - bt - 12, yConn, z], [xF - bt - 14, yConn - 4, z], [j.x + j.w / 2 + 2, yPt + 3, j.z]], 2.2), E(2),
+      { label: 'Propojka M12 → deska', src: 'kabel', spec: 'součást panelové zásuvky, zakončení JST GH 8p' });
+  });
+  {
+    const j = partXZ(LINKS.power);
+    add('kabel_napajeni_vnitrni', 'kabely', 'red', tube([[xRr + bt + 2, yConn, -40], [xRr + 10, yConn - 4, -40], [j.x, yPt + j.h + 2, j.z]], 1.8), E(2),
+      { label: 'Propojka napájení → deska', src: 'kabel', spec: '6× 0,75 mm² z vidlice Deutsch, zakončení Micro-Fit 3.0' });
+    const u = partXZ(LINKS.usb);
+    add('kabel_usb_vnitrni', 'kabely', 'plasticBlack', tube([[xRr + bt + 2, yConn, -74], [xRr + 10, yConn - 6, -70], [u.x - u.w / 2 - 1, yPt + 2, u.z]], 1.4), E(2),
+      { label: 'Propojka servisního USB-C → deska', src: 'kabel', spec: 'součást panelového USB-C, zakončení JST GH 4p' });
+    const g = partXZ(LINKS.gnss);
+    add('koax_gnss_vnitrni', 'kabely', 'plasticBlack', tube([[xRr + bt + 2, yConn, 48], [xRr + 12, yConn - 6, 52], [g.x, yPt + 3, g.z]], 1.0), E(2),
+      { label: 'Koax GNSS (vývodka → U.FL)', src: 'kabel', spec: 'součást antény, zakončení U.FL' });
   }
-  // napájení: ochrana vstupu, měniče, superkondenzátory pro řádné vypnutí
-  const pw = { x: -BL / 2 + 46, z: -14 };
-  add('tvs', 'elektronika', 'chip', cbox(pw.x - 22, yPt + 1.2, -40, 7, 2.4, 6), E(1), { label: 'Ochrana vstupu (TVS)', src: 'nakup', spec: 'SMCJ33A / SM8S (load dump 24 V), za ní ideální dioda LM74800 proti přepólování' });
-  add('pojistka', 'elektronika', 'yellow', cbox(pw.x - 8, yPt + 2, -40, 10, 4, 5), E(1), { label: 'Pojistka 3 A', src: 'nakup', spec: 'SMD 2410, pomalá' });
-  for (const [i, dz] of [[0, -6], [1, 14]]) {
-    add('civka_menice', 'elektronika', 'ferrite', cbox(pw.x + 18, yPt + 4, pw.z + dz, 12, 8, 12), E(1), { label: i ? 'Cívka měniče 5 V' : 'Cívka měniče 12 V', src: 'nakup', spec: i ? 'buck 5 V / 3 A pro CM5' : 'buck-boost 12 V / 2 A pro senzory (funguje z 9–32 V)' });
-  }
-  for (const dz of [-20, -10]) add('kondenzator', 'elektronika', 'nickel', cyl(4, 10, [pw.x + 2, yPt, pw.z + dz]), E(1), { label: 'Elektrolytický kondenzátor 100 µF / 50 V', src: 'nakup', spec: '105 °C, nízké ESR' });
-  for (const dz of [24, 44]) {
-    add('superkondenzator', 'elektronika', 'blue', cyl(6.3, 26, [pw.x - 20, yPt + 6.5, pw.z + dz], X), E(2),
-      { label: 'Superkondenzátor 10 F', src: 'nakup', spec: '2× v sérii, ~10 s záloha: po vypnutí zapalování dopíše data a vypne se' });
-  }
-  add('kabel_napajeni_vnitrni', 'kabely', 'red', tube([[xRr + bt + 2, yConn, -40], [xRr + 16, yConn - 4, -40], [xRr + 22, yPt + 3, -40]], 1.8), E(2), { label: 'Propojka napájení → deska', src: 'kabel', spec: '4× 0,75 mm², součást zásuvky' });
 
   // ============================== KABELY VEN ==============================
   const xPlug = xF + 26;

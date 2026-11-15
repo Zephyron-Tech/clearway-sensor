@@ -13,6 +13,7 @@ npm run dev      # http://localhost:5174
 - `src/variants/v1/params.json`: rozměry stávajícího zařízení (archiv, tag `v1-archiv`, v UI jen pro čtení).
 - `src/variants/v2/params.json` + `src/cad/parts-v2.js`: návrh v2 (koncept), popsaný v `docs/navrh-v2.md`.
 - `src/variants/v3/params.json` + `src/cad/parts-v3.js`: experiment v3, střešní skener, popsaný v `docs/navrh-v3.md`.
+- `src/cad/board-v3-data.js` + `src/cad/board-v3.js`: nosná deska CB3 pro v3 (tabulka součástek a 3D model). `node scripts/export-board.mjs` z ní vygeneruje obrys DXF, osazení a kusovník do `docs/v3-deska/`; popis v `docs/v3-deska.md`.
 - `src/scan.js`: ulice s překážkami a simulace průjezdu v3 (paprsky přes BVH, volná šířka, podjezdná výška).
 - `src/truck.js`: obecný popelářský vůz pro scénu „Popelář“.
 - Každý parametr má `v` (mm / °) a `stav`:
@@ -38,6 +39,7 @@ npm run dev      # http://localhost:5174
   Zobrazit vše (Shift+H), Vrátit posunuté díly (Shift+R), Nápověda (?).
 - H nebo Delete skryje vybraný díl. Skrytí, posuny a měření se neukládají, jsou jen pro prohlížení.
 - Pohledy 1–5 (Izo, Shora, Bok, Čelo, Zdola), F přiblíží výběr, O přepne rovnoběžné promítání.
+- Pohyb: WASD nebo šipky, Q/E dolů/nahoru, Shift rychleji, Alt pomaleji. L (tlačítko Let) přepne rozhlížení myší z místa, kolečko pak mění rychlost.
 - Nahoře: scéna (stůl / auto / popelář), verze (v1 archiv / v2 koncept / v3 střešní skener), jednotka (obě / master / slave, u v3 není), porovnání verzí.
 - Spodní lišta: paprsky, popisky, kóty, hrany, rentgen, kabely, porovnat, rozložený pohled.
 - Záložka Díly: strom dílů s hledáním a okem u každého dílu, pod ním kusovník složený z modelu (CSV).
