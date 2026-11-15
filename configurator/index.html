@@ -173,7 +173,9 @@
       <button data-view="end" title="Od čela A (4)">Čelo</button>
       <button data-view="bottom" title="Zespodu (5)">Zdola</button>
       <button data-toggle="ortho" aria-pressed="false" title="Rovnoběžné promítání (O)">Orto</button>
+      <button id="flyBtn" aria-pressed="false" title="Let: rozhlížení myší z místa, pohyb WASD (L)">Let</button>
     </div>
+    <div id="flyHud" hidden><b>Let</b> WASD / šipky pohyb · Q E dolů nahoru · tažení myší rozhlížení · Shift rychle · Alt pomalu · kolečko rychlost · Esc konec</div>
 
     <div id="partCard" class="card" aria-live="polite"></div>
 
@@ -195,6 +197,13 @@
               <dt>Kolečko</dt><dd>přiblížení</dd>
               <dt>Klik</dt><dd>výběr dílu</dd>
               <dt>Dvojklik</dt><dd>přiblížit díl</dd>
+            </dl>
+            <h4>Pohyb</h4>
+            <dl>
+              <dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / šipky</dt><dd>let dopředu, dozadu, do stran</dd>
+              <dt><kbd>Q</kbd> / <kbd>E</kbd></dt><dd>dolů / nahoru</dd>
+              <dt><kbd>Shift</kbd> / <kbd>Alt</kbd></dt><dd>rychleji / pomaleji</dd>
+              <dt><kbd>L</kbd></dt><dd>Let: myš otáčí pohledem z místa, kolečko mění rychlost</dd>
             </dl>
             <h4>Pohledy</h4>
             <dl>

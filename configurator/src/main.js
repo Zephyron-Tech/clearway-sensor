@@ -210,7 +210,7 @@ function applyEnvironment() {
   camera.far = city ? 3e6 : 80000;
   camera.updateProjectionMatrix();
   // na stole lze model obejít i zespodu (základna, víčko, nohy), na autě ne pod silnici
-  controls.maxPolarAngle = auto ? Math.PI * 0.495 : Math.PI * 0.985;
+  if (!fly.mode) controls.maxPolarAngle = auto ? Math.PI * 0.495 : Math.PI * 0.985;
   const credit = $('#credit');
   if (credit) {
     credit.hidden = !auto;
@@ -898,6 +898,7 @@ function updateSection() {
 let tween = null;
 
 function frame(dirKey = 'iso', target = null, animate = false) {
+  if (fly.mode) setFlyMode(false);
   const box = target || contentBox();
   if (box.isEmpty()) return;
   const size = box.getSize(new THREE.Vector3());
@@ -931,9 +932,74 @@ let needsRender = true;
 let last = performance.now();
 const requestRender = () => { needsRender = true; };
 controls.addEventListener('change', requestRender);
+// ---------- volný pohyb kamery (WASD / šipky, Q/E dolů/nahoru, režim Let = rozhlížení z místa) ----------
+const fly = { keys: new Set(), mode: false, boost: 1 };
+const FLY_KEYS = { w: 'f', arrowup: 'f', s: 'b', arrowdown: 'b', a: 'l', arrowleft: 'l', d: 'r', arrowright: 'r', e: 'u', ' ': 'u', q: 'd', c: 'd' };
+// základní rychlost podle scény (mm/s): na stole pomalu, ve městě rychle
+const flySpeed = () => (onVehicle() ? 6000 : 700) * fly.boost;
+const _fwd = new THREE.Vector3(), _right = new THREE.Vector3(), _mv = new THREE.Vector3();
+function flyTick(dt, shift, alt) {
+  if (!fly.keys.size) return false;
+  camera.getWorldDirection(_fwd);
+  _right.crossVectors(_fwd, camera.up).normalize();
+  _mv.set(0, 0, 0);
+  const k = fly.keys;
+  if (k.has('f')) _mv.add(_fwd);
+  if (k.has('b')) _mv.sub(_fwd);
+  if (k.has('r')) _mv.add(_right);
+  if (k.has('l')) _mv.sub(_right);
+  if (k.has('u')) _mv.y += 1;
+  if (k.has('d')) _mv.y -= 1;
+  if (_mv.lengthSq() === 0) return false;
+  _mv.normalize().multiplyScalar(flySpeed() * (shift ? 4 : alt ? 0.25 : 1) * dt);
+  camera.position.add(_mv);
+  controls.target.add(_mv);
+  tween = null;
+  return true;
+}
+// Let: cíl orbitu těsně před kamerou, takže tažení myší = rozhlížení z místa
+function setFlyMode(on = !fly.mode) {
+  fly.mode = on;
+  const dir = camera.getWorldDirection(new THREE.Vector3());
+  const dist = on ? 1 : (onVehicle() ? 8000 : 1200);
+  controls.target.copy(camera.position).addScaledVector(dir, dist);
+  controls.minDistance = on ? 0.5 : 0;
+  controls.maxDistance = on ? 2 : Infinity;
+  controls.enableZoom = !on;
+  controls.enablePan = !on;
+  controls.rotateSpeed = on ? 0.45 : 1;
+  controls.maxPolarAngle = on ? Math.PI * 0.995 : (onVehicle() ? Math.PI * 0.495 : Math.PI * 0.985);
+  controls.update();
+  $('#flyBtn')?.setAttribute('aria-pressed', String(on));
+  $('#flyHud').hidden = !on;
+  requestRender();
+}
+let flyShift = false, flyAlt = false;
+window.addEventListener('keydown', (e) => {
+  if (e.target.closest?.('input, textarea, select') || e.metaKey || e.ctrlKey) return;
+  flyShift = e.shiftKey; flyAlt = e.altKey;
+  const m = FLY_KEYS[e.key.toLowerCase()];
+  if (!m || lb.classList.contains('on')) return;
+  fly.keys.add(m);
+  e.preventDefault();
+});
+window.addEventListener('keyup', (e) => {
+  flyShift = e.shiftKey; flyAlt = e.altKey;
+  const m = FLY_KEYS[e.key.toLowerCase()];
+  if (m) fly.keys.delete(m);
+});
+window.addEventListener('blur', () => fly.keys.clear());
+// v režimu Let kolečko mění rychlost
+renderer.domElement.addEventListener('wheel', (e) => {
+  if (!fly.mode) return;
+  e.preventDefault();
+  fly.boost = THREE.MathUtils.clamp(fly.boost * (e.deltaY < 0 ? 1.25 : 0.8), 0.1, 20);
+  toast(`Rychlost letu ${fmt(flySpeed() / 1000)} m/s`);
+}, { passive: false });
+
 renderer.setAnimationLoop((now) => {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  const moving = stepTween(dt) | driveTick(now);
+  const moving = stepTween(dt) | driveTick(now) | flyTick(dt, flyShift, flyAlt);
   const damp = controls.update();
   if (needsRender || moving || damp) {
     renderer.render(scene, camera);
@@ -1642,7 +1708,8 @@ $('#stepPrinted').addEventListener('click', async (e) => {
 });
 $('#stlSelected').addEventListener('click', () => { if (selected) exportPartStl(selected); else toast('Nejdřív vyber díl v modelu'); });
 $('#explode').addEventListener('input', (e) => { state.explode = +e.target.value; saveUi(); rebuild(); });
-$$('[data-view]').forEach((b) => b.addEventListener('click', () => frame(b.dataset.view, null, true)));
+$$('[data-view]').forEach((b) => b.addEventListener('click', () => { if (fly.mode) setFlyMode(false); frame(b.dataset.view, null, true); }));
+$('#flyBtn').addEventListener('click', () => setFlyMode());
 $$('[data-tab]').forEach((b) => b.addEventListener('click', () => { state.tab = b.dataset.tab; saveUi(); syncControls(); }));
 $('#paramSearch').addEventListener('input', renderParams);
 
@@ -1702,6 +1769,7 @@ window.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (e.key === 'Escape') {
     if (lb.classList.contains('on')) return closeLightbox();
+    if (fly.mode) return setFlyMode(false);
     if (!$('#help').hidden) return toggleHelp(false);
     if (ui3d.tool !== 'select') return setTool('select');
     if (selected) select(null);
@@ -1722,6 +1790,7 @@ window.addEventListener('keydown', (e) => {
   if (k === 'm') return setTool(ui3d.tool === 'measure' ? 'select' : 'measure');
   if (k === 'x') return toggleSection();
   if (k === 'p' && scanView) return drive.on ? driveStop() : driveStart();
+  if (k === 'l') return setFlyMode();
   if (k === 'o') { state.ortho = !state.ortho; saveUi(); syncControls(); return applyProjection(true); }
   if (k === 'h' && e.shiftKey) return showAllParts();
   if ((k === 'h' || e.key === 'Delete' || e.key === 'Backspace') && selected) { setKeysHidden([selected.userData.key], true); return renderPartsTab(); }

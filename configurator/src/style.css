@@ -307,3 +307,10 @@ kbd { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; b
 #driveBtn[hidden] { display: none; }
 #driveBtn { background: #16a34a; color: #fff; font-weight: 650; }
 #driveBtn[aria-pressed="true"] { background: #b91c1c; }
+
+/* let kamery */
+#flyHud { position: absolute; left: 50%; top: 62px; transform: translateX(-50%); background: rgba(18, 20, 24, 0.82); color: #fff; font-size: 12px; padding: 6px 12px; border-radius: 999px; pointer-events: none; white-space: nowrap; }
+#flyHud b { color: #7dd3fc; margin-right: 6px; }
+#flyHud[hidden] { display: none; }
+#flyBtn[aria-pressed="true"] { background: #0b6bcb; color: #fff; }
+@media (max-width: 860px) { #flyHud { white-space: normal; width: calc(100% - 32px); text-align: center; border-radius: 12px; } }
