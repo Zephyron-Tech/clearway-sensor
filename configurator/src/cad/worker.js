@@ -67,7 +67,7 @@ function meshParts(parts, fine) {
       cat: p.cat,
       mat: p.mat,
       color: p.color,
-      ex: p.ex, label: p.label, spec: p.spec, src: p.src,
+      ex: p.ex, label: p.label, spec: p.spec, src: p.src, uvBox: p.uvBox,
       vertices: new Float32Array(m.vertices),
       normals: new Float32Array(m.normals),
       triangles: new Uint32Array(m.triangles),

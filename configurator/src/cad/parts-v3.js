@@ -28,6 +28,7 @@ const COLORS = {
   plasticBlack: '#232427', silicone: '#cf4a32', brass: '#c9a35a', blue: '#1f5fd1', green: '#2f9e55', ledRing: '#33d17a',
   yellow: '#f3d227', jst: '#f0eee4', red: '#d23a2e', ferrite: '#3a3b3e', nickel: '#c3c6ca',
   ceramic: '#b98a5e', ledGreen: '#33d17a', led: '#ff4b3a',
+  cm5Pcb: '#1e3a5f', m2Pcb: '#3a2f55', pcbTop: '#2c6e3e', pcbBottom: '#2c6e3e',
 };
 
 const X = [1, 0, 0], Y = [0, 1, 0], Z = [0, 0, 1];
@@ -91,7 +92,8 @@ export function buildUnitCad(P, role) {
   const out = [];
   // v3 je jedna jednotka; role „slave“ = samostatná nosná deska (náhled vedle sestavy, STEP pro návrháře DPS)
   if (role !== 'master') {
-    for (const bp of boardParts({ y0: 0, ex0: [0, 0, 0], lift: 1 })) out.push({ ...bp, color: COLORS[bp.mat] || '#888888' });
+    // deska leží na stole na součástkách spodní strany
+    for (const bp of boardParts({ y0: BOARD.bottomHeight, ex0: [0, 0, 0], lift: 1 })) out.push({ ...bp, color: COLORS[bp.mat] || '#888888' });
     return { parts: out, total: BOARD.length };
   }
   const add = (name, cat, mat, shape, ex = [0, 0, 0], meta = {}) => {

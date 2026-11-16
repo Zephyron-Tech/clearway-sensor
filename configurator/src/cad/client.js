@@ -98,7 +98,19 @@ const DEF = {
   powder: () => addGrain(phys({ color: '#d7dadd', roughness: 0.55, clearcoat: 0.25, clearcoatRoughness: 0.5 }), { amount: 0.025 }),
   copper: () => phys({ color: '#c26e3a', metalness: 1, roughness: 0.3 }),
   ferrite: () => phys({ color: '#3a3b3e', roughness: 0.75 }),
+  // moduly na desce: jiná barva než nosná deska, aby nesplývaly
+  cm5Pcb: () => phys({ color: '#1e3a5f', roughness: 0.38, clearcoat: 0.6, clearcoatRoughness: 0.25 }),
+  m2Pcb: () => phys({ color: '#3a2f55', roughness: 0.38, clearcoat: 0.6, clearcoatRoughness: 0.25 }),
+  // měď, plošky a potisk z KiCadu (scripts/kicad/export-texture.py)
+  pcbTop: () => phys({ map: boardTex('cb3-top.jpg'), roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.25 }),
+  pcbBottom: () => phys({ map: boardTex('cb3-bottom.jpg'), roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.25 }),
 };
+function boardTex(file) {
+  const t = new THREE.TextureLoader().load(`${import.meta.env.BASE_URL}models/${file}`);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
+}
 
 // ---------- řez ----------
 // Rovina řezu sdílená všemi CAD materiály. Odvrácené plochy se při řezu kreslí plnou barvou dílu,
@@ -188,6 +200,12 @@ export function cadToGroup(unitResult, { edges = true, role } = {}) {
     geo.setAttribute('position', new THREE.BufferAttribute(p.vertices, 3));
     geo.setAttribute('normal', new THREE.BufferAttribute(p.normals, 3));
     geo.setIndex(new THREE.BufferAttribute(p.triangles, 1));
+    if (p.uvBox) {
+      // textura promítnutá shora: u podél x, v podél z (obrázek z KiCadu má z dolů)
+      const [x0, z0, x1, z1] = p.uvBox, v = p.vertices, uv = new Float32Array(v.length / 3 * 2);
+      for (let i = 0, j = 0; i < v.length; i += 3, j += 2) { uv[j] = (v[i] - x0) / (x1 - x0); uv[j + 1] = 1 - (v[i + 2] - z0) / (z1 - z0); }
+      geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    }
     geo.computeBoundingBox();
     const mesh = new THREE.Mesh(geo, material(p.mat, p.color));
     mesh.name = p.name;

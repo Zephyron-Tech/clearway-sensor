@@ -38,6 +38,20 @@ export function boardParts({ y0 = 0, ex0 = [0, 0, 0], lift = 1 } = {}) {
     label: `DPS ${BOARD.name} rev. ${BOARD.rev}`, src: 'pcb',
     spec: `${L}×${W}×${t} mm, ${BOARD.layers} vrstvy, FR-4 Tg 170, ENIG, zelená maska, bílý potisk; výrobní data v hardware/cb3/vyroba`,
   });
+  // měď, plošky a potisk z KiCadu: tenká vrstva nahoře a dole s texturou (scripts/kicad/export-texture.py)
+  const skin = (yA) => {
+    let s = box(-L / 2, yA, -W / 2, L / 2, yA + 0.02, W / 2);
+    s = tryFillet(s, BOARD.corner, (e) => e.inDirection('Y'));
+    return s.cut(group([
+      ...BOARD.holes.map(h => cyl(h.d / 2, 1, [h.x, yA - 0.5, h.z])),
+      ...BOARD.cutouts.map(c => cyl(c.r, 1, [c.x, yA - 0.5, c.z])),
+    ]));
+  };
+  const uvBox = [-L / 2, -W / 2, L / 2, W / 2];
+  add('deska_med_vrch', 'deska_vypocet', 'pcbTop', skin(yT), ex0,
+    { label: 'DPS · měď, plošky a potisk nahoře', src: 'pcb', spec: 'vrstvy F.Cu, F.Mask, F.Silkscreen z hardware/cb3', uvBox });
+  add('deska_med_spod', 'deska_vypocet', 'pcbBottom', skin(y0 - 0.02), ex0,
+    { label: 'DPS · měď, plošky a potisk dole', src: 'pcb', spec: 'vrstvy B.Cu, B.Mask, B.Silkscreen z hardware/cb3', uvBox });
   // prokovené plošky kolem montážních otvorů (zem)
   add('deska_plosky_otvoru', 'deska_vypocet', 'brass',
     group(BOARD.holes.map(h => cyl(h.pad / 2, 0.05, [h.x, yT, h.z]).cut(cyl(h.d / 2, 1, [h.x, yT - 0.5, h.z])))), ex0,

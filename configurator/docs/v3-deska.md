@@ -14,7 +14,7 @@ Přehled vygenerovaný z modelu (`node scripts/export-board.mjs`):
 | [osazeni.csv](v3-deska/osazeni.csv) | 210 součástek: designátor, typ, souřadnice středu, strana, otočení, rozměr těla |
 | [kusovnik.csv](v3-deska/kusovnik.csv) | kusovník podle typu a hodnoty |
 
-Zdrojem pravdy je projekt KiCad. Po změně desky v KiCadu obnoví 3D model příkaz `python3 scripts/kicad/export-3d.py` (Python z KiCadu) a přehledové soubory `node scripts/export-board.mjs`. Vzhled součástek (tvar, výška, popisky) je v [src/cad/board-v3-data.js](../src/cad/board-v3-data.js).
+Zdrojem pravdy je projekt KiCad. Po změně desky v KiCadu obnoví 3D model příkazy `scripts/kicad/export-3d.py` (Python z KiCadu, polohy součástek) a `python3 scripts/kicad/export-texture.py` (měď a potisk) a přehledové soubory `node scripts/export-board.mjs`. Vzhled součástek (tvar, výška, popisky) je v [src/cad/board-v3-data.js](../src/cad/board-v3-data.js).
 
 ## Co deska dělá
 

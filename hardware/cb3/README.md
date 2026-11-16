@@ -58,6 +58,7 @@ sh configurator/scripts/kicad/fab.sh
 5. `gen-pcb-full.py pour`: rozlití zemí a zón, `link-pcb.py`: svázání pouzder se symboly schématu (funguje F8 Aktualizovat DPS ze schématu).
 6. `fab.sh`: výrobní data.
 7. `export-3d.py`: polohy a rozměry součástek do 3D modelu v konfigurátoru (`src/cad/board-v3-pcb.js`).
+8. `export-texture.py`: měď, plošky a potisk obou stran jako textura desky v konfigurátoru (`public/models/cb3-top.jpg`, `cb3-bottom.jpg`).
 
 **Od teď je zdrojem pravdy projekt KiCad.** Úpravy dělat v KiCadu ručně; generátory desku přepíší (rozmístění a vedení by se ztratilo).
 

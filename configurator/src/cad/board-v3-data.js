@@ -60,7 +60,7 @@ const STYLE = [
   [/^SW_Push/, { h: 1.9, shape: 'button' }],
   [/^BatteryHolder/, { h: 5.5, shape: 'coin', mat: 'nickel' }],
   [/^ublox_ZED/, { h: 2.4, mat: 'shield' }],
-  [/^Raspberry-Pi-5-Compute-Module/, { h: 4.8, shape: 'cm5', mat: 'pcb', z0: 1.5 }],
+  [/^Raspberry-Pi-5-Compute-Module/, { h: 4.8, shape: 'cm5', mat: 'cm5Pcb', z0: 1.5 }],
   [/^Transformer_Ethernet/, { h: 4.5, mat: 'chip' }],
   [/^TestPoint/, { h: 0.05, shape: 'tp', mat: 'brass' }],
 ];
@@ -113,7 +113,7 @@ export const PARTS = [
   // karta modemu se zasouvá do J8 (není součástí osazení desky), šroub v otvoru 2242
   {
     ref: 'M3', block: 'radio', label: 'LTE modem (karta M.2 3042)', mpn: 'Quectel EM05-G (LTE Cat 4), dodat zvlášť',
-    x: j8.x + j8.w / 2 - 3 + 21, z: j8.z, w: 42, d: 30, h: 2.4, rot: 0, side: 'T', shape: 'm2', mat: 'pcb', z0: 2.6, loose: true,
+    x: j8.x + j8.w / 2 - 3 + 21, z: j8.z, w: 42, d: 30, h: 2.4, rot: 0, side: 'T', shape: 'm2', mat: 'm2Pcb', z0: 2.6, loose: true,
   },
 ];
 
@@ -123,3 +123,5 @@ export const LINKS = {
 };
 
 export const part = (ref) => PARTS.find(p => p.ref === ref);
+// nejvyšší součástka na spodní straně (deska položená na stole na ní leží)
+BOARD.bottomHeight = Math.max(0, ...PARTS.filter((p) => p.side === 'B').map((p) => p.h));
