@@ -2,7 +2,7 @@
   (version 20231120)
   (generator "clearway")
   (generator_version "8.0")
-  (uuid "b50de4ed-e84e-4678-bba5-e12c3d9f8a3b")
+  (uuid "3232e0e8-ab21-408c-bcf3-279cce78c95e")
   (paper "A3")
   (title_block
     (title "ClearWay CB3 – přehled")
@@ -19,7 +19,7 @@
       )
       (justify left top)
     )
-    (uuid "cbc9998a-04ec-47d4-9cfe-0b71836f0315")
+    (uuid "77dd0fde-fc7a-4a87-a854-dd18be438cc5")
   )
   (sheet
     (at 30 70)
@@ -32,7 +32,7 @@
     (fill
       (color 0 0 0 0.0000)
     )
-    (uuid "9e5505bc-89a9-48b2-9d23-de2da46a4170")
+    (uuid "08bf713b-6e37-4f68-9548-492f2f96353c")
     (property "Sheetname" "Napájení 9–32 V"
       (at 30 69.3 0)
       (effects
@@ -53,7 +53,7 @@
     )
     (instances
       (project "cb3"
-        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b"
+        (path "/3232e0e8-ab21-408c-bcf3-279cce78c95e"
           (page "2")
         )
       )
@@ -70,7 +70,7 @@
     (fill
       (color 0 0 0 0.0000)
     )
-    (uuid "17d417e3-3d08-457f-ab74-c261180c4910")
+    (uuid "6c0a0701-2244-49ab-b509-243882eafc3d")
     (property "Sheetname" "Počítač CM5"
       (at 150 69.3 0)
       (effects
@@ -91,7 +91,7 @@
     )
     (instances
       (project "cb3"
-        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b"
+        (path "/3232e0e8-ab21-408c-bcf3-279cce78c95e"
           (page "3")
         )
       )
@@ -108,7 +108,7 @@
     (fill
       (color 0 0 0 0.0000)
     )
-    (uuid "8af1c67d-b672-432a-afbc-931046730646")
+    (uuid "af793d04-84bc-49c2-a114-7f991036c3c7")
     (property "Sheetname" "Ethernet a porty senzorů"
       (at 270 69.3 0)
       (effects
@@ -129,7 +129,7 @@
     )
     (instances
       (project "cb3"
-        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b"
+        (path "/3232e0e8-ab21-408c-bcf3-279cce78c95e"
           (page "4")
         )
       )
@@ -146,7 +146,7 @@
     (fill
       (color 0 0 0 0.0000)
     )
-    (uuid "54875a85-6acb-4e36-b614-f39d3f9e5131")
+    (uuid "d94fef52-bfe0-4728-9789-f202550dc395")
     (property "Sheetname" "GNSS, LTE, CAN"
       (at 30 139.3 0)
       (effects
@@ -167,7 +167,7 @@
     )
     (instances
       (project "cb3"
-        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b"
+        (path "/3232e0e8-ab21-408c-bcf3-279cce78c95e"
           (page "5")
         )
       )
@@ -184,7 +184,7 @@
     (fill
       (color 0 0 0 0.0000)
     )
-    (uuid "de55d6c5-d832-45b4-b82e-92f4d3e8311d")
+    (uuid "53e1771b-8b65-4453-acf4-404f13c41dc9")
     (property "Sheetname" "Obsluha a ladění"
       (at 150 139.3 0)
       (effects
@@ -205,7 +205,7 @@
     )
     (instances
       (project "cb3"
-        (path "/b50de4ed-e84e-4678-bba5-e12c3d9f8a3b"
+        (path "/3232e0e8-ab21-408c-bcf3-279cce78c95e"
           (page "6")
         )
       )

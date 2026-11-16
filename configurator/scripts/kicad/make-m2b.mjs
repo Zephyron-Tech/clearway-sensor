@@ -26,5 +26,9 @@ for (let n = 59; n <= 66; n++) {
   out.push(p);
 }
 for (const n of out) if (Array.isArray(n) && n[0] === 'property' && unq(n[1]) === 'Value') n[2] = str('M.2_Socket_KeyB_TopMount_H4.2');
+// rozteč 0,5 mm: maska mezi ploškami se nedělá (společné okno), stejně jako na desce
+const attr = out.findIndex((n) => Array.isArray(n) && n[0] === 'attr');
+if (attr >= 0) { if (!out[attr].includes('allow_soldermask_bridges')) out[attr].push('allow_soldermask_bridges'); }
+else out.splice(out.findIndex((n) => Array.isArray(n) && n[0] === 'pad'), 0, ['attr', 'allow_soldermask_bridges']);
 writeFileSync(dst, write(out) + '\n');
 console.log('ploška', out.filter(isPad).length);

@@ -1,7 +1,7 @@
 {
  "J1": {
   "fp": "Connector_Molex:Molex_Micro-Fit_3.0_43045-0612_2x03_P3.00mm_Vertical",
-  "value": "NAPÁJENÍ",
+  "value": "POWER",
   "mpn": "Molex 43045-0612",
   "sheet": "napajeni",
   "anchor": null,
@@ -51,15 +51,15 @@
    "6": "VIN_F"
   }
  },
- "C1": {
-  "fp": "Capacitor_SMD:CP_Elec_10x10.5",
-  "value": "100u 63V",
-  "mpn": "Panasonic EEH-ZK1J101P (hybridní polymer)",
+ "C91": {
+  "fp": "Capacitor_SMD:C_0603_1608Metric",
+  "value": "100n",
+  "mpn": "kondenzátor 100 nF 25 V X7R 0603 (VCAP–ANODE)",
   "sheet": "napajeni",
   "anchor": "U1",
   "pads": {
-   "1": "VIN_P",
-   "2": "GND"
+   "1": "IDEAL_VCAP",
+   "2": "VIN_F"
   }
  },
  "Q1": {
@@ -74,6 +74,17 @@
    "3": "VIN_F",
    "4": "IDEAL_G",
    "5": "VIN_P"
+  }
+ },
+ "C1": {
+  "fp": "Capacitor_SMD:CP_Elec_10x10.5",
+  "value": "100u 63V",
+  "mpn": "Panasonic EEH-ZK1J101P (hybridní polymer)",
+  "sheet": "napajeni",
+  "anchor": "U1",
+  "pads": {
+   "1": "VIN_P",
+   "2": "GND"
   }
  },
  "C2": {
@@ -2604,7 +2615,7 @@
  },
  "LED1": {
   "fp": "LED_SMD:LED_0603_1608Metric",
-  "value": "zelená",
+  "value": "GREEN",
   "mpn": "Würth 150060VS75000",
   "sheet": "obsluha",
   "anchor": "J11",
@@ -2626,7 +2637,7 @@
  },
  "LED2": {
   "fp": "LED_SMD:LED_0603_1608Metric",
-  "value": "žlutá",
+  "value": "YELLOW",
   "mpn": "Würth 150060YS75000",
   "sheet": "obsluha",
   "anchor": "J11",
@@ -2648,7 +2659,7 @@
  },
  "LED3": {
   "fp": "LED_SMD:LED_0603_1608Metric",
-  "value": "červená",
+  "value": "RED",
   "mpn": "Würth 150060RS75000",
   "sheet": "obsluha",
   "anchor": "J11",

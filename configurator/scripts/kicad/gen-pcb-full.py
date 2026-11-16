@@ -20,7 +20,8 @@ OUT = os.path.join(ROOT, 'hardware', 'cb3')
 KI = os.path.expanduser('~/Applications/KiCad/KiCad.app/Contents/SharedSupport')
 FP_DIR = os.path.join(KI, 'footprints')
 DXF = os.path.join(ROOT, 'configurator', 'docs', 'v3-deska', 'obrys.dxf')
-PCB = os.path.join(OUT, 'cb3.kicad_pcb')
+PCB = os.environ.get('CB3_PCB', os.path.join(OUT, 'cb3.kicad_pcb'))
+GROW = float(os.environ.get('CB3_GROW', '0.55'))
 L, W = 242.0, 162.0
 OX, OY = 100.0, 60.0
 mm = pcbnew.FromMM
@@ -103,7 +104,7 @@ def add_zone(board, net, layer, poly, priority=0, clearance=0.3, min_w=0.25, the
     z.SetAssignedPriority(priority)
     z.SetLocalClearance(mm(clearance))
     z.SetMinThickness(mm(min_w))
-    z.SetPadConnection(pcbnew.ZONE_CONNECTION_THERMAL if thermal else pcbnew.ZONE_CONNECTION_FULL)
+    z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
     o = z.Outline()
     o.NewOutline()
     for x, y in poly:
@@ -123,6 +124,7 @@ def place():
     nl = json.load(open(os.path.join(OUT, 'netlist.json'), encoding='utf-8'))
     board = pcbnew.BOARD()
     board.SetCopperLayerCount(4)
+    # In1 = souvislá zem (autorouter ji nesmí použít pro signály), In2 = napájení + případně signály
     ds = board.GetDesignSettings()
     ds.SetBoardThickness(mm(1.6))
     tb = board.GetTitleBlock()
@@ -220,6 +222,44 @@ def place():
         return (r[2] - r[0]) * (r[3] - r[1])
     rest.sort(key=lambda r: -area(r))
     unplaced = []
+    # drobné pasivy čipů s jemnou roztečí na spodní stranu pod čip (uvolní vývody pro spoje nahoře)
+    BOTTOM = {'U8', 'M1', 'M2', 'U12', 'U13', 'U7', 'T1', 'T2', 'T3', 'T4', 'T5', 'J9', 'U9', 'U10', 'U11'}
+    small = lambda ref: any(k in nl[ref]['fp'] for k in ('0402', '0603'))
+    occ_b = [o for o in occ[:6]]          # výřezy obrysu
+    for ref, f in fps.items():            # vývodové (THT) součástky zasahují i dolů
+        if any(pd.GetAttribute() in (pcbnew.PAD_ATTRIB_PTH, pcbnew.PAD_ATTRIB_NPTH) for pd in f.Pads()) and ref in MAIN:
+            occ_b.append(rect_of(f, 0.3))
+    for ref in [r for r in rest if anchor_of(r) in BOTTOM and small(r)]:
+        fp = fps[ref]
+        fp.SetLayerAndFlip(pcbnew.B_Cu)
+        ar = rect_of(fps[anchor_of(ref)], 0)
+        cx0, cy0 = (ar[0] + ar[2]) // 2, (ar[1] + ar[3]) // 2
+        cand = []
+        step = mm(0.5)
+        x = ar[0] - mm(4)
+        while x <= ar[2] + mm(4):
+            y = ar[1] - mm(4)
+            while y <= ar[3] + mm(4):
+                cand.append(((x - cx0) ** 2 + (y - cy0) ** 2, x, y)); y += step
+            x += step
+        cand.sort()
+        done = False
+        for _, px, py in cand:
+            for rot in (0, 90):
+                fp.SetOrientationDegrees(rot); fp.SetPosition(V(0, 0))
+                rb = rect_of(fp, 0.35)
+                w2, h2 = (rb[2] - rb[0]) // 2, (rb[3] - rb[1]) // 2
+                cx = (rb[0] + rb[2]) // 2; cy = (rb[1] + rb[3]) // 2
+                r = (px - w2, py - h2, px + w2, py + h2)
+                if r[0] >= board_rect[0] and r[1] >= board_rect[1] and r[2] <= board_rect[2] and r[3] <= board_rect[3] and not any(overlap(r, o) for o in occ_b):
+                    fp.SetPosition(pcbnew.VECTOR2I(int(px - cx), int(py - cy)))
+                    occ_b.append(rect_of(fp, 0.35)); done = True; break
+            if done: break
+        if not done:
+            fp.SetLayerAndFlip(pcbnew.F_Cu)
+        else:
+            rest.remove(ref)
+    print('dole:', sum(1 for f in fps.values() if f.GetLayer() == pcbnew.B_Cu))
     for ref in rest:
         fp = fps[ref]
         a = anchor_of(ref)
@@ -241,13 +281,13 @@ def place():
                 for rot in (0, 90):
                     fp.SetOrientationDegrees(rot)
                     fp.SetPosition(V(0, 0))
-                    rb = rect_of(fp, 0.2)
+                    rb = rect_of(fp, GROW)
                     w2, h2 = (rb[2] - rb[0]) // 2, (rb[3] - rb[1]) // 2
                     cx = (rb[0] + rb[2]) // 2; cy = (rb[1] + rb[3]) // 2
                     r = (px - w2, py - h2, px + w2, py + h2)
                     if free(r):
                         fp.SetPosition(pcbnew.VECTOR2I(int(px - cx), int(py - cy)))
-                        occ.append(rect_of(fp, 0.2))
+                        occ.append(rect_of(fp, GROW))
                         done = True
                         break
                 if done: break
@@ -260,10 +300,24 @@ def place():
     poly = [(OX, OY), (OX + L, OY), (OX + L, OY + W), (OX, OY + W)]
     add_zone(board, nets['GND'], pcbnew.In1_Cu, poly, 0, 0.25, 0.25, True)
     # In2: ostrov VIN_P v rohu napájení, zbytek 5 V (bez překryvu, aby autorouter viděl dvě oddělené roviny)
-    vin = [(KX(-121), KY(-81)), (KX(-36), KY(-81)), (KX(-36), KY(-34)), (KX(-121), KY(-34))]
+    vin = [(KX(-121), KY(-81)), (KX(-36), KY(-81)), (KX(-36), KY(-12)), (KX(-121), KY(-12))]
     add_zone(board, nets['VIN_P'], pcbnew.In2_Cu, vin, 1, 0.5, 0.3, True)
-    v5 = [(KX(-35), KY(-81)), (KX(121), KY(-81)), (KX(121), KY(81)), (KX(-121), KY(81)), (KX(-121), KY(-33)), (KX(-35), KY(-33))]
+    v5 = [(KX(-35), KY(-81)), (KX(121), KY(-81)), (KX(121), KY(81)), (KX(-121), KY(81)), (KX(-121), KY(-11)), (KX(-35), KY(-11))]
     add_zone(board, nets['V5'], pcbnew.In2_Cu, v5, 0, 0.3, 0.3, True)
+    # zakázané oblasti pro spoje a prokovy kolem neprokovených otvorů (CM5, slot M.2)
+    for ref in ('M1', 'J8'):
+        for pad in fps[ref].Pads():
+            if pad.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH:
+                c = pad.GetPosition(); r = pcbnew.ToMM(max(pad.GetSize().x, pad.GetSize().y)) / 2 + 1.6
+                ka = pcbnew.ZONE(board)
+                ka.SetIsRuleArea(True); ka.SetDoNotAllowTracks(True); ka.SetDoNotAllowVias(True); ka.SetDoNotAllowZoneFills(False)
+                ka.SetDoNotAllowPads(False); ka.SetDoNotAllowFootprints(False)
+                ka.SetLayerSet(pcbnew.LSET.AllCuMask())
+                o = ka.Outline(); o.NewOutline()
+                for k in range(16):
+                    a = 2 * math.pi * k / 16
+                    o.Append(int(c.x + mm(r) * math.cos(a)), int(c.y + mm(r) * math.sin(a)))
+                board.Add(ka)
     t = pcbnew.PCB_TEXT(board)
     t.SetText('ClearWay CB3 rev. B'); t.SetPosition(V(KX(-60), KY(-75))); t.SetLayer(pcbnew.F_SilkS); t.SetTextSize(V(1.5, 1.5))
     board.Add(t)
@@ -272,27 +326,57 @@ def place():
 
 def route(passes=30):
     tools = os.environ.get('CB3_TOOLS')
-    dsn = os.path.join(tools, 'cb3.dsn'); ses = os.path.join(tools, 'cb3.ses')
+    tag = os.environ.get('CB3_TAG', 'cb3')
+    dsn = os.path.join(tools, tag + '.dsn'); ses = os.path.join(tools, tag + '.ses')
     board = pcbnew.LoadBoard(PCB)
+    # vylitá zem na vnějších vrstvách by pro autorouter byla rovina přes celou vrstvu: před exportem pryč (doplní se po importu)
+    for z in list(board.Zones()):
+        if z.GetNetname() == 'GND' and z.GetLayer() in (pcbnew.F_Cu, pcbnew.B_Cu):
+            board.Remove(z)
     pcbnew.ExportSpecctraDSN(board, dsn)
     java = '/opt/homebrew/opt/openjdk/bin/java'
-    cmd = [java, '-jar', os.path.join(tools, 'freerouting.jar'), '-de', dsn, '-do', ses, '-mp', str(passes), '-mt', '12', '--gui.enabled=false']
+    cmd = [java, '-jar', os.path.join(tools, 'freerouting.jar'), '-de', dsn, '-do', ses, '-mp', str(passes), '-mt', '1', '--gui.enabled=false']
     print(' '.join(cmd))
     subprocess.run(cmd, check=True)
+    import_ses(ses)
+
+def import_ses(ses):
+    # import + úklid a rozlití mědi ve dvou samostatných procesech (SWIG po mazání prokovů ztrácí typy objektů)
     board = pcbnew.LoadBoard(PCB)
     pcbnew.ImportSpecctraSES(board, ses)
-    pour(board)
     board.Save(PCB)
+    for step in ('cleanup', 'pour'):
+        subprocess.run([sys.executable, os.path.abspath(__file__), step], check=True)
+
+def cleanup(board):
+    """Úklid po autorouteru: příliš tenké spoje rozšíří na 0,1 mm a smaže prokovy, které nic nespojují
+    (žádný spoj ani ploška se jich nedotýká a jejich síť nemá na žádné vrstvě zónu)."""
+    tracks = [t for t in board.GetTracks() if t.GetClass() == 'PCB_TRACK']
+    widened = 0
+    for t in tracks:
+        pass
+    zone_nets = {z.GetNetname() for z in board.Zones() if not z.GetIsRuleArea()}
+    removed = 0
+    for v in [t for t in board.GetTracks() if t.GetClass() == 'PCB_VIA']:
+        p = v.GetPosition(); r = v.GetWidth(pcbnew.F_Cu) / 2 + mm(0.05)
+        touching = sum(1 for t in tracks if t.GetNetname() == v.GetNetname() and
+                       min(abs(t.GetStart().x - p.x) + abs(t.GetStart().y - p.y), abs(t.GetEnd().x - p.x) + abs(t.GetEnd().y - p.y)) <= r)
+        if touching == 0 and v.GetNetname() not in zone_nets:
+            board.Remove(v); removed += 1
+    print('rozšířeno spojů:', widened, 'odstraněno prokovů:', removed)
 
 def pour(board):
     """Zem na vnějších vrstvách a doplnění všech zón."""
     gnd = board.FindNet('GND')
     poly = [(OX, OY), (OX + L, OY), (OX + L, OY + W), (OX, OY + W)]
-    have = {(z.GetLayer(), z.GetNetname()) for z in board.Zones()}
+    have = {(z.GetLayer(), z.GetNetname()) for z in board.Zones() if not z.GetIsRuleArea()}
     for layer in (pcbnew.F_Cu, pcbnew.B_Cu):
         if (layer, 'GND') not in have:
             add_zone(board, gnd, layer, poly, 0, 0.3, 0.25, True)
-    pcbnew.ZONE_FILLER(board).Fill(board.Zones())
+    # M.2 (rozteč 0,5 mm): maska mezi ploškami se nedělá, společné okno je u výrobce běžné
+    for fp in board.GetFootprints():
+        if fp.GetReference() == 'J8': fp.SetAllowSolderMaskBridges(True)
+    pcbnew.ZONE_FILLER(board).Fill(board.Zones())  # noqa
 
 if __name__ == '__main__':
     what = sys.argv[1] if len(sys.argv) > 1 else 'place'
@@ -300,5 +384,9 @@ if __name__ == '__main__':
         place()
     elif what == 'route':
         route(int(sys.argv[2]) if len(sys.argv) > 2 else 30)
+    elif what == 'import':
+        import_ses(os.path.join(os.environ.get('CB3_TOOLS'), 'cb3.ses'))
+    elif what == 'cleanup':
+        b = pcbnew.LoadBoard(PCB); cleanup(b); b.Save(PCB)
     elif what == 'pour':
         b = pcbnew.LoadBoard(PCB); pour(b); b.Save(PCB)

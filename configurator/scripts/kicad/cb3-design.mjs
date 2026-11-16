@@ -38,7 +38,7 @@ const counters = {};
 const nextRef = (p) => { counters[p] = (counters[p] || 0) + 1; return `${p}${counters[p]}`; };
 function add(o) {
   const p = { sheet, anchor, ...o };
-  if (!p.ref) p.ref = nextRef(p.prefix);
+  if (!p.ref) { p.ref = nextRef(p.prefix); p.autoRef = true; }
   parts.push(p);
   return p;
 }
@@ -55,7 +55,7 @@ const PWR_FLAGS = ['VIN_P', 'VIN_F', 'V12', 'V5', 'V3V3', 'V3V8', 'V1V2_A', 'V3V
 // =====================================================================================
 sheet = 'napajeni';
 // ---- vstup, pojistka, TVS, ideální dioda ----
-main({ ref: 'J1', sym: 'Connector_Generic:Conn_02x03_Odd_Even', fp: 'Connector_Molex:Molex_Micro-Fit_3.0_43045-0612_2x03_P3.00mm_Vertical', value: 'NAPÁJENÍ',
+main({ ref: 'J1', sym: 'Connector_Generic:Conn_02x03_Odd_Even', fp: 'Connector_Molex:Molex_Micro-Fit_3.0_43045-0612_2x03_P3.00mm_Vertical', value: 'POWER',
   mpn: 'Molex 43045-0612', nets: { 1: 'KL30', 2: 'GND', 3: 'KL15', 4: 'CAN_H', 5: 'CAN_L', 6: 'GND' } });
 add({ ref: 'F1', sym: 'Device:Fuse', fp: 'Fuse:Fuse_1206_3216Metric', value: '5A', mpn: 'Littelfuse 0466005.NR (5 A, 1206) – ověřit jmenovité napětí ≥ 32 V', nets: { 1: 'KL30', 2: 'VIN_F' } });
 add({ ref: 'D1', sym: 'Device:D_TVS', fp: FP.SMC, value: 'SMCJ33CA', mpn: 'Littelfuse SMCJ33CA (obousměrný, 1500 W)', nets: { 1: 'VIN_F', 2: 'GND' } });
@@ -304,15 +304,28 @@ add({ ref: 'SW2', sym: 'Switch:SW_Push', fp: 'Button_Switch_SMD:SW_Push_1P1T_NO_
 main({ ref: 'J11', sym: 'Connector_Generic:Conn_01x03', fp: 'Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal', value: 'UART debug', mpn: 'JST SM03B-GHS-TB',
   nets: { 1: 'DBG_TX', 2: 'DBG_RX', 3: 'GND', MP: 'GND' } });
 // LED: napájení (trvale), aktivita CM5, stav (GPIO5)
-add({ ref: 'LED1', sym: 'Device:LED', fp: FP.LED0603, value: 'zelená', mpn: 'Würth 150060VS75000', nets: { 1: 'GND', 2: 'LED1_A' } });
+add({ ref: 'LED1', sym: 'Device:LED', fp: FP.LED0603, value: 'GREEN', mpn: 'Würth 150060VS75000', nets: { 1: 'GND', 2: 'LED1_A' } });
 R('1k', 'V3V3', 'LED1_A');
-add({ ref: 'LED2', sym: 'Device:LED', fp: FP.LED0603, value: 'žlutá', mpn: 'Würth 150060YS75000', nets: { 1: 'LED_nACT', 2: 'LED2_A' } });
+add({ ref: 'LED2', sym: 'Device:LED', fp: FP.LED0603, value: 'YELLOW', mpn: 'Würth 150060YS75000', nets: { 1: 'LED_nACT', 2: 'LED2_A' } });
 R('1k', 'CM5_3V3', 'LED2_A');
-add({ ref: 'LED3', sym: 'Device:LED', fp: FP.LED0603, value: 'červená', mpn: 'Würth 150060RS75000', nets: { 1: 'GND', 2: 'LED3_A' } });
+add({ ref: 'LED3', sym: 'Device:LED', fp: FP.LED0603, value: 'RED', mpn: 'Würth 150060RS75000', nets: { 1: 'GND', 2: 'LED3_A' } });
 R('1k', 'LED_STAT', 'LED3_A');
 // montážní otvory (do země)
 anchor = null;
 for (let i = 1; i <= 4; i++) add({ ref: `MH${i}`, sym: 'Mechanical:MountingHole_Pad', fp: 'MountingHole:MountingHole_3.2mm_M3_Pad_Via', value: 'M3', mpn: 'otvor M3', nets: { 1: 'GND' } });
 
+// Ruční označení (např. C1) mohou kolidovat s automatickým číslováním: automatická součástka
+// dostane další volné číslo, ostatní označení se nemění (deska je podle nich rozmístěná).
+{
+  const used = new Set(parts.filter((p) => !p.autoRef).map((p) => p.ref));
+  for (const p of parts) {
+    if (!p.autoRef || !used.has(p.ref)) { used.add(p.ref); continue; }
+    let n = Math.max(...parts.filter((q) => q.ref.replace(/\d+$/, '') === p.prefix).map((q) => +q.ref.slice(p.prefix.length)));
+    while (used.has(`${p.prefix}${++n}`));
+    p.ref = `${p.prefix}${n}`; used.add(p.ref);
+  }
+  const dup = parts.map((p) => p.ref).filter((r, i, a) => a.indexOf(r) !== i);
+  if (dup.length) throw new Error(`duplicitní označení: ${dup.join(', ')}`);
+}
 export const PARTS = parts;
 export const POWER_FLAGS = PWR_FLAGS;
