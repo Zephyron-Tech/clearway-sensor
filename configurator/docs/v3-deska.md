@@ -4,17 +4,17 @@ Deska do skříně střešního skeneru v3. V konfigurátoru: v3 → Na stole, d
 
 > **Stav: rev. B, kompletní návrh.** Schéma, plošný spoj a výrobní data (Gerber, vrtání, kusovník, pick & place) jsou v [hardware/cb3](../../hardware/cb3/README.md). ERC i DRC jsou čisté. Návrh je generovaný a vedený autorouterem, před objednávkou ho musí projít člověk s praxí (seznam v README desky, kapitola Co zkontrolovat před výrobou).
 >
-> Tabulky níže popisují rev. B. 3D model desky v aplikaci a podklady `obrys.dxf`, `osazeni.csv`, `kusovnik.csv` ještě odpovídají konceptu rev. A (63 hlavních součástek). Pro výrobu platí jen data v `hardware/cb3/vyroba`.
+> 3D model desky v aplikaci má polohy, strany a rozměry všech součástek z KiCadu (`scripts/kicad/export-3d.py`). Podklady `obrys.dxf`, `osazeni.csv` a `kusovnik.csv` níže jsou přehled z modelu pro mechaniku, pro výrobu platí jen data v `hardware/cb3/vyroba`.
 
-Podklady konceptu vygenerované z modelu (`node scripts/export-board.mjs`):
+Přehled vygenerovaný z modelu (`node scripts/export-board.mjs`):
 
 | Soubor | Co obsahuje |
 |---|---|
 | [obrys.dxf](v3-deska/obrys.dxf) | obrys desky (vrstva OBRYS) a 4 montážní otvory (OTVORY_PTH), mm, počátek vlevo dole |
-| [osazeni.csv](v3-deska/osazeni.csv) | 63 součástek: designátor, typ, souřadnice středu, strana, otočení, rozměr pouzdra |
-| [kusovnik.csv](v3-deska/kusovnik.csv) | kusovník podle typu, pasivní součástky orientačně |
+| [osazeni.csv](v3-deska/osazeni.csv) | 210 součástek: designátor, typ, souřadnice středu, strana, otočení, rozměr těla |
+| [kusovnik.csv](v3-deska/kusovnik.csv) | kusovník podle typu a hodnoty |
 
-Jediný zdroj všeho je [src/cad/board-v3-data.js](../src/cad/board-v3-data.js). Když se tam změní poloha nebo typ, změní se model v aplikaci i exporty.
+Zdrojem pravdy je projekt KiCad. Po změně desky v KiCadu obnoví 3D model příkaz `python3 scripts/kicad/export-3d.py` (Python z KiCadu) a přehledové soubory `node scripts/export-board.mjs`. Vzhled součástek (tvar, výška, popisky) je v [src/cad/board-v3-data.js](../src/cad/board-v3-data.js).
 
 ## Co deska dělá
 

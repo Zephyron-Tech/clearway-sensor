@@ -1,7 +1,8 @@
 // Výrobní podklady nosné desky CB3 z tabulky src/cad/board-v3-data.js:
 //   docs/v3-deska/obrys.dxf     obrys desky (Edge.Cuts) a montážní otvory, mm
-//   docs/v3-deska/osazeni.csv   souřadnice součástek (pick & place), horní strana
+//   docs/v3-deska/osazeni.csv   souřadnice součástek (obě strany), přehled pro mechaniku
 //   docs/v3-deska/kusovnik.csv  kusovník podle typu
+// Pro výrobu platí data z KiCadu v hardware/cb3/vyroba, tyhle soubory jsou jen přehled z 3D modelu.
 // Spuštění: node scripts/export-board.mjs
 //
 // Souřadnice DPS: počátek v levém dolním rohu při pohledu shora, X doprava = směr k přední stěně
@@ -9,7 +10,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { BOARD, BLOCKS, PARTS, PASSIVE_CLUSTERS } from '../src/cad/board-v3-data.js';
+import { BOARD, BLOCKS, PARTS } from '../src/cad/board-v3-data.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'docs', 'v3-deska');
@@ -97,22 +98,21 @@ writeFileSync(join(out, 'obrys.dxf'), dxf([...ent.map(e => ({ ...e, layer: 'OBRY
 const csv = (rows) => '﻿' + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\r\n') + '\r\n';
 const place = [['Designator', 'Popis', 'Typ (MPN)', 'Blok', 'Mid X [mm]', 'Mid Y [mm]', 'Layer', 'Rotation [°]', 'Pouzdro X×Y×výška [mm]']];
 for (const p of PARTS) {
-  place.push([p.ref, p.label, p.mpn, BLOCKS[p.block], f(X(p.x)), f(Yc(p.z)), 'Top', p.rot || 0, `${p.w}×${p.d}×${p.h}`]);
+  if (p.loose) continue;   // karta modemu se jen zasouvá
+  place.push([p.ref, p.label, p.mpn, BLOCKS[p.block], f(X(p.x)), f(Yc(p.z)), p.side === 'B' ? 'Bottom' : 'Top', p.rot || 0, `${p.w}×${p.d}×${p.h}`]);
 }
 writeFileSync(join(out, 'osazeni.csv'), csv(place));
 
 // ---------- kusovník ----------
 const groups = new Map();
 for (const p of PARTS) {
-  const k = p.mpn;
+  const k = `${p.mpn}|${p.value}|${p.footprint}`;
   if (!groups.has(k)) groups.set(k, { mpn: p.mpn, label: p.label.replace(/ \(.*\)$/, ''), refs: [], block: BLOCKS[p.block] });
   groups.get(k).refs.push(p.ref);
 }
 const bom = [['Množství', 'Designátory', 'Popis', 'Typ (MPN) – ověřit', 'Blok']];
 for (const g of groups.values()) bom.push([g.refs.length, g.refs.join(', '), g.label, g.mpn, g.block]);
-const nPass = PASSIVE_CLUSTERS.reduce((a, c) => a + c.n, 0);
-bom.push([`~${nPass}`, '—', 'Pasivní součástky 0402/0603 (R, C)', 'hodnoty podle schématu a doporučených zapojení v datasheetech', 'všechny']);
 bom.push([1, 'PCB', `DPS ${BOARD.name} rev. ${BOARD.rev}`, `${L}×${W}×${BOARD.thickness} mm, ${BOARD.layers} vrstvy, FR-4 Tg170, ENIG`, '—']);
 writeFileSync(join(out, 'kusovnik.csv'), csv(bom));
 
-console.log(`obrys: ${ent.length} hran a oblouků, ${holes.length} otvorů · osazení: ${PARTS.length} součástek · kusovník: ${groups.size} typů + pasivy ~${nPass}`);
+console.log(`obrys: ${ent.length} hran a oblouků, ${holes.length} otvorů · osazení: ${place.length - 1} součástek · kusovník: ${groups.size} položek`);

@@ -1,7 +1,7 @@
 // 3D model nosné desky ClearWay CB3 z tabulky board-v3-data.js.
 // Používá ho sestava v3 (deska ve skříni) i samostatný náhled desky vedle sestavy.
 import { makeBox, makeCylinder, makeCompound } from 'replicad';
-import { BOARD, BLOCKS, PARTS, PASSIVE_CLUSTERS } from './board-v3-data.js';
+import { BOARD, BLOCKS, PARTS } from './board-v3-data.js';
 
 const Y = [0, 1, 0], X = [1, 0, 0];
 const box = (x0, y0, z0, x1, y1, z1) => makeBox([Math.min(x0, x1), Math.min(y0, y1), Math.min(z0, z1)], [Math.max(x0, x1), Math.max(y0, y1), Math.max(z0, z1)]);
@@ -36,7 +36,7 @@ export function boardParts({ y0 = 0, ex0 = [0, 0, 0], lift = 1 } = {}) {
   ]));
   add('deska_dps', 'deska_vypocet', 'pcb', pcb, ex0, {
     label: `DPS ${BOARD.name} rev. ${BOARD.rev}`, src: 'pcb',
-    spec: `${L}×${W}×${t} mm, ${BOARD.layers} vrstvy, FR-4 Tg 170, ENIG, zelená maska, bílý potisk; obrys a otvory v docs/v3-deska/obrys.dxf`,
+    spec: `${L}×${W}×${t} mm, ${BOARD.layers} vrstvy, FR-4 Tg 170, ENIG, zelená maska, bílý potisk; výrobní data v hardware/cb3/vyroba`,
   });
   // prokovené plošky kolem montážních otvorů (zem)
   add('deska_plosky_otvoru', 'deska_vypocet', 'brass',
@@ -44,11 +44,20 @@ export function boardParts({ y0 = 0, ex0 = [0, 0, 0], lift = 1 } = {}) {
     { label: 'Plošky montážních otvorů (GND)', src: 'pcb', spec: 'součást DPS' });
 
   // --- součástky ---
+  // malé pasivní součástky (0402–1210) se slučují do jedné skupiny na blok a stranu desky
+  const passives = new Map();
   for (const p of PARTS) {
+    if (p.passive) {
+      const k = `${p.block}|${p.side}`;
+      if (!passives.has(k)) passives.set(k, []);
+      const y = p.side === 'B' ? y0 - p.h : yT;
+      passives.get(k).push(box(p.x - p.w / 2, y, p.z - p.d / 2, p.x + p.w / 2, y + p.h, p.z + p.d / 2));
+      continue;
+    }
     const cat = `deska_${p.block}`;
     const meta = { label: `${p.ref} · ${p.label}`, spec: p.mpn + (p.pins ? `; piny: ${p.pins}` : ''), src: 'nakup' };
     const ex = exB(p.block, p.shape === 'cm5' || p.shape === 'm2' ? 1.8 : 1);
-    const y = yT + (p.z0 ?? 0);
+    const y = p.side === 'B' ? y0 - p.h : yT + (p.z0 ?? 0);
     const { x, z, w, d, h } = p;
     let shape;
     switch (p.shape) {
@@ -98,6 +107,7 @@ export function boardParts({ y0 = 0, ex0 = [0, 0, 0], lift = 1 } = {}) {
         break;
       }
       case 'ufl': shape = cyl(1.3, h, [x, y, z]).fuse(cbox(x, y + 0.2, z, w, 0.4, d)); break;
+      case 'tp': shape = cyl(0.75, 0.05, [x, y, z]); break;
       case 'button':
         shape = cbox(x, y + 0.8, z, w, 1.6, d);
         add(`${p.ref}_hmatnik`, cat, 'plasticBlack', cyl(1.5, 0.6, [x, y + 1.6, z]), ex, { label: `${p.ref} · hmatník`, spec: 'součást tlačítka', src: 'nakup' });
@@ -107,22 +117,11 @@ export function boardParts({ y0 = 0, ex0 = [0, 0, 0], lift = 1 } = {}) {
     add(p.ref, cat, p.mat, shape, ex, meta);
   }
 
-  // --- shluky pasivních součástek (0402) kolem IO ---
-  for (const c of PASSIVE_CLUSTERS) {
-    const p = PARTS.find(q => q.ref === c.near);
-    if (!p) continue;
-    const items = [];
-    const per = Math.ceil(c.n / 4);
-    for (let i = 0; i < c.n; i++) {
-      const side = i % 4, k = Math.floor(i / 4);
-      const off = (k - (per - 1) / 2) * 1.6;
-      const gap = 2.2;
-      const [px, pz, rot] = side === 0 ? [p.x + off, p.z - p.d / 2 - gap, 0] : side === 1 ? [p.x + off, p.z + p.d / 2 + gap, 0]
-        : side === 2 ? [p.x - p.w / 2 - gap, p.z + off, 1] : [p.x + p.w / 2 + gap, p.z + off, 1];
-      items.push(rot ? cbox(px, yT + 0.25, pz, 0.5, 0.5, 1.0) : cbox(px, yT + 0.25, pz, 1.0, 0.5, 0.5));
-    }
-    add(`pasivni_${c.near}`, `deska_${c.block}`, c.near.startsWith('U8') || c.near.startsWith('J') ? 'chip' : 'ceramic', group(items), exB(c.block, 0.9),
-      { label: `Pasivní součástky u ${c.near} (${c.n}×)`, src: 'nakup', spec: `odpory a kondenzátory 0402 kolem ${c.near}; hodnoty podle doporučeného zapojení v datasheetu` });
+  const SIDE = { T: 'nahoře', B: 'dole' };
+  for (const [k, items] of passives) {
+    const [block, side] = k.split('|');
+    add(`pasivni_${block}_${side}`, `deska_${block}`, 'ceramic', group(items), exB(block, side === 'B' ? -0.6 : 0.9),
+      { label: `Pasivní součástky ${SIDE[side]} (${items.length}×)`, src: 'nakup', spec: 'rezistory, kondenzátory a tlumivky 0402–1210; hodnoty a typy v kusovníku hardware/cb3/vyroba/cb3-kusovnik.csv' });
   }
   return out;
 }

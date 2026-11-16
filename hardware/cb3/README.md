@@ -57,6 +57,7 @@ sh configurator/scripts/kicad/fab.sh
 4. Freerouting 1.9 (export DSN / import SES), pak `finish-route.py`: vlastní dotahovač (A* na mřížce 0,1 mm) na posledních několik spojů a opravy kolizí.
 5. `gen-pcb-full.py pour`: rozlití zemí a zón, `link-pcb.py`: svázání pouzder se symboly schématu (funguje F8 Aktualizovat DPS ze schématu).
 6. `fab.sh`: výrobní data.
+7. `export-3d.py`: polohy a rozměry součástek do 3D modelu v konfigurátoru (`src/cad/board-v3-pcb.js`).
 
 **Od teď je zdrojem pravdy projekt KiCad.** Úpravy dělat v KiCadu ručně; generátory desku přepíší (rozmístění a vedení by se ztratilo).
 
